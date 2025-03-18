@@ -1081,7 +1081,7 @@
 // }
 
 // export default JobDescription;
-import { useEffect, useState } from "react";
+import { useEffect, useState, startTransition } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import axios from "axios";
@@ -1150,6 +1150,14 @@ function JobDescription() {
     (application) => application.applicant === user?.id || false
   );
   const [isApplied, setIsApplied] = useState(isInitiallyApplied);
+
+  //  useEffect(() => {
+  //   if (user?.role === 'recruiter') {
+  //     startTransition(() => {
+  //       navigate("/admin/companies");
+  //     });
+  //   }
+  // }, [user?.role, navigate]);
 
   // Parse hiring team data safely
   const hiringTeam = (() => {
@@ -1341,31 +1349,35 @@ function JobDescription() {
             </div>
 
             {/* Fixed Apply Button */}
-            <div className="flex-shrink-0">
-              {isApplied ? (
-                <div className="inline-flex items-center gap-2 bg-green-50 text-green-700 px-4 py-2 rounded-xl font-medium whitespace-nowrap">
-                  <CheckCircle2 className="w-5 h-5" />
-                  Applied
-                </div>
-              ) : (
-                <Button
-                  onClick={applyJobHandler}
-                  disabled={isApplying}
-                  className="bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white rounded-xl px-6 py-2.5 font-medium transition-all whitespace-nowrap"
-                >
-                  {isApplying ? (
-                    "Applying..."
-                  ) : (
-                    <>
-                      Apply Now
-                      <span className="ml-2 group-hover:translate-x-1 transition-transform">
-                        →
-                      </span>
-                    </>
-                  )}
-                </Button>
-              )}
-            </div>
+            {user?.role === "recruiter" ? (
+              <></>
+            ) : (
+              <div className="flex-shrink-0">
+                {isApplied ? (
+                  <div className="inline-flex items-center gap-2 bg-green-50 text-green-700 px-4 py-2 rounded-xl font-medium whitespace-nowrap">
+                    <CheckCircle2 className="w-5 h-5" />
+                    Applied
+                  </div>
+                ) : (
+                  <Button
+                    onClick={applyJobHandler}
+                    disabled={isApplying}
+                    className="bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white rounded-xl px-6 py-2.5 font-medium transition-all whitespace-nowrap"
+                  >
+                    {isApplying ? (
+                      "Applying..."
+                    ) : (
+                      <>
+                        Apply Now
+                        <span className="ml-2 group-hover:translate-x-1 transition-transform">
+                          →
+                        </span>
+                      </>
+                    )}
+                  </Button>
+                )}
+              </div>
+            )}
           </div>
 
           {/* Job Metadata */}
@@ -1384,7 +1396,7 @@ function JobDescription() {
             {singleJob?.salary && (
               <MetadataBadge
                 icon={DollarSign}
-                text={`${singleJob.salary}K`}
+                text={`${singleJob.salary}`}
                 color="purple"
               />
             )}
@@ -1457,7 +1469,6 @@ function JobDescription() {
           )}
 
           {/* Hiring Team Section */}
-
         </div>
       </div>
     </div>

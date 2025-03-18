@@ -699,13 +699,13 @@ function Home() {
   const { user } = useSelector(store => store.auth);
   const [sectionsToLoad, setSectionsToLoad] = useState(['Navbar', 'HeroSection']);
 
-  useEffect(() => {
-    if (user?.role === 'recruiter') {
-      startTransition(() => {
-        navigate("/admin/companies");
-      });
-    }
-  }, [user?.role, navigate]);
+  // useEffect(() => {
+  //   if (user?.role === 'recruiter') {
+  //     startTransition(() => {
+  //       navigate("/admin/companies");
+  //     });
+  //   }
+  // }, [user?.role, navigate]);
 
   useEffect(() => {
     const preloadCriticalAssets = async () => {

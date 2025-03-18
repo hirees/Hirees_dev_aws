@@ -19,14 +19,15 @@ function useGetAllCompany() {
         });
 
 
+
         if (res.data.status) {
           dispatch(setAllCompanies(res.data.companies)); // Update Redux state with fetched jobs
           setError(null); // Clear any previous errors
         } else {
-          setError(new Error("Failed to fetch jobs. Status not true."));
+          setError(new Error("Failed to fetch companies. Status not true."));
         }
       } catch (err) {
-        console.error("Error fetching jobs:", err);
+        console.error("Error fetching companies:", err);
         setError(err);
       } finally {
         dispatch(setLoading(false)); // Dispatching the Redux action to unset loading state

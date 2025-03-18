@@ -231,6 +231,7 @@ import { toast } from "sonner";
 import axios from "axios";
 import { useSelector } from "react-redux";
 import useGetCompanyById from "@/hooks/useGetCompanyById";
+import Footer from "../Footer";
 
 function CompanySetup() {
   const { singleCompany } = useSelector((store) => store.company);

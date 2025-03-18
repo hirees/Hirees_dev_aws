@@ -121,6 +121,7 @@ import Home from "./components/Home";
 import Company from "./components/Company";
 import CompanyJobs from "./components/CompanyJobs";
 import ContactPage from "./components/ContactPage";
+import RecruiterDashboard from "./components/shared/RecruiterDashboard";
 
 // Lazy load everything else
 const Login = lazy(() => import("./components/auth/Login"));
@@ -306,6 +307,16 @@ const appRouter = createBrowserRouter([
       <Suspense fallback={<div>Loading...</div>}>
         <ProtectedRoute>
           <EditJobForm />
+        </ProtectedRoute>
+      </Suspense>
+    ),
+  },
+  {
+    path: "/admin/dashboard",
+    element: (
+      <Suspense fallback={<div>Loading...</div>}>
+        <ProtectedRoute>
+          <RecruiterDashboard/>
         </ProtectedRoute>
       </Suspense>
     ),

@@ -69,8 +69,8 @@ const Login = () => {
   };
 
   useEffect(() => {
-    if (user) {
-      navigate("/");
+    if (user?.role=="recruiter") {
+      navigate("/admin/companies");
     }
   }, [user, navigate]);
   return (

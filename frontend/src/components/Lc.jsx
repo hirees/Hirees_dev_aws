@@ -657,7 +657,7 @@ function Lc({ job }) {
 
       try {
         const response = await axios.get(
-          `http://3.232.10.54bs/check/${job.jobId}`,
+          `http://3.232.10.54/api/savedjobs/check/${job.jobId}`,
           { withCredentials: true }
         );
         setIsSaved(response.data.isSaved);
@@ -690,14 +690,14 @@ function Lc({ job }) {
 
       if (!isSaved) {
         await axios.post(
-          'http://3.232.10.54bs/save',
+          'http://3.232.10.54/api/savedjobs/save',
           { jobId: job.jobId },
           { withCredentials: true }
         );
         setIsSaved(true);
       } else {
         await axios.delete(
-          `/api/jobs/saved/${job.jobId}`,
+          `http://3.232.10.54/api/savedjobs/unsave/${job.jobId}`,
           { withCredentials: true }
         );
         setIsSaved(false);
@@ -782,7 +782,7 @@ function Lc({ job }) {
           <div className="flex items-center space-x-2 bg-gray-50 p-2 rounded-lg">
             <DollarSign className="w-4 h-4 md:w-5 md:h-5 text-green-500" />
             <span className="text-xs text-gray-600">
-              {job?.salary ? `${job.salary}K` : "Salary not specified"}
+              {job?.salary ? `${job.salary}` : "Salary not specified"}
             </span>
           </div>
           <div className="flex items-center space-x-2 bg-gray-50 p-2 rounded-lg">

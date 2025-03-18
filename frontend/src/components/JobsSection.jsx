@@ -435,7 +435,7 @@ function JobsSection() {
   const fetchSavedJobs = async () => {
     try {
       setIsLoading(true);
-      const res = await axios.get("http://3.232.10.54/api/savedjobs/saved", {
+      const res = await axios.get("http://3.232.10.54//api/savedjobs/saved", {
         withCredentials: true,
       });
       setSavedJobs(res.data.savedJobs || []);
@@ -448,7 +448,7 @@ function JobsSection() {
 
   const handleRemoveSavedJob = async (jobId) => {
     try {
-      await axios.delete(`http://3.232.10.54/api/savedjobs/saved`, {
+      await axios.delete(`http://3.232.10.54//api/savedjobs/saved`, {
         data: { jobId },
         withCredentials: true,
       });
@@ -584,7 +584,7 @@ function JobsSection() {
                   <TableCell>{job.jobDetails.title}</TableCell>
                   <TableCell className="hidden md:table-cell">{job.jobDetails.location}</TableCell>
                   <TableCell className="hidden md:table-cell">{job.jobDetails.experience} years</TableCell>
-                  <TableCell>${job.jobDetails.salary}k</TableCell>
+                  <TableCell>${job.jobDetails.salary}</TableCell>
                   <TableCell className="text-right">
                     <div className="flex justify-end space-x-2">
                       <Popover>

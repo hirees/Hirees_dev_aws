@@ -71,6 +71,7 @@ import { APPLICATION_API_END_POINT } from "@/utils/constant";
 import { Button } from "../ui/button";
 import { ArrowLeft } from "lucide-react";
 import { toast } from "sonner";
+import Footer from "../Footer";
 
 function Applicants() {
   const [applicants, setApplicants] = useState(null);
@@ -112,6 +113,7 @@ function Applicants() {
   }, [params.id]);
 
   return (
+    <div>
     <div className="min-h-screen bg-gray-50">
       <Navbar />
       <div className="px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto py-4 sm:py-6 lg:py-8">
@@ -142,6 +144,8 @@ function Applicants() {
           )}
         </div>
       </div>
+      </div>
+      <Footer></Footer>
     </div>
   );
 }

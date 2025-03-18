@@ -25,6 +25,7 @@ import React from "react";
 import Navbar from "../shared/Navbar";
 import CandidatesTable from "./CandidatesTable";
 import { useParams } from "react-router-dom";
+import Footer from "../Footer";
 
 const Candidates = () => {
   const params = useParams();
@@ -35,6 +36,7 @@ const Candidates = () => {
       <div className="px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto py-4 sm:py-6 lg:py-8">
         <CandidatesTable />
       </div>
+      <Footer></Footer>
     </div>
   );
 };

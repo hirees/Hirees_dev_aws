@@ -92,6 +92,54 @@
 //   );
 // }
 
+// // export default Companies;
+// import { useNavigate } from "react-router-dom";
+// import Navbar from "../shared/Navbar";
+// import CompaniesTable from "./CompaniesTable";
+// import useGetAllCompany from "@/hooks/useGetAllCompanies";
+// import { useSelector } from "react-redux";
+// import EmptyCompaniesView from "./EmptyCompaniesView";
+// import { motion } from 'framer-motion';
+// import { Button } from '@/components/ui/button';
+// import { Plus } from 'lucide-react';
+
+// function Companies() {
+//   useGetAllCompany();
+//   const navigate = useNavigate();
+//   const companies = useSelector((state) => state.company.allCompanies);
+
+//   return (
+//     <div>
+//     <Navbar />
+//     <div className="min-h-screen top-0 bg-gray-50">
+
+//       <motion.div
+//         className="max-w-6xl mx-auto py-10 px-4"
+//         initial={{ opacity: 0, y: 20 }}
+//         animate={{ opacity: 1, y: 0 }}
+//         transition={{ duration: 0.5 }}
+//       >
+//         {companies?.length > 0 ? (
+//           <>
+//             <div className="flex items-center justify-between mb-8">
+//               <div>
+//                 <h1 className="text-2xl font-bold text-gray-900 mb-2">Company Management</h1>
+//                 <p className="text-gray-600">Manage and organize your companies</p>
+//               </div>
+//             </div>
+//             <div className="bg-white rounded-xl shadow-sm p-6">
+//               <CompaniesTable />
+//             </div>
+//           </>
+//         ) : (
+//           <EmptyCompaniesView />
+//         )}
+//       </motion.div>
+//     </div>
+//     </div>
+//   );
+// }
+
 // export default Companies;
 import { useNavigate } from "react-router-dom";
 import Navbar from "../shared/Navbar";
@@ -102,49 +150,58 @@ import EmptyCompaniesView from "./EmptyCompaniesView";
 import { motion } from 'framer-motion';
 import { Button } from '@/components/ui/button';
 import { Plus } from 'lucide-react';
+import { useState, useEffect } from "react";
+import Footer from "../Footer";
 
 function Companies() {
+  const [isLoading, setIsLoading] = useState(true);
   useGetAllCompany();
   const navigate = useNavigate();
   const companies = useSelector((state) => state.company.allCompanies);
 
+  useEffect(() => {
+    // Set loading to false once we have companies data
+    if (companies !== undefined) {
+      const timer = setTimeout(() => {
+        setIsLoading(false);
+      }, 500); // Small delay to ensure data is processed
+      return () => clearTimeout(timer);
+    }
+  }, [companies]);
+
   return (
     <div>
-    <Navbar />
-    <div className="min-h-screen top-0 bg-gray-50">
-
-      <motion.div
-        className="max-w-6xl mx-auto py-10 px-4"
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5 }}
-      >
-        {companies?.length > 0 ? (
-          <>
-            <div className="flex items-center justify-between mb-8">
-              <div>
-                <h1 className="text-2xl font-bold text-gray-900 mb-2">Company Management</h1>
-                <p className="text-gray-600">Manage and organize your companies</p>
+      <Navbar />
+      <div className="min-h-screen top-0 bg-gray-50">
+        <motion.div
+          className="max-w-6xl mx-auto py-10 px-4"
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5 }}
+        >
+          {isLoading ? (
+            // Loading indicator
+            <div className="flex justify-center items-center h-64">
+              <div className="animate-spin h-10 w-10 border-4 border-blue-500 rounded-full border-t-transparent"></div>
+            </div>
+          ) : companies.length > 0 ? (
+            <>
+              <div className="flex items-center justify-between mb-8">
+                <div>
+                  <h1 className="text-2xl font-bold text-gray-900 mb-2">Company Management</h1>
+                  <p className="text-gray-600">Manage and organize your companies</p>
+                </div>
               </div>
-              {/* <Button
-                className="bg-blue-500 text-white px-6 py-2 rounded-xl hover:bg-blue-600
-                transform transition-all duration-300 hover:-translate-y-1 hover:shadow-lg
-                flex items-center gap-2"
-                onClick={() => navigate("/admin/companies/create")}
-              >
-                <Plus className="w-5 h-5" />
-                New Company
-              </Button> */}
-            </div>
-            <div className="bg-white rounded-xl shadow-sm p-6">
-              <CompaniesTable />
-            </div>
-          </>
-        ) : (
-          <EmptyCompaniesView />
-        )}
-      </motion.div>
-    </div>
+              <div className="bg-white rounded-xl shadow-sm p-6">
+                <CompaniesTable />
+              </div>
+            </>
+          ) : (
+            <EmptyCompaniesView />
+          )}
+        </motion.div>
+      </div>
+      <Footer></Footer>
     </div>
   );
 }

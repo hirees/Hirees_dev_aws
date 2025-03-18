@@ -129,6 +129,7 @@ import {
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Edit2, Eye, MoreHorizontal } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import Footer from "../Footer";
 
 const AdminJobsTable = () => {
   const navigate = useNavigate();
@@ -298,6 +299,7 @@ const AdminJobsTable = () => {
           </Table>
         </div>
       )}
+
     </div>
   );
 };

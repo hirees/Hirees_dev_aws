@@ -4,24 +4,31 @@ import jwt from "jsonwebtoken";
 import dataUri from "../utils/datauri.js";
 import cloudinary from "../utils/cloudinary.js";
 import { uploadToS3 } from "../utils/s3Utils.js";
-import nodemailer from 'nodemailer'
-// const TABLE_NAME = 'Users';
-const TABLE_NAME = 'Users_dev';
+import nodemailer from "nodemailer";
+const TABLE_NAME = "Users_dev";
 import { docClient } from "../config/aws.config.js";
 import { ScanCommand } from "@aws-sdk/client-dynamodb";
+import { unmarshall } from "@aws-sdk/util-dynamodb";
+import { GetCommand, UpdateCommand } from "@aws-sdk/lib-dynamodb";
+import { DeleteObjectCommand } from "@aws-sdk/client-s3";
+import { s3Client } from "../config/s3Config.js";
+import dotenv from "dotenv";
+dotenv.config();
 
+console.log("Email User:", process.env.EMAIL_USER);
+console.log("Email Password Loaded:", !!process.env.EMAIL_APP_PASSWORD);
 
 const transporter = nodemailer.createTransport({
-  host: 'smtp.gmail.com',
+  host: "smtp.gmail.com",
   port: 587,
   secure: false,
   auth: {
-    user: process.env.EMAIL_USER || "navalbihani15@gmail.com",
-    pass: process.env.EMAIL_APP_PASSWORD || "rsse sotb vxtr xvmj"
+    user: process.env.EMAIL_USER,
+    pass: process.env.EMAIL_APP_PASSWORD||"ctdw tvvn psqw haap",
   },
   tls: {
-    rejectUnauthorized: false
-  }
+    rejectUnauthorized: false,
+  },
 });
 
 // Different email templates
@@ -97,15 +104,16 @@ const emailTemplates = {
         <div class="content">
           <h2>Dear ${fullname},</h2>
           <p>Thank you for joining our professional community as a <span class="highlight">${role}</span>. We're delighted to have you on board.</p>
-          ${role === 'student' ?
-            `<p>As a student member, you now have access to:</p>
+          ${
+            role === "student"
+              ? `<p>As a student member, you now have access to:</p>
             <ul>
               <li>Exclusive job opportunities aligned with your career goals</li>
               <li>Professional resume building and optimization tools</li>
               <li>Expert career guidance and industry insights</li>
               <li>Networking opportunities with industry professionals</li>
-            </ul>` :
-            `<p>As a ${role}, you now have full access to our platform's professional suite of tools and resources designed to enhance your experience.</p>`
+            </ul>`
+              : `<p>As a ${role}, you now have full access to our platform's professional suite of tools and resources designed to enhance your experience.</p>`
           }
           <p>Should you have any questions or require assistance, our dedicated support team is here to help.</p>
           <p>Best regards,<br>The Platform Team</p>
@@ -216,25 +224,29 @@ const emailTemplates = {
       </div>
     </body>
     </html>
-  `
+  `,
 };
 // Send email function
 const sendEmail = async (type, userEmail, data) => {
   try {
     let subject, html;
 
-    switch(type) {
-      case 'welcome':
-        subject = 'Welcome to Our Platform!';
+    switch (type) {
+      case "welcome":
+        subject = "Welcome to Our Platform!";
         html = emailTemplates.welcome(data.fullname, data.role);
         break;
-      case 'profileUpdate':
-        subject = 'Profile Update Confirmation';
+      case "profileUpdate":
+        subject = "Profile Update Confirmation";
         html = emailTemplates.profileUpdate(data.fullname);
         break;
-      case 'loginAlert':
-        subject = 'New Login Detected';
-        html = emailTemplates.loginAlert(data.fullname, data.loginTime, data.deviceInfo);
+      case "loginAlert":
+        subject = "New Login Detected";
+        html = emailTemplates.loginAlert(
+          data.fullname,
+          data.loginTime,
+          data.deviceInfo
+        );
         break;
     }
 
@@ -242,7 +254,7 @@ const sendEmail = async (type, userEmail, data) => {
       from: `"Your Platform Name" <${process.env.EMAIL_USER}>`,
       to: userEmail,
       subject,
-      html
+      html,
     };
 
     await transporter.sendMail(mailOptions);
@@ -254,126 +266,216 @@ const sendEmail = async (type, userEmail, data) => {
   }
 };
 //register user
+export const register = async (req, res) => {
+  try {
+    const {
+      fullname,
+      email,
+      phoneNumber,
+      password,
+      role,
+      currentLocation,
+      jobDomain,
+      jobTitle,
+    } = req.body;
 
-  export const register = async (req, res) => {
-    try {
-      const {
-        fullname,
-        email,
-        phoneNumber,
-        password,
-        role,
-        currentLocation,
-        jobDomain,
-        // willingToRelocate,
-        // visaStatus,
-        jobTitle
-      } = req.body;
-
-      // Validate input fields
-      if (!fullname || !email || !phoneNumber || !password || !role) {
-        return res.status(400).json({
-          error: "All fields are required",
-          status: false,
-        });
-      }
-
-      // Additional validation for student-specific fields
-      if (role === 'student' && (!currentLocation || !jobTitle)) {
-        return res.status(400).json({
-          error: "All student-specific fields are required",
-          status: false,
-        });
-      }
-
-
-      // Check if user exists
-      const existingUser = await dynamoDB.get({
-        // TableName: "Users_dev",
-        TableName: "Users_dev",
-        Key: { email }
-      });
-
-      if (existingUser.Item) {
-        return res.status(400).json({
-          error: "User already exists",
-          status: false,
-        });
-      }
-
-
-      const file = req.file;
-      let s3Response;
-      if (file) {
-        s3Response = await uploadToS3(file, 'profile-photos');
-      }
-
-      // Hash password
-      const hashedPassword = await bcrypt.hash(password, 10);
-
-      // Prepare user data
-      const userData = {
-        fullname,
-        email,
-        phoneNumber: phoneNumber.toString(),
-        password: hashedPassword,
-        role,
-        createdAt: new Date().toISOString(),
-        updatedAt: new Date().toISOString(),
-        profile: {
-          profilePhoto: s3Response ? s3Response.url : null,
-          bio: "",
-          skills: [],
-          resume: "",
-          resumeOriginalName: ""
-
-        }
-      };
-
-      // Add student-specific fields
-      if (role === 'student') {
-        userData.profile = {
-          ...userData.profile,
-          currentLocation,
-          // willingToRelocate,
-          // visaStatus,
-          jobTitle,
-          jobDomain
-        };
-      }
-
-      // Save user to DynamoDB
-      await dynamoDB.put({
-        TableName: "Users_dev",
-        Item: userData
-      });
-      await sendEmail('welcome', email, { fullname, role });
-
-      // Return success response
-      return res.status(201).json({
-        message: "User registered successfully",
-        status: true,
-        user: {
-          fullname: userData.fullname,
-          email: userData.email,
-          role: userData.role,
-          profile: userData.profile
-        },
-      });
-    } catch (err) {
-      console.error("Registration error:", err);
-      return res.status(500).json({
-        error: "Internal server error",
-        details: err.message,
+    // Validate input fields
+    if (!fullname || !email || !phoneNumber || !password || !role) {
+      return res.status(400).json({
+        error: "All fields are required",
+        status: false,
       });
     }
-  };
 
+    // Additional validation for student-specific fields
+    if (role === "student" && (!currentLocation || !jobTitle)) {
+      return res.status(400).json({
+        error: "All student-specific fields are required",
+        status: false,
+      });
+    }
 
+    // Check if user already exists
+    const existingUser = await dynamoDB.get({
+      TableName: "Users_dev",
+      Key: { email },
+    });
 
+    if (existingUser.Item) {
+      return res.status(400).json({
+        error: "User already exists",
+        status: false,
+      });
+    }
 
-//update use
+    const file = req.file;
+    let s3Response;
 
+    if (file) {
+      // If user already has a profile photo, delete it from S3
+      if (existingUser.Item?.profile?.profilePhotoKey) {
+        await deleteFromS3(existingUser.Item.profile.profilePhotoKey);
+      }
+      // Upload new profile photo to S3
+      s3Response = await uploadToS3(file, "profile-photos");
+    }
+
+    // Hash password
+    const hashedPassword = await bcrypt.hash(password, 10);
+
+    // Prepare user data
+    const userData = {
+      fullname,
+      email,
+      phoneNumber: phoneNumber.toString(),
+      password: hashedPassword,
+      role,
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString(),
+      profile: {
+        profilePhoto: s3Response ? s3Response.url : null,
+        profilePhotoKey: s3Response ? s3Response.key : null, // Store S3 key for future reference
+        bio: "",
+        skills: [],
+        resume: "",
+        resumeOriginalName: "",
+      },
+    };
+
+    // Add student-specific fields
+    if (role === "student") {
+      userData.profile = {
+        ...userData.profile,
+        currentLocation,
+        jobTitle,
+        jobDomain,
+      };
+    }
+
+    // Save user to DynamoDB
+    await dynamoDB.put({
+      TableName: "Users_dev",
+      Item: userData,
+    });
+
+    await sendEmail("welcome", email, { fullname, role });
+
+    // Return success response
+    return res.status(201).json({
+      message: "User registered successfully",
+      status: true,
+      user: {
+        fullname: userData.fullname,
+        email: userData.email,
+        role: userData.role,
+        profile: userData.profile,
+      },
+    });
+  } catch (err) {
+    console.error("Registration error:", err);
+    return res.status(500).json({
+      error: "Internal server error",
+      details: err.message,
+    });
+  }
+};
+
+//update user
+export const modifyProfile = async (req, res) => {
+  try {
+    const { email } = req.body; // Assuming email is the unique identifier
+    const file = req.file;
+
+    // Validate input
+    if (!email) {
+      return res.status(400).json({
+        error: "Email is required",
+        status: false,
+      });
+    }
+
+    // Fetch user from DynamoDB
+    const userData = await dynamoDB.get({
+      TableName: "Users_dev",
+      Key: { email },
+    });
+
+    if (!userData.Item) {
+      return res.status(404).json({
+        error: "User not found",
+        status: false,
+      });
+    }
+
+    let s3UploadResponse;
+    const oldProfilePhotoKey = userData.Item.profile?.profilePhotoKey || null;
+
+    if (file) {
+      // Upload new profile picture to S3
+      s3UploadResponse = await uploadToS3(file, "profile-photos");
+    }
+
+    // Update user profile
+    const updatedProfile = {
+      ...userData.Item.profile,
+      profilePhoto: s3UploadResponse
+        ? s3UploadResponse.url
+        : userData.Item.profile?.profilePhoto,
+      profilePhotoKey: s3UploadResponse
+        ? s3UploadResponse.key
+        : userData.Item.profile?.profilePhotoKey,
+    };
+
+    const updatedUserData = {
+      ...userData.Item,
+      profile: updatedProfile,
+      updatedAt: new Date().toISOString(),
+    };
+
+    // Save updated user data to DynamoDB
+    await dynamoDB.put({
+      TableName: "Users_dev",
+      Item: updatedUserData,
+    });
+
+    // Delete old profile photo from S3 **after** successful update
+    if (oldProfilePhotoKey && s3UploadResponse) {
+      await removeFromS3(oldProfilePhotoKey);
+    }
+
+    return res.status(200).json({
+      message: "Profile updated successfully",
+      status: true,
+      user: {
+        fullname: updatedUserData.fullname,
+        email: updatedUserData.email,
+        role: updatedUserData.role,
+        profile: updatedUserData.profile,
+      },
+    });
+  } catch (err) {
+    console.error("Profile modification error:", err);
+    return res.status(500).json({
+      error: "Internal server error",
+      details: err.message,
+    });
+  }
+};
+
+// Function to remove old profile picture from S3
+const removeFromS3 = async (fileKey) => {
+  try {
+    const command = new DeleteObjectCommand({
+      Bucket: process.env.AWS_BUCKET_NAME,
+      Key: fileKey,
+    });
+
+    await s3Client.send(command);
+    console.log(`Removed old profile photo: ${fileKey}`);
+  } catch (err) {
+    console.error("Error removing old profile photo:", err);
+  }
+};
 
 export const updateProfile = async (req, res) => {
   try {
@@ -387,7 +489,7 @@ export const updateProfile = async (req, res) => {
       currentLocation,
       willingToRelocate,
       visaStatus,
-      jobTitle
+      jobTitle,
     } = req.body;
 
     if (!email) {
@@ -400,7 +502,7 @@ export const updateProfile = async (req, res) => {
     // Get existing user
     const existingUser = await dynamoDB.get({
       TableName: "Users_dev",
-      Key: { email }
+      Key: { email },
     });
 
     if (!existingUser.Item) {
@@ -413,27 +515,38 @@ export const updateProfile = async (req, res) => {
     // Handle file upload to S3
     const file = req.file;
     let s3Response;
+
     if (file) {
-      s3Response = await uploadToS3(file, 'resumes');
+      // If user already has a resume, delete it from S3
+      if (existingUser.Item.profile.resumeKey) {
+        await deleteFromS3(existingUser.Item.profile.resumeKey);
+      }
+      // Upload new file to S3
+      s3Response = await uploadToS3(file, "resumes");
     }
 
     // Process skills
     let skillsArray = skills
-      ? skills.split(",").map((skill) => skill.trim()).filter(Boolean)
+      ? skills
+          .split(",")
+          .map((skill) => skill.trim())
+          .filter(Boolean)
       : existingUser.Item.profile.skills;
 
     // Prepare update data
     const updateData = {
       fullname: fullname || existingUser.Item.fullname,
-      phoneNumber: phoneNumber ? phoneNumber.toString() : existingUser.Item.phoneNumber,
+      phoneNumber: phoneNumber
+        ? phoneNumber.toString()
+        : existingUser.Item.phoneNumber,
       updatedAt: new Date().toISOString(),
       profile: {
         ...existingUser.Item.profile,
         bio: bio || existingUser.Item.profile.bio,
         skills: skillsArray,
         profilePhoto: existingUser.Item.profile.profilePhoto,
-        jobDomain: jobDomain || existingUser.Item.profile.jobDomain
-      }
+        jobDomain: jobDomain || existingUser.Item.profile.jobDomain,
+      },
     };
 
     // Update resume if new file uploaded
@@ -444,15 +557,17 @@ export const updateProfile = async (req, res) => {
     }
 
     // Add student-specific fields if user is a student
-    if (existingUser.Item.role === 'student') {
+    if (existingUser.Item.role === "student") {
       updateData.profile = {
         ...updateData.profile,
-        currentLocation: currentLocation || existingUser.Item.profile.currentLocation,
-        willingToRelocate: willingToRelocate !== undefined
-          ? willingToRelocate
-          : existingUser.Item.profile.willingToRelocate,
+        currentLocation:
+          currentLocation || existingUser.Item.profile.currentLocation,
+        willingToRelocate:
+          willingToRelocate !== undefined
+            ? willingToRelocate
+            : existingUser.Item.profile.willingToRelocate,
         visaStatus: visaStatus || existingUser.Item.profile.visaStatus,
-        jobTitle: jobTitle || existingUser.Item.profile.jobTitle
+        jobTitle: jobTitle || existingUser.Item.profile.jobTitle,
       };
     }
 
@@ -462,13 +577,13 @@ export const updateProfile = async (req, res) => {
       Key: { email },
       UpdateExpression: "set #userData = :userData",
       ExpressionAttributeNames: {
-        "#userData": "profile"
+        "#userData": "profile",
       },
       ExpressionAttributeValues: {
-        ":userData": updateData.profile
-      }
+        ":userData": updateData.profile,
+      },
     });
-    // await sendEmail('profileUpdate', email, { fullname: updateData.fullname });
+
     // Return updated user
     return res.status(200).json({
       message: "User updated successfully",
@@ -481,7 +596,6 @@ export const updateProfile = async (req, res) => {
         profile: updateData.profile,
       },
     });
-
   } catch (err) {
     console.error("Profile update error:", err);
     return res.status(500).json({
@@ -492,7 +606,20 @@ export const updateProfile = async (req, res) => {
   }
 };
 
+// Function to delete old resume from S3
+const deleteFromS3 = async (resumeKey) => {
+  try {
+    const command = new DeleteObjectCommand({
+      Bucket: process.env.AWS_BUCKET_NAME,
+      Key: resumeKey,
+    });
 
+    await s3Client.send(command);
+    console.log(`Deleted old resume: ${resumeKey}`);
+  } catch (err) {
+    console.error("Error deleting old resume:", err);
+  }
+};
 
 export const getStudents = async (req, res) => {
   try {
@@ -501,17 +628,17 @@ export const getStudents = async (req, res) => {
       IndexName: "RoleIndex",
       KeyConditionExpression: "#role = :roleValue",
       ExpressionAttributeNames: {
-        "#role": "role"
+        "#role": "role",
       },
       ExpressionAttributeValues: {
-        ":roleValue": "student"
-      }
+        ":roleValue": "student",
+      },
     };
 
     const result = await dynamoDB.query(params);
 
     // Remove password from results
-    const students = result.Items.map(student => {
+    const students = result.Items.map((student) => {
       const { password, ...studentData } = student;
       return studentData;
     });
@@ -537,13 +664,13 @@ export const login = async (req, res) => {
     if (!email || !password) {
       return res.status(400).json({
         message: "Something is missing",
-        success: false
+        success: false,
       });
     }
 
     const result = await dynamoDB.get({
       TableName: "Users_dev",
-      Key: { email }
+      Key: { email },
     });
 
     const user = result.Item;
@@ -564,10 +691,12 @@ export const login = async (req, res) => {
     }
 
     const tokenData = {
-      userId: user.email // Using email as the unique identifier
+      userId: user.email, // Using email as the unique identifier
     };
 
-    const token = await jwt.sign(tokenData, process.env.SECRET_KEY, { expiresIn: '1d' });
+    const token = await jwt.sign(tokenData, process.env.SECRET_KEY, {
+      expiresIn: "1d",
+    });
 
     // Remove password from user object
     const { password: userPassword, ...userData } = user;
@@ -577,31 +706,28 @@ export const login = async (req, res) => {
     //   deviceInfo: req.headers['user-agent']
     // });
 
-    return res.status(200)
+    return res
+      .status(200)
       .cookie("token", token, {
         maxAge: 1 * 24 * 60 * 60 * 1000,
         httpOnly: true,
-        sameSite: 'strict',
-        path: '/'
+        sameSite: "strict",
+        path: "/",
       })
       .json({
         message: `Welcome back ${user.fullname}`,
         user: userData,
-        success: true
+        success: true,
       });
-
   } catch (error) {
     console.error("Login error:", error);
     return res.status(500).json({
       error: "Internal server error",
       message: error.message,
-      success: false
+      success: false,
     });
   }
 };
-
-
-
 
 //logout
 
@@ -625,11 +751,6 @@ export const logout = async (req, res) => {
   }
 };
 
-
-
-import { unmarshall } from "@aws-sdk/util-dynamodb";
-import { GetCommand, UpdateCommand } from "@aws-sdk/lib-dynamodb";
-
 const generateVerificationCode = () => {
   return Math.floor(100000 + Math.random() * 900000).toString();
 };
@@ -650,8 +771,8 @@ export const forgotPassword = async (req, res) => {
     const getCommand = new GetCommand({
       TableName: TABLE_NAME,
       Key: {
-        email: email
-      }
+        email: email,
+      },
     });
 
     const { Item } = await docClient.send(getCommand);
@@ -670,14 +791,15 @@ export const forgotPassword = async (req, res) => {
     const updateCommand = new UpdateCommand({
       TableName: TABLE_NAME,
       Key: {
-        email: email
+        email: email,
       },
-      UpdateExpression: "SET resetPasswordCode = :code, resetPasswordExpires = :expiry",
+      UpdateExpression:
+        "SET resetPasswordCode = :code, resetPasswordExpires = :expiry",
       ExpressionAttributeValues: {
         ":code": verificationCode,
-        ":expiry": expiryTime
+        ":expiry": expiryTime,
       },
-      ReturnValues: "NONE"
+      ReturnValues: "NONE",
     });
 
     await docClient.send(updateCommand);
@@ -726,8 +848,8 @@ export const verifyCode = async (req, res) => {
     const getCommand = new GetCommand({
       TableName: TABLE_NAME,
       Key: {
-        email: email
-      }
+        email: email,
+      },
     });
 
     const { Item } = await docClient.send(getCommand);
@@ -780,8 +902,8 @@ export const resetPassword = async (req, res) => {
     const getCommand = new GetCommand({
       TableName: TABLE_NAME,
       Key: {
-        email: email
-      }
+        email: email,
+      },
     });
 
     const { Item } = await docClient.send(getCommand);
@@ -812,13 +934,14 @@ export const resetPassword = async (req, res) => {
     const updateCommand = new UpdateCommand({
       TableName: TABLE_NAME,
       Key: {
-        email: email
+        email: email,
       },
-      UpdateExpression: "SET password = :password REMOVE resetPasswordCode, resetPasswordExpires",
+      UpdateExpression:
+        "SET password = :password REMOVE resetPasswordCode, resetPasswordExpires",
       ExpressionAttributeValues: {
-        ":password": hashedPassword
+        ":password": hashedPassword,
       },
-      ReturnValues: "NONE"
+      ReturnValues: "NONE",
     });
 
     await docClient.send(updateCommand);
@@ -832,6 +955,473 @@ export const resetPassword = async (req, res) => {
     res.status(500).json({
       success: false,
       message: "Error resetting password",
+    });
+  }
+};
+// Controller functions for the enhanced candidate viewing system
+
+// Controller to fetch a student by ID with view tracking
+// Controller functions for the enhanced candidate viewing system
+
+// Controller to fetch a student by ID with view tracking
+export const getStudentById = async (req, res) => {
+  try {
+    const { studentId } = req.params;
+    const { email, viewerId } = req.body; // Get from request body
+
+    if (!studentId) {
+      return res.status(400).json({
+        success: false,
+        message: "Student ID is required",
+      });
+    }
+
+    if (!viewerId) {
+      return res.status(400).json({
+        success: false,
+        message: "Viewer ID is required for accessing student profiles",
+      });
+    }
+
+    // 1. Find the company associated with the viewer/recruiter
+    let companyParams = {
+      TableName: "Companies_dev",
+      IndexName: "UserIdIndex",
+      KeyConditionExpression: "userId = :userId",
+      ExpressionAttributeValues: {
+        ":userId": viewerId
+      }
+    };
+
+    let companyResult = await dynamoDB.query(companyParams);
+    let company = null;
+
+    // If not found as primary user, check if recruiter is in userIds array
+    if (!companyResult.Items || companyResult.Items.length === 0) {
+      const scanParams = {
+        TableName: "Companies_dev",
+        FilterExpression: "contains(userIds, :userId)",
+        ExpressionAttributeValues: {
+          ":userId": viewerId
+        }
+      };
+
+      const scanResult = await dynamoDB.scan(scanParams);
+
+      if (scanResult.Items && scanResult.Items.length > 0) {
+        company = scanResult.Items[0];
+      }
+    } else {
+      company = companyResult.Items[0];
+    }
+
+    if (!company) {
+      return res.status(404).json({
+        success: false,
+        message: "No company found for this recruiter",
+      });
+    }
+
+    const companyId = company.companyId;
+
+    // 2. Check if company has remaining views
+    const remainingViews = company.remainingViews || 0;
+
+    if (remainingViews <= 0) {
+      return res.status(403).json({
+        success: false,
+        message: "No remaining views available for your company",
+        data: {
+          remainingViews: 0
+        }
+      });
+    }
+
+    // 3. Get the viewer (recruiter) information
+    const viewerParams = {
+      TableName: "Users_dev",
+      Key: {
+        email: viewerId
+      }
+    };
+
+    const viewerResult = await dynamoDB.get(viewerParams);
+
+    if (!viewerResult.Item) {
+      return res.status(404).json({
+        success: false,
+        message: "Recruiter not found",
+      });
+    }
+
+    const viewer = viewerResult.Item;
+
+    // Initialize viewedStudents array if it doesn't exist
+    if (!viewer.viewedStudents) {
+      viewer.viewedStudents = [];
+    }
+
+    // Check if this recruiter has already viewed this candidate
+    const hasViewedBefore = viewer.viewedStudents.includes(studentId);
+
+    // 4. Get the student information
+    const studentParams = {
+      TableName: "Users_dev",
+      Key: {
+        email: studentId
+      }
+    };
+
+    const studentResult = await dynamoDB.get(studentParams);
+
+    if (!studentResult.Item) {
+      return res.status(404).json({
+        success: false,
+        message: "Student not found",
+      });
+    }
+
+    // Remove sensitive information
+    const { password, ...studentInfo } = studentResult.Item;
+
+    // 5. If this is a new view, update the company and recruiter records
+    if (!hasViewedBefore) {
+      // Update in parallel for better performance
+      const updatePromises = [];
+
+      // 5a. Decrement company's remaining views
+      updatePromises.push(
+        dynamoDB.update({
+          TableName: "Companies_dev",
+          Key: {
+            companyId: companyId
+          },
+          UpdateExpression: "SET remainingViews = remainingViews - :val",
+          ExpressionAttributeValues: {
+            ":val": 1
+          },
+          ReturnValues: "UPDATED_NEW"
+        })
+      );
+
+      // 5b. Add studentId to recruiter's viewedStudents array
+      updatePromises.push(
+        dynamoDB.update({
+          TableName: "Users_dev",
+          Key: {
+            email: viewerId
+          },
+          UpdateExpression: `
+            SET viewedStudents = list_append(if_not_exists(viewedStudents, :empty_list), :studentId),
+                personalViewCount = if_not_exists(personalViewCount, :zero) + :one
+          `,
+          ExpressionAttributeValues: {
+            ":empty_list": [],
+            ":studentId": [studentId],
+            ":zero": 0,
+            ":one": 1
+          },
+          ReturnValues: "UPDATED_NEW"
+        })
+      );
+
+      // 5c. Track company recruiter view in a CompanyViews table
+      updatePromises.push(
+        dynamoDB.put({
+          TableName: "CompanyViews_dev",
+          Item: {
+            viewId: `${companyId}:${viewerId}:${studentId}:${new Date().toISOString()}`,
+            companyId: companyId,
+            recruiterId: viewerId,
+            studentId: studentId,
+            timestamp: new Date().toISOString()
+          }
+        })
+      );
+
+      try {
+        // Wait for all updates to complete
+        await Promise.all(updatePromises);
+      } catch (updateError) {
+        console.error("Error updating view records:", updateError);
+        // Continue with the response even if update fails
+      }
+    }
+
+    // Get updated company view count
+    const updatedCompanyParams = {
+      TableName: "Companies_dev",
+      Key: {
+        companyId: companyId
+      },
+      ProjectionExpression: "remainingViews"
+    };
+
+    const updatedCompany = await dynamoDB.get(updatedCompanyParams);
+
+    // Get updated recruiter view count
+    const updatedViewerParams = {
+      TableName: "Users_dev",
+      Key: {
+        email: viewerId
+      },
+      ProjectionExpression: "personalViewCount"
+    };
+
+    const updatedViewer = await dynamoDB.get(updatedViewerParams);
+
+    // Return student information with remaining views count and personal view count
+    res.status(200).json({
+      success: true,
+      message: "Student details fetched successfully",
+      data: studentInfo,
+      remainingViews: updatedCompany.Item?.remainingViews || 0,
+      personalViewCount: updatedViewer.Item?.personalViewCount || 0,
+      viewedBefore: hasViewedBefore
+    });
+  } catch (error) {
+    console.error("Error in getStudentById:", error);
+    res.status(500).json({
+      success: false,
+      message: "Failed to fetch student details",
+      error: error.message,
+    });
+  }
+};
+
+// Get minimal student details for initial card display
+export const getMinimalStudentDetails = async (req, res) => {
+  try {
+    // Get recruiter ID from request body
+    const recruiterId = req.body.email;
+
+    // Query students with student role
+    const params = {
+      TableName: "Users_dev",
+      IndexName: "RoleIndex",
+      KeyConditionExpression: "#role = :roleValue",
+      ExpressionAttributeNames: {
+        "#role": "role",
+      },
+      ExpressionAttributeValues: {
+        ":roleValue": "student",
+      },
+    };
+
+    const result = await dynamoDB.query(params);
+    console.log(result)
+
+    // Get the recruiter's previously viewed students for marking
+    const recruiterParams = {
+      TableName: "Users_dev",
+      Key: {
+        email: recruiterId
+      },
+      ProjectionExpression: "viewedStudents"
+    };
+
+    const recruiterResult = await dynamoDB.get(recruiterParams);
+    const viewedStudents = recruiterResult.Item?.viewedStudents || [];
+
+    // Extract comprehensive details for each student (excluding resume, phone, email)
+    const minimalStudentDetails = result.Items.map((student) => {
+      return {
+        _id: student._id || student.email,
+        fullname: student.fullname || "No Name",
+        viewedByMe: viewedStudents.includes(student.email),
+        createdAt: student.createdAt,
+        updatedAt: student.updatedAt,
+        role: student.role,
+        profile: {
+          profilePhoto: student.profile?.profilePhoto,
+          jobTitle: student.profile?.jobTitle || "No title",
+          currentLocation: student.profile?.currentLocation || "N/A",
+          jobDomain: student.profile?.jobDomain,
+          bio: student.profile?.bio,
+          skills: student.profile?.skills || [],
+          visaStatus: student.profile?.visaStatus,
+          willingToRelocate: student.profile?.willingToRelocate
+        }
+      };
+    });
+
+    res.status(200).json({
+      success: true,
+      message: "Minimal student details fetched successfully",
+      data: minimalStudentDetails,
+    });
+  } catch (error) {
+    console.error("Error in getMinimalStudentDetails:", error);
+    res.status(500).json({
+      success: false,
+      message: "Failed to fetch minimal student details",
+      error: error.message,
+    });
+  }
+};
+
+// Get company details by user ID (for frontend to display remaining views)
+export const getCompanyByUserId = async (req, res) => {
+  try {
+    const { userId } = req.params;
+    const requestingUserEmail = req.body.email;
+
+    if (!userId) {
+      return res.status(400).json({
+        success: false,
+        message: "User ID is required",
+      });
+    }
+
+    // First, try to find company where user is primary user
+    let companyParams = {
+      TableName: "Companies_dev",
+      IndexName: "UserIdIndex",
+      KeyConditionExpression: "userId = :userId",
+      ExpressionAttributeValues: {
+        ":userId": userId
+      }
+    };
+
+    let companyResult = await dynamoDB.query(companyParams);
+
+    // If not found as primary user, scan for the user in userIds array
+    if (!companyResult.Items || companyResult.Items.length === 0) {
+      const scanParams = {
+        TableName: "Companies_dev",
+        FilterExpression: "contains(userIds, :userId)",
+        ExpressionAttributeValues: {
+          ":userId": userId
+        }
+      };
+
+      const scanResult = await dynamoDB.scan(scanParams);
+
+      if (!scanResult.Items || scanResult.Items.length === 0) {
+        return res.status(404).json({
+          success: false,
+          message: "No company found for this user",
+        });
+      }
+
+      companyResult = { Items: [scanResult.Items[0]] };
+    }
+
+    const company = companyResult.Items[0];
+
+    // Get recruiter's personal view count
+    const recruiterParams = {
+      TableName: "Users_dev",
+      Key: {
+        email: userId
+      },
+      ProjectionExpression: "personalViewCount, fullname"
+    };
+
+    const recruiterResult = await dynamoDB.get(recruiterParams);
+    const personalViewCount = recruiterResult.Item?.personalViewCount || 0;
+    const recruiterName = recruiterResult.Item?.fullname || "Unknown";
+
+    // Return company information with recruiter's personal view count
+    res.status(200).json({
+      success: true,
+      message: "Company details fetched successfully",
+      data: {
+        companyId: company.companyId,
+        companyName: company.CompanyName || company.companyName,
+        remainingViews: company.remainingViews || 0,
+        logo: company.logo,
+        recruiterName: recruiterName,
+        personalViewCount: personalViewCount
+      }
+    });
+  } catch (error) {
+    console.error("Error in getCompanyByUserId:", error);
+    res.status(500).json({
+      success: false,
+      message: "Failed to fetch company details",
+      error: error.message,
+    });
+  }
+};
+
+// New API to get views statistics for a company's recruiters
+export const getCompanyViewStats = async (req, res) => {
+  try {
+    const { companyId } = req.params;
+    const userEmail = req.body.email;
+
+    if (!companyId) {
+      return res.status(400).json({
+        success: false,
+        message: "Company ID is required",
+      });
+    }
+
+    // Get company information
+    const companyParams = {
+      TableName: "Companies_dev",
+      Key: {
+        companyId: companyId
+      }
+    };
+
+    const companyResult = await dynamoDB.get(companyParams);
+
+    if (!companyResult.Item) {
+      return res.status(404).json({
+        success: false,
+        message: "Company not found",
+      });
+    }
+
+    const company = companyResult.Item;
+    const userIds = [company.userId, ...(company.userIds || [])].filter(Boolean);
+
+    // Get recruiters' view stats
+    const recruiterPromises = userIds.map(async (userId) => {
+      const userParams = {
+        TableName: "Users_dev",
+        Key: {
+          email: userId
+        },
+        ProjectionExpression: "email, fullname, personalViewCount, viewedStudents"
+      };
+
+      const userResult = await dynamoDB.get(userParams);
+
+      if (userResult.Item) {
+        return {
+          email: userResult.Item.email,
+          fullname: userResult.Item.fullname || "Unknown",
+          viewCount: userResult.Item.personalViewCount || 0,
+          uniqueCandidatesViewed: userResult.Item.viewedStudents ?
+            userResult.Item.viewedStudents.length : 0
+        };
+      }
+
+      return null;
+    });
+
+    const recruitersStats = (await Promise.all(recruiterPromises)).filter(Boolean);
+
+    res.status(200).json({
+      success: true,
+      message: "Company view statistics fetched successfully",
+      data: {
+        companyId: company.companyId,
+        companyName: company.CompanyName || company.companyName,
+        remainingViews: company.remainingViews || 0,
+        initialViewCount: company.initialViewCount || 0,
+        recruiters: recruitersStats
+      }
+    });
+  } catch (error) {
+    console.error("Error in getCompanyViewStats:", error);
+    res.status(500).json({
+      success: false,
+      message: "Failed to fetch company view statistics",
+      error: error.message,
     });
   }
 };

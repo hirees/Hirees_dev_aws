@@ -262,7 +262,7 @@ export const getAllJobs = async (req, res) => {
 
         if (keyword) {
           const titleMatch = job.title
-            .toLowerCase()
+           3 .toLowerCase()
             .includes(keyword.toLowerCase());
           const descMatch = job.description
             .toLowerCase()
@@ -543,7 +543,6 @@ export const getCompanyJobs = async (req, res) => {
     });
   }
 };
-
 export const getLatestJobs = async (req, res) => {
   try {
     // Scan parameters
@@ -563,22 +562,97 @@ export const getLatestJobs = async (req, res) => {
     // Limit to only 6 jobs after sorting
     jobs = jobs.slice(0, 6);
 
-    // Fetch company details for each job
+    // Check Companies_dev table structure using a scan instead of get
+    try {
+      console.log("Attempting to scan Companies_dev table to understand its structure");
+      const companyScan = await docClient.scan({
+        TableName: "Companies_dev",
+        Limit: 1
+      });
+
+      if (companyScan.Items && companyScan.Items.length > 0) {
+        const sampleCompany = companyScan.Items[0];
+        console.log("Sample company structure:", JSON.stringify(sampleCompany, null, 2));
+        console.log("Company primary key candidates:", Object.keys(sampleCompany));
+      } else {
+        console.log("No companies found in Companies_dev table");
+      }
+    } catch (scanError) {
+      console.error("Error scanning Companies_dev table:", scanError);
+    }
+
+    // Fetch company details for each job, but don't use get operation yet
     const jobsWithCompany = await Promise.all(
       jobs.map(async (job) => {
         try {
-          const companyResult = await dynamoDB.get({
-            TableName: "Companies_dev",
-            Key: { companyId: job.companyId },
-          });
+          // Verify we have a valid companyId
+          if (!job.companyId) {
+            console.log(`No companyId found for job ${job.jobId}`);
+            return {
+              ...job,
+              company: null,
+            };
+          }
 
-          return {
-            ...job,
-            company: companyResult.Item,
-          };
+          console.log(`Processing job ${job.jobId} with companyId ${job.companyId}`);
+
+          // Instead of using get, use query with a GSI or scan with a filter
+          try {
+            // Try to find the company using scan with a filter
+            const companyQueryParams = {
+              TableName: "Companies_dev",
+              FilterExpression: "contains(#id, :companyId)",
+              ExpressionAttributeNames: {
+                "#id": "id" // Try with 'id' first
+              },
+              ExpressionAttributeValues: {
+                ":companyId": job.companyId
+              }
+            };
+
+            console.log("Searching for company with params:", JSON.stringify(companyQueryParams, null, 2));
+            const companyResult = await docClient.scan(companyQueryParams);
+
+            if (companyResult.Items && companyResult.Items.length > 0) {
+              console.log(`Found company for job ${job.jobId} using 'id' attribute`);
+              return {
+                ...job,
+                company: companyResult.Items[0]
+              };
+            }
+
+            // If no results, try with 'companyId' attribute
+            companyQueryParams.ExpressionAttributeNames = {
+              "#id": "companyId"
+            };
+
+            console.log("Retrying with 'companyId' attribute");
+            const companyResult2 = await docClient.scan(companyQueryParams);
+
+            if (companyResult2.Items && companyResult2.Items.length > 0) {
+              console.log(`Found company for job ${job.jobId} using 'companyId' attribute`);
+              return {
+                ...job,
+                company: companyResult2.Items[0]
+              };
+            }
+
+            // If still no results, return null for company
+            console.log(`No company found for job ${job.jobId}`);
+            return {
+              ...job,
+              company: null
+            };
+          } catch (queryError) {
+            console.error(`Error querying company for job ${job.jobId}:`, queryError);
+            return {
+              ...job,
+              company: null
+            };
+          }
         } catch (error) {
           console.error(
-            `Error fetching company details for job ${job.jobId}:`,
+            `Error processing job ${job.jobId}:`,
             error
           );
           return {

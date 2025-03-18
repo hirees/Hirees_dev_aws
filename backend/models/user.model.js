@@ -1,5 +1,3 @@
-import { dynamoDB } from "../config/aws.config.js";
-
 const TABLE_NAME = "Users_dev";
 
 export const UserTable = {

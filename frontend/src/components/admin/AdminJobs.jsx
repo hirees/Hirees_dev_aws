@@ -39,6 +39,7 @@ import { useState } from "react";
 import { useDispatch } from "react-redux";
 import AdminJobsTable from "./AdminJobsTable";
 import useGetAdminAllJobs from "@/hooks/useGetAllAdmin";
+import Footer from "../Footer";
 
 function AdminJobs() {
   useGetAdminAllJobs();
@@ -47,6 +48,7 @@ function AdminJobs() {
   const dispatch = useDispatch();
 
   return (
+    <div>
     <div className="min-h-screen bg-gray-50">
       <Navbar />
       <div className="px-4 sm:px-6 lg:px-8 max-w-6xl mx-auto my-4 sm:my-6 lg:my-10">
@@ -63,6 +65,10 @@ function AdminJobs() {
           <AdminJobsTable />
         </div>
       </div>
+
+      </div>
+      <Footer></Footer>
+
     </div>
   );
 }

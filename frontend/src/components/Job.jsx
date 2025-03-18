@@ -653,7 +653,7 @@
 //       const checkSavedStatus = async () => {
 //         try {
 //           const response = await axios.get(
-//             `http://3.232.10.54/api/savedjobs/check/${job.jobId}`,
+//             `http://3.232.10.54//api/savedjobs/check/${job.jobId}`,
 //             { withCredentials: true }
 //           );
 //           setIsSaved(response.data.isSaved);
@@ -682,14 +682,14 @@
 //     try {
 //       setIsLoading(true);
 //       if (!isSaved) {
-//         await axios.post('http://3.232.10.54/api/savedjobs/save',
+//         await axios.post('http://3.232.10.54//api/savedjobs/save',
 //           { jobId: job.jobId },
 //           { withCredentials: true }
 //         );
 //         setIsSaved(true);
 //       } else {
 //         await axios.delete(
-//           `http://3.232.10.54/api/savedjobs/unsave/${job.jobId}`,
+//           `http://3.232.10.54//api/savedjobs/unsave/${job.jobId}`,
 //           { withCredentials: true }
 //         );
 //         setIsSaved(false);
@@ -915,7 +915,7 @@ function Job({ job }) {
       const checkSavedStatus = async () => {
         try {
           const response = await axios.get(
-            `http://3.232.10.54/api/savedjobs/check/${job.jobId}`,
+            `http://3.232.10.54//api/savedjobs/check/${job.jobId}`,
             { withCredentials: true }
           );
           setIsSaved(response.data.isSaved);
@@ -948,14 +948,14 @@ function Job({ job }) {
     try {
       setIsLoading(true);
       if (!isSaved) {
-        await axios.post('http://3.232.10.54/api/savedjobs/save',
+        await axios.post('http://3.232.10.54//api/savedjobs/save',
           { jobId: job.jobId },
           { withCredentials: true }
         );
         setIsSaved(true);
       } else {
         await axios.delete(
-          `http://3.232.10.54/api/savedjobs/unsave/${job.jobId}`,
+          `http://3.232.10.54//api/savedjobs/unsave/${job.jobId}`,
           { withCredentials: true }
         );
         setIsSaved(false);
@@ -1060,7 +1060,7 @@ function Job({ job }) {
           <div className="flex items-center space-x-2 bg-gray-50 p-2 rounded-lg">
             <DollarSign className="w-4 h-4 md:w-5 md:h-5 text-green-500" />
             <span className="text-xs text-gray-600 truncate">
-              {job?.salary ? `${job.salary}K` : "Salary not specified"}
+              {job?.salary ? `${job.salary}` : "Salary not specified"}
             </span>
           </div>
           <div className="flex items-center space-x-2 bg-gray-50 p-2 rounded-lg">
