@@ -285,6 +285,7 @@ import { setLoading } from "@/redux/authSlice";
 import { Loader2 } from "lucide-react";
 import { USER_API_END_POINT } from "@/utils/constant";
 import Navbar from "../shared/Navbar";
+import Footer from "../Footer";
 
 const RecruiterSignup = () => {
   const [input, setInput] = useState({
@@ -364,6 +365,7 @@ const RecruiterSignup = () => {
         toast.success(res.data.message);
       }
     } catch (error) {
+
       toast.error(error.response?.data?.message || "Something went wrong");
     } finally {
       dispatch(setLoading(false));
@@ -374,49 +376,12 @@ const RecruiterSignup = () => {
     <div className="min-h-screen bg-gray-50">
       <Navbar />
       <div className="flex flex-col md:flex-row min-h-screen">
-        {/* Left Side - Hidden on mobile, visible on desktop */}
-        <div className="hidden md:flex md:w-1/2 bg-gradient-to-br from-blue-700 to-blue-600 text-white flex-col justify-center p-8 relative overflow-hidden">
-          <div className="space-y-6 animate-slideUp">
-            <h1 className="text-4xl font-bold">
-              Unlock Your Hiring Potential 🌟
-            </h1>
-            <p className="text-lg leading-relaxed opacity-90">
-              Transform your recruitment strategy with our cutting-edge platform.
-              💡 Connect with top-tier talent, streamline your hiring process,
-              and build your dream team faster than ever before.
-            </p>
 
-            <div className="space-y-4">
-              <div className="flex items-center space-x-3">
-                <span className="text-2xl">🔍</span>
-                <span className="text-lg font-medium">
-                  Advanced Talent Matching
-                </span>
-              </div>
-              <div className="flex items-center space-x-3">
-                <span className="text-2xl">💰</span>
-                <span className="text-lg font-medium">
-                  Cost-Effective Recruitment
-                </span>
-              </div>
-              <div className="flex items-center space-x-3">
-                <span className="text-2xl">⚡</span>
-                <span className="text-lg font-medium">
-                  Instant Candidate Insights
-                </span>
-              </div>
-            </div>
-          </div>
-
-          <div className="absolute bottom-4 left-4 text-sm opacity-70">
-            © 2024 Hirees
-          </div>
-        </div>
 
         {/* Right Side - Form (Full width on mobile, half on desktop) */}
         <div className="w-full md:w-1/2 flex items-center justify-center p-4 md:p-8">
-          <form onSubmit={submitHandler} className="w-full max-w-md bg-white shadow-xl rounded-xl p-4 md:p-6 space-y-4">
-            <h2 className="text-2xl md:text-3xl font-bold text-black text-center mb-6">
+          <form onSubmit={submitHandler} className="w-full max-w-md bg-white  rounded-xl p-4 md:p-6 space-y-4">
+            <h2 className="text-2xl md:text-3xl font-bold text-blue-600 text-center mb-6">
               Employer Signup
             </h2>
 
@@ -516,7 +481,46 @@ const RecruiterSignup = () => {
             </div>
           </form>
         </div>
+         {/* Left Side - Hidden on mobile, visible on desktop */}
+         <div className="hidden md:flex md:w-1/2 bg-gradient-to-br from-blue-700 to-blue-600 text-white flex-col justify-center p-8 relative overflow-hidden">
+          <div className="space-y-6 animate-slideUp">
+            <h1 className="text-4xl font-bold">
+              Unlock Your Hiring Potential 🌟
+            </h1>
+            <p className="text-lg leading-relaxed opacity-90">
+              Transform your recruitment strategy with our cutting-edge platform.
+              💡 Connect with top-tier talent, streamline your hiring process,
+              and build your dream team faster than ever before.
+            </p>
+
+            <div className="space-y-4">
+              <div className="flex items-center space-x-3">
+                <span className="text-2xl">🔍</span>
+                <span className="text-lg font-medium">
+                  Advanced Talent Matching
+                </span>
+              </div>
+              <div className="flex items-center space-x-3">
+                <span className="text-2xl">💰</span>
+                <span className="text-lg font-medium">
+                  Cost-Effective Recruitment
+                </span>
+              </div>
+              <div className="flex items-center space-x-3">
+                <span className="text-2xl">⚡</span>
+                <span className="text-lg font-medium">
+                  Instant Candidate Insights
+                </span>
+              </div>
+            </div>
+          </div>
+
+          <div className="absolute bottom-4 left-4 text-sm opacity-70">
+            © 2024 Hirees
+          </div>
+        </div>
       </div>
+      <Footer></Footer>
     </div>
   );
 };

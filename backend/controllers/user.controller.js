@@ -295,6 +295,14 @@ export const register = async (req, res) => {
       });
     }
 
+    // Check if resume file is uploaded for students
+    if (role === "student" && !req.file) {
+      return res.status(400).json({
+        error: "Resume is required for registration",
+        status: false,
+      });
+    }
+
     // Check if user already exists
     const existingUser = await dynamoDB.get({
       TableName: "Users_dev",
@@ -312,12 +320,8 @@ export const register = async (req, res) => {
     let s3Response;
 
     if (file) {
-      // If user already has a profile photo, delete it from S3
-      if (existingUser.Item?.profile?.profilePhotoKey) {
-        await deleteFromS3(existingUser.Item.profile.profilePhotoKey);
-      }
-      // Upload new profile photo to S3
-      s3Response = await uploadToS3(file, "profile-photos");
+      // Upload file to S3
+      s3Response = await uploadToS3(file, "resume-files");
     }
 
     // Hash password
@@ -333,12 +337,13 @@ export const register = async (req, res) => {
       createdAt: new Date().toISOString(),
       updatedAt: new Date().toISOString(),
       profile: {
-        profilePhoto: s3Response ? s3Response.url : null,
-        profilePhotoKey: s3Response ? s3Response.key : null, // Store S3 key for future reference
+        profilePhoto: null,
+        profilePhotoKey: null,
         bio: "",
         skills: [],
-        resume: "",
-        resumeOriginalName: "",
+        resume: s3Response ? s3Response.url : null,
+        resumeKey: s3Response ? s3Response.key : null,
+        resumeOriginalName: file ? file.originalname : "",
       },
     };
 
@@ -379,6 +384,119 @@ export const register = async (req, res) => {
     });
   }
 };
+// export const register = async (req, res) => {
+//   try {
+//     const {
+//       fullname,
+//       email,
+//       phoneNumber,
+//       password,
+//       role,
+//       currentLocation,
+//       jobDomain,
+//       jobTitle,
+//     } = req.body;
+
+//     // Validate input fields
+//     if (!fullname || !email || !phoneNumber || !password || !role) {
+//       return res.status(400).json({
+//         error: "All fields are required",
+//         status: false,
+//       });
+//     }
+
+//     // Additional validation for student-specific fields
+//     if (role === "student" && (!currentLocation || !jobTitle)) {
+//       return res.status(400).json({
+//         error: "All student-specific fields are required",
+//         status: false,
+//       });
+//     }
+
+//     // Check if user already exists
+//     const existingUser = await dynamoDB.get({
+//       TableName: "Users_dev",
+//       Key: { email },
+//     });
+
+//     if (existingUser.Item) {
+//       return res.status(400).json({
+//         error: "User already exists",
+//         status: false,
+//       });
+//     }
+
+//     const file = req.file;
+//     let s3Response;
+
+//     if (file) {
+//       // If user already has a profile photo, delete it from S3
+//       if (existingUser.Item?.profile?.profilePhotoKey) {
+//         await deleteFromS3(existingUser.Item.profile.profilePhotoKey);
+//       }
+//       // Upload new profile photo to S3
+//       s3Response = await uploadToS3(file, "profile-photos");
+//     }
+
+//     // Hash password
+//     const hashedPassword = await bcrypt.hash(password, 10);
+
+//     // Prepare user data
+//     const userData = {
+//       fullname,
+//       email,
+//       phoneNumber: phoneNumber.toString(),
+//       password: hashedPassword,
+//       role,
+//       createdAt: new Date().toISOString(),
+//       updatedAt: new Date().toISOString(),
+//       profile: {
+//         profilePhoto: s3Response ? s3Response.url : null,
+//         profilePhotoKey: s3Response ? s3Response.key : null, // Store S3 key for future reference
+//         bio: "",
+//         skills: [],
+//         resume: "",
+//         resumeOriginalName: "",
+//       },
+//     };
+
+//     // Add student-specific fields
+//     if (role === "student") {
+//       userData.profile = {
+//         ...userData.profile,
+//         currentLocation,
+//         jobTitle,
+//         jobDomain,
+//       };
+//     }
+
+//     // Save user to DynamoDB
+//     await dynamoDB.put({
+//       TableName: "Users_dev",
+//       Item: userData,
+//     });
+
+//     await sendEmail("welcome", email, { fullname, role });
+
+//     // Return success response
+//     return res.status(201).json({
+//       message: "User registered successfully",
+//       status: true,
+//       user: {
+//         fullname: userData.fullname,
+//         email: userData.email,
+//         role: userData.role,
+//         profile: userData.profile,
+//       },
+//     });
+//   } catch (err) {
+//     console.error("Registration error:", err);
+//     return res.status(500).json({
+//       error: "Internal server error",
+//       details: err.message,
+//     });
+//   }
+// };
 
 //update user
 export const modifyProfile = async (req, res) => {
@@ -476,7 +594,6 @@ const removeFromS3 = async (fileKey) => {
     console.error("Error removing old profile photo:", err);
   }
 };
-
 export const updateProfile = async (req, res) => {
   try {
     const {
@@ -514,86 +631,99 @@ export const updateProfile = async (req, res) => {
 
     // Handle file upload to S3
     const file = req.file;
-    let s3Response;
+    let resumeUrl = existingUser.Item.profile.resume || null;
+    let resumeKey = existingUser.Item.profile.resumeKey || null;
+    let resumeOriginalName = existingUser.Item.profile.resumeOriginalName || "";
 
     if (file) {
-      // If user already has a resume, delete it from S3
-      if (existingUser.Item.profile.resumeKey) {
-        await deleteFromS3(existingUser.Item.profile.resumeKey);
+      try {
+        // If user already has a resume, delete it from S3
+        if (existingUser.Item.profile.resumeKey) {
+          await deleteFromS3(existingUser.Item.profile.resumeKey);
+        }
+        // Upload new file to S3 - use same folder as in register
+        const s3Response = await uploadToS3(file, "resumes");
+        if (s3Response) {
+          resumeUrl = s3Response.url;
+          resumeKey = s3Response.key;
+          resumeOriginalName = file.originalname;
+        }
+      } catch (uploadError) {
+        console.error("Error handling resume:", uploadError);
+        // Continue with update even if file upload fails
       }
-      // Upload new file to S3
-      s3Response = await uploadToS3(file, "resumes");
     }
 
     // Process skills
-    let skillsArray = skills
-      ? skills
-          .split(",")
-          .map((skill) => skill.trim())
-          .filter(Boolean)
-      : existingUser.Item.profile.skills;
-
-    // Prepare update data
-    const updateData = {
-      fullname: fullname || existingUser.Item.fullname,
-      phoneNumber: phoneNumber
-        ? phoneNumber.toString()
-        : existingUser.Item.phoneNumber,
-      updatedAt: new Date().toISOString(),
-      profile: {
-        ...existingUser.Item.profile,
-        bio: bio || existingUser.Item.profile.bio,
-        skills: skillsArray,
-        profilePhoto: existingUser.Item.profile.profilePhoto,
-        jobDomain: jobDomain || existingUser.Item.profile.jobDomain,
-      },
-    };
-
-    // Update resume if new file uploaded
-    if (s3Response) {
-      updateData.profile.resume = s3Response.url;
-      updateData.profile.resumeKey = s3Response.key; // Store S3 key for future reference
-      updateData.profile.resumeOriginalName = file.originalname;
+    let skillsArray = existingUser.Item.profile.skills || [];
+    if (skills) {
+      skillsArray = skills
+        .split(",")
+        .map((skill) => skill.trim())
+        .filter(Boolean);
     }
+
+    // Create updated profile object with no undefined values
+    const updatedProfile = {
+      ...existingUser.Item.profile,
+      bio: bio !== undefined ? bio : existingUser.Item.profile.bio || "",
+      skills: skillsArray,
+      resume: resumeUrl,
+      resumeKey: resumeKey,
+      resumeOriginalName: resumeOriginalName,
+      jobDomain: jobDomain || existingUser.Item.profile.jobDomain || "",
+    };
 
     // Add student-specific fields if user is a student
     if (existingUser.Item.role === "student") {
-      updateData.profile = {
-        ...updateData.profile,
-        currentLocation:
-          currentLocation || existingUser.Item.profile.currentLocation,
-        willingToRelocate:
-          willingToRelocate !== undefined
-            ? willingToRelocate
-            : existingUser.Item.profile.willingToRelocate,
-        visaStatus: visaStatus || existingUser.Item.profile.visaStatus,
-        jobTitle: jobTitle || existingUser.Item.profile.jobTitle,
-      };
+      updatedProfile.currentLocation = currentLocation || existingUser.Item.profile.currentLocation || "";
+      updatedProfile.jobTitle = jobTitle || existingUser.Item.profile.jobTitle || "";
+
+      // Only add these fields if they exist in the request or already exist in the profile
+      if (willingToRelocate !== undefined) {
+        updatedProfile.willingToRelocate = willingToRelocate;
+      } else if (existingUser.Item.profile.willingToRelocate !== undefined) {
+        updatedProfile.willingToRelocate = existingUser.Item.profile.willingToRelocate;
+      }
+
+      if (visaStatus) {
+        updatedProfile.visaStatus = visaStatus;
+      } else if (existingUser.Item.profile.visaStatus) {
+        updatedProfile.visaStatus = existingUser.Item.profile.visaStatus;
+      }
     }
 
-    // Update user in DynamoDB
+    // Update user in DynamoDB with a more complete UpdateExpression
     await dynamoDB.update({
       TableName: "Users_dev",
       Key: { email },
-      UpdateExpression: "set #userData = :userData",
+      UpdateExpression: "set #profile = :profile, #fullname = :fullname, #phoneNumber = :phoneNumber, #updatedAt = :updatedAt",
       ExpressionAttributeNames: {
-        "#userData": "profile",
+        "#profile": "profile",
+        "#fullname": "fullname",
+        "#phoneNumber": "phoneNumber",
+        "#updatedAt": "updatedAt"
       },
       ExpressionAttributeValues: {
-        ":userData": updateData.profile,
+        ":profile": updatedProfile,
+        ":fullname": fullname || existingUser.Item.fullname,
+        ":phoneNumber": phoneNumber ? phoneNumber.toString() : existingUser.Item.phoneNumber,
+        ":updatedAt": new Date().toISOString()
       },
+      // This is the key fix for preventing the undefined values error
+      removeUndefinedValues: true
     });
 
     // Return updated user
     return res.status(200).json({
-      message: "User updated successfully",
+      message: "Profile updated successfully",
       status: true,
       user: {
         email,
-        fullname: updateData.fullname,
-        phoneNumber: updateData.phoneNumber,
+        fullname: fullname || existingUser.Item.fullname,
+        phoneNumber: phoneNumber ? phoneNumber.toString() : existingUser.Item.phoneNumber,
         role: existingUser.Item.role,
-        profile: updateData.profile,
+        profile: updatedProfile,
       },
     });
   } catch (err) {
@@ -605,6 +735,134 @@ export const updateProfile = async (req, res) => {
     });
   }
 };
+// export const updateProfile = async (req, res) => {
+//   try {
+//     const {
+//       email,
+//       fullname,
+//       phoneNumber,
+//       bio,
+//       skills,
+//       jobDomain,
+//       currentLocation,
+//       willingToRelocate,
+//       visaStatus,
+//       jobTitle,
+//     } = req.body;
+
+//     if (!email) {
+//       return res.status(400).json({
+//         error: "Email is required",
+//         status: false,
+//       });
+//     }
+
+//     // Get existing user
+//     const existingUser = await dynamoDB.get({
+//       TableName: "Users_dev",
+//       Key: { email },
+//     });
+
+//     if (!existingUser.Item) {
+//       return res.status(404).json({
+//         error: "User not found",
+//         status: false,
+//       });
+//     }
+
+//     // Handle file upload to S3
+//     const file = req.file;
+//     let s3Response;
+
+//     if (file) {
+//       // If user already has a resume, delete it from S3
+//       if (existingUser.Item.profile.resumeKey) {
+//         await deleteFromS3(existingUser.Item.profile.resumeKey);
+//       }
+//       // Upload new file to S3
+//       s3Response = await uploadToS3(file, "resumes");
+//     }
+
+//     // Process skills
+//     let skillsArray = skills
+//       ? skills
+//           .split(",")
+//           .map((skill) => skill.trim())
+//           .filter(Boolean)
+//       : existingUser.Item.profile.skills;
+
+//     // Prepare update data
+//     const updateData = {
+//       fullname: fullname || existingUser.Item.fullname,
+//       phoneNumber: phoneNumber
+//         ? phoneNumber.toString()
+//         : existingUser.Item.phoneNumber,
+//       updatedAt: new Date().toISOString(),
+//       profile: {
+//         ...existingUser.Item.profile,
+//         bio: bio || existingUser.Item.profile.bio,
+//         skills: skillsArray,
+//         profilePhoto: existingUser.Item.profile.profilePhoto,
+//         jobDomain: jobDomain || existingUser.Item.profile.jobDomain,
+//       },
+//     };
+
+//     // Update resume if new file uploaded
+//     if (s3Response) {
+//       updateData.profile.resume = s3Response.url;
+//       updateData.profile.resumeKey = s3Response.key; // Store S3 key for future reference
+//       updateData.profile.resumeOriginalName = file.originalname;
+//     }
+
+//     // Add student-specific fields if user is a student
+//     if (existingUser.Item.role === "student") {
+//       updateData.profile = {
+//         ...updateData.profile,
+//         currentLocation:
+//           currentLocation || existingUser.Item.profile.currentLocation,
+//         willingToRelocate:
+//           willingToRelocate !== undefined
+//             ? willingToRelocate
+//             : existingUser.Item.profile.willingToRelocate,
+//         visaStatus: visaStatus || existingUser.Item.profile.visaStatus,
+//         jobTitle: jobTitle || existingUser.Item.profile.jobTitle,
+//       };
+//     }
+
+//     // Update user in DynamoDB
+//     await dynamoDB.update({
+//       TableName: "Users_dev",
+//       Key: { email },
+//       UpdateExpression: "set #userData = :userData",
+//       ExpressionAttributeNames: {
+//         "#userData": "profile",
+//       },
+//       ExpressionAttributeValues: {
+//         ":userData": updateData.profile,
+//       },
+//     });
+
+//     // Return updated user
+//     return res.status(200).json({
+//       message: "User updated successfully",
+//       status: true,
+//       user: {
+//         email,
+//         fullname: updateData.fullname,
+//         phoneNumber: updateData.phoneNumber,
+//         role: existingUser.Item.role,
+//         profile: updateData.profile,
+//       },
+//     });
+//   } catch (err) {
+//     console.error("Profile update error:", err);
+//     return res.status(500).json({
+//       error: "Internal Server Error",
+//       message: err.message,
+//       status: false,
+//     });
+//   }
+// };
 
 // Function to delete old resume from S3
 const deleteFromS3 = async (resumeKey) => {
@@ -1085,7 +1343,7 @@ export const getStudentById = async (req, res) => {
     const { password, ...studentInfo } = studentResult.Item;
 
     // 5. If this is a new view, update the company and recruiter records
-    if (!hasViewedBefore) {
+    // if (!hasViewedBefore) {
       // Update in parallel for better performance
       const updatePromises = [];
 
@@ -1146,7 +1404,7 @@ export const getStudentById = async (req, res) => {
         console.error("Error updating view records:", updateError);
         // Continue with the response even if update fails
       }
-    }
+
 
     // Get updated company view count
     const updatedCompanyParams = {
@@ -1259,6 +1517,68 @@ export const getMinimalStudentDetails = async (req, res) => {
     });
   }
 };
+// export const getMinimalStudentDetails = async (req, res) => {
+//   try {
+//     // Get recruiter ID from request body
+//     const recruiterId = req.body.email;
+
+//     // Query students with student role
+//     const params = {
+//       TableName: "Users",
+//       IndexName: "RoleIndex",
+//       KeyConditionExpression: "#role = :roleValue",
+//       ExpressionAttributeNames: {
+//         "#role": "role",
+//       },
+//       ExpressionAttributeValues: {
+//         ":roleValue": "student",
+//       },
+//     };
+
+//     const result = await dynamoDB.query(params);
+
+//     // Get the recruiter's previously viewed students for marking
+//     const recruiterParams = {
+//       TableName: "Users_dev",
+//       Key: {
+//         email: recruiterId
+//       },
+//       ProjectionExpression: "viewedStudents"
+//     };
+
+//     const recruiterResult = await dynamoDB.get(recruiterParams);
+//     const viewedStudents = recruiterResult.Item?.viewedStudents || [];
+
+//     // Extract only minimal details for each student
+//     const minimalStudentDetails = result.Items.map((student) => {
+//       return {
+//         _id: student._id || student.email,
+//         fullname: student.fullname || "No Name",
+//         email: student.email,
+//         // Mark if this recruiter has viewed this student before
+//         viewedByMe: viewedStudents.includes(student.email),
+//         profile: {
+//           profilePhoto: student.profile?.profilePhoto,
+//           jobTitle: student.profile?.jobTitle || "No title",
+//           currentLocation: student.profile?.currentLocation || "N/A"
+//         }
+//       };
+//     });
+
+//     res.status(200).json({
+//       success: true,
+//       message: "Minimal student details fetched successfully",
+//       data: minimalStudentDetails,
+//     });
+//   } catch (error) {
+//     console.error("Error in getMinimalStudentDetails:", error);
+//     res.status(500).json({
+//       success: false,
+//       message: "Failed to fetch minimal student details",
+//       error: error.message,
+//     });
+//   }
+// };
 
 // Get company details by user ID (for frontend to display remaining views)
 export const getCompanyByUserId = async (req, res) => {

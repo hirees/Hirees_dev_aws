@@ -75,7 +75,7 @@ const UpdateProfileDialog = ({ open, setOpen }) => {
 
     try {
       setLoading(true);
-      const res = await axios.post(`${USER_API_END_POINT}/update`, formData, {
+      const res = await axios.put(`${USER_API_END_POINT}/update`, formData, {
         headers: {
           "Content-Type": "multipart/form-data",
         },
@@ -147,19 +147,27 @@ const UpdateProfileDialog = ({ open, setOpen }) => {
             Visa Status
           </Label>
           <select
-            id="visaStatus"
-            name="visaStatus"
-            value={input.visaStatus}
-            onChange={changeEventHandler}
-            className="col-span-3 px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-400"
-          >
-            <option value="">Select Visa Status</option>
-            <option value="citizen">Citizen</option>
-            <option value="permanent_resident">Permanent Resident</option>
-            <option value="work_visa">Work Visa</option>
-            <option value="student_visa">Student Visa</option>
-            <option value="other">Other</option>
-          </select>
+  id="visaStatus"
+  name="visaStatus"
+  value={input.visaStatus}
+  onChange={changeEventHandler}
+  className="col-span-3 px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-400"
+>
+  <option value="">Select Visa Status</option>
+  <option value="Citizen">Citizen</option>
+  <option value="Permanent_Resident">Permanent Resident</option>
+  <option value="Work_Visa">Work Visa</option>
+  <option value="Student_Visa">Student Visa</option>
+  <option value="Other">Other</option>
+  <option value="US_Citizen">US Citizen</option>
+  <option value="Green_Card_Holder">Green Card Holder</option>
+  <option value="Employment_Authorization">Employment Authorization</option>
+  <option value="Need_H1_Visa">Need H-1 Visa</option>
+  <option value="Have_H1_Visa">Have H-1 Visa</option>
+  <option value="TN_Permit_Holder">TN Permit Holder</option>
+  <option value="Unspecified">Unspecified</option>
+</select>
+
         </div>
 
         <div className="grid grid-cols-4 items-center gap-4">

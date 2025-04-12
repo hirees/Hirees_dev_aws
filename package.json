@@ -1,0 +1,21 @@
+{
+  "name": "jobportal",
+  "version": "1.0.0",
+  "description": "## Backend Setup",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@aws-sdk/client-dynamodb": "^3.724.0",
+    "@aws-sdk/lib-dynamodb": "^3.724.0",
+    "recharts": "^2.15.1"
+  },
+  "devDependencies": {
+    "compression-webpack-plugin": "^11.1.0",
+    "terser-webpack-plugin": "^5.3.11"
+  }
+}

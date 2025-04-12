@@ -3,6 +3,7 @@ import { v4 as uuidv4 } from "uuid";
 import { marshall, unmarshall } from "@aws-sdk/util-dynamodb";
 import nodemailer from "nodemailer";
 import { GetItemCommand, UpdateItemCommand } from "@aws-sdk/client-dynamodb";
+import { Application } from "../models/application.model.js";
 const VALID_JOB_TYPES = [
   "Full-Time",
   "Part-Time",
@@ -684,3 +685,129 @@ export const getLatestJobs = async (req, res) => {
     });
   }
 };
+
+// Delete a job by ID
+export const deleteJob = async (req, res) => {
+  try {
+    console.log(req.params);
+    const { jobId } = req.params;
+    console.log(jobId);
+    const userId = req.body.userId; // ID of the authenticated user making the request
+    console.log(userId);
+
+    if (!jobId) {
+      return res.status(400).json({
+        error: "Job ID is required",
+        status: false,
+      });
+    }
+
+    // First, get the job to verify ownership
+    const result = await dynamoDB.get({
+      TableName: "Jobs_dev",
+      Key: { jobId },
+    });
+
+    if (!result.Item) {
+      return res.status(404).json({
+        error: "Job not found",
+        status: false,
+      });
+    }
+
+    const job = result.Item;
+
+    // Check if the authenticated user is the creator of the job
+    if (job.created_by !== userId) {
+      return res.status(403).json({
+        error: "You are not authorized to delete this job",
+        status: false,
+      });
+    }
+
+    // Step 1: Fetch all applications related to the job
+    const applications = await Application.scan("job").eq(jobId).exec();
+
+    // Step 2: Delete all related applications
+    for (const application of applications) {
+      await Application.delete(application.id);
+    }
+
+    console.log(`Deleted ${applications.length} applications for jobId: ${jobId}`);
+
+    // Step 3: Delete the job
+    await dynamoDB.delete({
+      TableName: "Jobs_dev",
+      Key: { jobId },
+    });
+
+    return res.status(200).json({
+      message: "Job and related applications deleted successfully",
+      status: true,
+    });
+
+  } catch (err) {
+    console.error("Delete job error:", err);
+    return res.status(500).json({
+      error: "Internal server error",
+      details: err.message,
+    });
+  }
+};
+
+// export const deleteJob = async (req, res) => {
+//   try {
+//     console.log(req.params);
+//     const { jobId } = req.params;
+//     console.log(jobId);
+//     const userId = req.body.userId; // ID of the authenticated user making the request
+//     console.log(userId);
+
+//     if (!jobId) {
+//       return res.status(400).json({
+//         error: "Job ID is required",
+//         status: false,
+//       });
+//     }
+
+//     // First, get the job to verify ownership
+//     const result = await dynamoDB.get({
+//       TableName: "Jobs_dev",
+//       Key: { jobId },
+//     });
+
+//     if (!result.Item) {
+//       return res.status(404).json({
+//         error: "Job not found",
+//         status: false,
+//       });
+//     }
+
+//     const job = result.Item;
+
+//     // Check if the authenticated user is the creator of the job
+//     if (job.created_by !== userId) {
+//       return res.status(403).json({
+//         error: "You are not authorized to delete this job",
+//         status: false,
+//       });
+//     }
+
+//     // If ownership verification passed, delete the job
+//     await dynamoDB.delete({
+//       TableName: "Jobs_dev",
+//       Key: { jobId },
+//     });
+
+//     return res.status(200).json({
+//       message: "Job deleted successfully",
+//       status: true,
+//     });
+//   } catch (err) {
+//     console.error("Delete job error:", err);
+//     return res.status(500).json({
+//       error: "Internal server error",
+//       details: err.message,
+//     });
+//   }
+// };

@@ -8,12 +8,12 @@ const router = express.Router();
 router.post('/register',singleUpload, register);
 router.post('/login', login);
 router.get('/logout', logout);
-router.post('/update', isAuth,singleUpload, updateProfile);
+router.put('/update', isAuth,singleUpload, updateProfile);
 router.get("/students", getStudents);
 router.post('/forgot-password',forgotPassword);
 router.post('/verify-code', verifyCode);
 router.post('/reset-password',resetPassword);
-router.post('/updatepfp',isAuth,singleUpload,modifyProfile);
+router.put('/updatepfp',isAuth,singleUpload,modifyProfile);
 router.post('/students-minimal', isAuth, getMinimalStudentDetails);  // Get minimal student details for initial display
 router.post('/students/:studentId', isAuth, getStudentById);  // Get full student details with view tracking
 

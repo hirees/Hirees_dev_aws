@@ -8,7 +8,7 @@ const dynamoDB = DynamoDBDocument.from(client);
 
 const updateExistingCompanies = async () => {
   // Scan all companies from the table
-  const { Items } = await dynamoDB.scan({ TableName: "Companies_dev" });
+  const { Items } = await dynamoDB.scan({ TableName: "Companies" });
 
   console.log(`Found ${Items.length} companies to process`);
 
@@ -24,7 +24,7 @@ const updateExistingCompanies = async () => {
         if (!company.userIds) {
           // Create new userIds array with the userId value while keeping userId field
           await dynamoDB.update({
-            TableName: "Companies_dev",
+            TableName: "Companies",
             Key: { companyId: company.companyId },
             UpdateExpression: "SET userIds = :users",
             ExpressionAttributeValues: { ":users": [company.userId] },
@@ -35,7 +35,7 @@ const updateExistingCompanies = async () => {
           // If userIds exists, make sure the userId is in the array
           if (!company.userIds.includes(company.userId)) {
             await dynamoDB.update({
-              TableName: "Companies_dev",
+              TableName: "Companies",
               Key: { companyId: company.companyId },
               UpdateExpression: "SET userIds = list_append(userIds, :newUser)",
               ExpressionAttributeValues: { ":newUser": [company.userId] },
