@@ -435,7 +435,7 @@ function JobsSection() {
   const fetchSavedJobs = async () => {
     try {
       setIsLoading(true);
-      const res = await axios.get("http://localhost:8000/api/savedjobs/saved", {
+      const res = await axios.get("http://3.232.10.54/api/savedjobs/saved", {
         withCredentials: true,
       });
       setSavedJobs(res.data.savedJobs || []);
@@ -448,7 +448,7 @@ function JobsSection() {
 
   const handleRemoveSavedJob = async (jobId) => {
     try {
-      await axios.delete(`http://localhost:8000/api/savedjobs/saved`, {
+      await axios.delete(`http://3.232.10.54/api/savedjobs/saved`, {
         data: { jobId },
         withCredentials: true,
       });

@@ -653,7 +653,7 @@
 //       const checkSavedStatus = async () => {
 //         try {
 //           const response = await axios.get(
-//             `http://localhost:8000/api/savedjobs/check/${job.jobId}`,
+//             `http://3.232.10.54/api/savedjobs/check/${job.jobId}`,
 //             { withCredentials: true }
 //           );
 //           setIsSaved(response.data.isSaved);
@@ -682,14 +682,14 @@
 //     try {
 //       setIsLoading(true);
 //       if (!isSaved) {
-//         await axios.post('http://localhost:8000/api/savedjobs/save',
+//         await axios.post('http://3.232.10.54/api/savedjobs/save',
 //           { jobId: job.jobId },
 //           { withCredentials: true }
 //         );
 //         setIsSaved(true);
 //       } else {
 //         await axios.delete(
-//           `http://localhost:8000/api/savedjobs/unsave/${job.jobId}`,
+//           `http://3.232.10.54/api/savedjobs/unsave/${job.jobId}`,
 //           { withCredentials: true }
 //         );
 //         setIsSaved(false);
@@ -915,7 +915,7 @@ function Job({ job }) {
       const checkSavedStatus = async () => {
         try {
           const response = await axios.get(
-            `http://localhost:8000/api/savedjobs/check/${job.jobId}`,
+            `http://3.232.10.54/api/savedjobs/check/${job.jobId}`,
             { withCredentials: true }
           );
           setIsSaved(response.data.isSaved);
@@ -948,14 +948,14 @@ function Job({ job }) {
     try {
       setIsLoading(true);
       if (!isSaved) {
-        await axios.post('http://localhost:8000/api/savedjobs/save',
+        await axios.post('http://3.232.10.54/api/savedjobs/save',
           { jobId: job.jobId },
           { withCredentials: true }
         );
         setIsSaved(true);
       } else {
         await axios.delete(
-          `http://localhost:8000/api/savedjobs/unsave/${job.jobId}`,
+          `http://3.232.10.54/api/savedjobs/unsave/${job.jobId}`,
           { withCredentials: true }
         );
         setIsSaved(false);

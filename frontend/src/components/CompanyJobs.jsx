@@ -28,7 +28,7 @@
 // //   const fetchCompanyJobs = async () => {
 // //     try {
 // //       const response = await fetch(
-// //         `http://localhost:8000/api/v1/job/getCompanyJobs/${companyId}`
+// //         `http://3.232.10.54/api/v1/job/getCompanyJobs/${companyId}`
 // //       );
 // //       const data = await response.json();
 // //       if (data.success) {
@@ -229,7 +229,7 @@
 //   const fetchCompanyJobs = async () => {
 //     try {
 //       const response = await fetch(
-//         `http://localhost:8000/api/v1/job/getCompanyJobs/${companyId}`
+//         `http://3.232.10.54/api/v1/job/getCompanyJobs/${companyId}`
 //       );
 //       const data = await response.json();
 //       if (data.success) {
@@ -477,7 +477,7 @@ const CompanyJobs = () => {
   const fetchCompanyJobs = async () => {
     try {
       const response = await fetch(
-        `http://localhost:8000/api/v1/job/getCompanyJobs/${companyId}`
+        `http://3.232.10.54/api/v1/job/getCompanyJobs/${companyId}`
       );
       const data = await response.json();
       if (data.success) {
