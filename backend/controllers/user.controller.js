@@ -629,28 +629,48 @@ export const updateProfile = async (req, res) => {
       });
     }
 
-    // Handle file upload to S3
-    const file = req.file;
+    // Handle file uploads (supports both resume and profilePhoto)
+    const files = req.files || {};
+    const resumeFile = files.resume ? files.resume[0] : null;
+    const profilePhotoFile = files.profilePhoto ? files.profilePhoto[0] : null;
+
     let resumeUrl = existingUser.Item.profile.resume || null;
     let resumeKey = existingUser.Item.profile.resumeKey || null;
     let resumeOriginalName = existingUser.Item.profile.resumeOriginalName || "";
 
-    if (file) {
+    let profilePhotoUrl = existingUser.Item.profile.profilePhoto || null;
+    let profilePhotoKey = existingUser.Item.profile.profilePhotoKey || null;
+
+    // Upload resume if present
+    if (resumeFile) {
       try {
-        // If user already has a resume, delete it from S3
         if (existingUser.Item.profile.resumeKey) {
           await deleteFromS3(existingUser.Item.profile.resumeKey);
         }
-        // Upload new file to S3 - use same folder as in register
-        const s3Response = await uploadToS3(file, "resumes");
+        const s3Response = await uploadToS3(resumeFile, "resumes");
         if (s3Response) {
           resumeUrl = s3Response.url;
           resumeKey = s3Response.key;
-          resumeOriginalName = file.originalname;
+          resumeOriginalName = resumeFile.originalname;
         }
       } catch (uploadError) {
         console.error("Error handling resume:", uploadError);
-        // Continue with update even if file upload fails
+      }
+    }
+
+    // Upload profile photo if present
+    if (profilePhotoFile) {
+      try {
+        if (existingUser.Item.profile.profilePhotoKey) {
+          await deleteFromS3(existingUser.Item.profile.profilePhotoKey);
+        }
+        const s3Resp = await uploadToS3(profilePhotoFile, "profile-photos");
+        if (s3Resp) {
+          profilePhotoUrl = s3Resp.url;
+          profilePhotoKey = s3Resp.key;
+        }
+      } catch (photoError) {
+        console.error("Error handling profile photo:", photoError);
       }
     }
 
@@ -671,6 +691,8 @@ export const updateProfile = async (req, res) => {
       resume: resumeUrl,
       resumeKey: resumeKey,
       resumeOriginalName: resumeOriginalName,
+      profilePhoto: profilePhotoUrl,
+      profilePhotoKey: profilePhotoKey,
       jobDomain: jobDomain || existingUser.Item.profile.jobDomain || "",
     };
 

@@ -56,7 +56,7 @@ export const {
   setAllJobs,
   setSingleJob,
   setAllAdminjobs,
-  setAllAppliedJobs,
+    setAllAppliedJobs,
   setSearchQuery,
   setJobFilters
 } = jobSlice.actions;

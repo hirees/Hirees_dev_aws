@@ -1,240 +1,209 @@
-// import React from "react";
-// import { Mail, Phone, MapPin, Github, Linkedin, Twitter } from "lucide-react";
-// import logo from "../assets/logo.png";
+// import { Mail, Phone, MapPin } from "lucide-react";
 
-// function Footer() {
+// const Footer = () => {
 //   return (
-//     <div>
-//     <footer className=" bg-gray-900 text-white py-12">
-//       <div className="container mx-auto px-4 grid md:grid-cols-4 gap-8">
-//         <div>
-//           <div className="flex items-center mb-10">
-//             <img
-//               src={logo}
-//               alt="Hirees Logo"
-//               className="h-14 w-28 mr-2 object-cover rounded-full border-2  shadow-md"
-//             />
+//     <footer className="w-full bg-[#0B1F44] px-4 sm:px-10 md:px-24 py-16">
+//       <div className="mx-auto max-w-7xl">
+
+//         {/* Top Section */}
+//         <div className="flex flex-col md:flex-row justify-between gap-12 mb-16">
+//           {/* Branding */}
+//           <div>
+//             <h2 className="font-k2d font-bold text-white text-5xl md:text-6xl mb-4">
+//               Hirees
+//             </h2>
+//             <p className="text-white/80 text-lg max-w-sm leading-relaxed">
+//               Bridging talent with opportunities across industries.
+//             </p>
 //           </div>
-//           <p className="text-gray-400 text-sm">
-//             Bridging talent with opportunities across industries.
-//           </p>
-//         </div>
 
-//         <div>
-//           <h4 className="font-semibold mb-4">Quick Links</h4>
-//           <ul className="space-y-2 text-sm">
-//             <li>
-//               <a href="#" className="hover:text-blue-400">
-//                 Home
-//               </a>
-//             </li>
-//             <li>
-//               <a href="#" className="hover:text-blue-400">
-//                 Jobs
-//               </a>
-//             </li>
-//             <li>
-//               <a href="#" className="hover:text-blue-400">
-//                 Companies
-//               </a>
-//             </li>
-//             <li>
-//               <a href="#" className="hover:text-blue-400">
-//                 About Us
-//               </a>
-//             </li>
-//           </ul>
-//         </div>
-
-//         <div>
-//           <h4 className="font-semibold mb-4">Legal</h4>
-//           <ul className="space-y-2 text-sm">
-//             <li>
-//               <a href="#" className="hover:text-blue-400">
-//                 Privacy Policy
-//               </a>
-//             </li>
-//             <li>
-//               <a href="#" className="hover:text-blue-400">
-//                 Terms of Service
-//               </a>
-//             </li>
-//             <li>
-//               <a href="#" className="hover:text-blue-400">
-//                 Cookie Policy
-//               </a>
-//             </li>
-//           </ul>
-//         </div>
-
-//         <div>
-//           <h4 className="font-semibold mb-4">Contact</h4>
-//           <div className="space-y-4 text-sm">
-//             <div className="flex items-center space-x-2">
-//               <Mail size={16} />
-//               <span>Support@hirees.com</span>
+//           {/* Newsletter */}
+//           {/* <div className="max-w-md w-full">
+//             <p className="text-white text-lg font-semibold mb-4">
+//               Stay in the loop
+//             </p>
+//             <div className="flex gap-3">
+//               <input
+//                 type="email"
+//                 placeholder="Your email address"
+//                 className="flex-1 h-12 px-4 rounded-lg bg-transparent border border-white/40 text-white placeholder-white/60 focus:outline-none focus:border-white"
+//               />
+//               <button className="h-12 px-6 rounded-lg bg-white text-[#0B1F44] font-semibold hover:bg-gray-100 transition">
+//                 Subscribe
+//               </button>
 //             </div>
-//             <div className="flex items-center space-x-2">
-//               <Phone size={16} />
-//               <span> + 1 732 746 0010</span>
-//             </div>
-//             <div className="flex items-center space-x-2">
-//               <MapPin size={32} />
-//               <span>
-//                 FSTONE Technologies, LLC. 2003 S Easton Rd, Suite 308,
-//                 Doylestown, PA | 18901
-//               </span>
-//             </div>
-//           </div>
-//         </div>
-
-//         <div className="col-span-full border-t border-gray-700 pt-6 mt-6 flex justify-between items-center">
-//           <p className="text-sm text-gray-400">
-//             ©FstoneTech 2024. All Rights Reserved.
-//           </p>
-//           {/* <div className="flex space-x-4">
-//             <a href="#" className="text-gray-400 hover:text-white">
-//               <Github size={20} />
-//             </a>
-//             <a href="#" className="text-gray-400 hover:text-white">
-//               <Linkedin size={20} />
-//             </a>
-//             <a href="#" className="text-gray-400 hover:text-white">
-//               <Twitter size={20} />
-//             </a>
 //           </div> */}
 //         </div>
+
+//         {/* Divider */}
+//         <div className="h-px bg-white/20 mb-12" />
+
+//         {/* Links */}
+//         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-12 mb-12">
+//           {/* Quick Links */}
+//           <div>
+//             <h3 className="text-white font-semibold text-lg mb-6">
+//               Quick Links
+//             </h3>
+//             <ul className="space-y-3">
+//               {["Home", "Post Jobs", "Upload CV", "Find Jobs", "Hire Now"].map(
+//                 (item) => (
+//                   <li key={item}>
+//                     <a
+//                       href="#"
+//                       className="text-white/70 hover:text-white transition"
+//                     >
+//                       {item}
+//                     </a>
+//                   </li>
+//                 )
+//               )}
+//             </ul>
+//           </div>
+
+//           {/* Legal */}
+//           <div>
+//             <h3 className="text-white font-semibold text-lg mb-6">
+//               Legal
+//             </h3>
+//             <ul className="space-y-3">
+//               {["Privacy Policy", "Terms & Conditions", "Cookie Policy"].map(
+//                 (item) => (
+//                   <li key={item}>
+//                     <a
+//                       href="#"
+//                       className="text-white/70 hover:text-white transition"
+//                     >
+//                       {item}
+//                     </a>
+//                   </li>
+//                 )
+//               )}
+//             </ul>
+//           </div>
+
+//           {/* Contact */}
+//           <div>
+//             <h3 className="text-white font-semibold text-lg mb-6">
+//               Contact
+//             </h3>
+//             <div className="space-y-4 text-white/70">
+//               <div className="flex items-center gap-3">
+//                 <Mail size={18} />
+//                 <a href="mailto:support@hirees.com" className="hover:text-white">
+//                   support@hirees.com
+//                 </a>
+//               </div>
+//               <div className="flex items-center gap-3">
+//                 <Phone size={18} />
+//                 <a href="tel:+17327460010" className="hover:text-white">
+//                   +1 732 746 0010
+//                 </a>
+//               </div>
+//               <div className="flex items-start gap-3">
+//                 <MapPin size={18} className="mt-1" />
+//                 <p>
+//                   FSTONE Technologies, LLC<br />
+//                   2003 S Easton Rd, Suite 308<br />
+//                   Doylestown, PA 18901
+//                 </p>
+//               </div>
+//             </div>
+//           </div>
+//         </div>
+
+//         {/* Bottom */}
+//         <div className="h-px bg-white/20 mb-6" />
+//         <p className="text-white/60 text-sm text-center">
+//           © 2024 FstoneTech. All rights reserved.
+//         </p>
 //       </div>
 //     </footer>
-//     </div>
 //   );
-// }
+// };
 
 // export default Footer;
-import React from "react";
-import { Mail, Phone, MapPin, Github, Linkedin, Twitter } from "lucide-react";
-import logo from "../assets/logo.png";
-import { useNavigate } from "react-router-dom";
 
-function Footer() {
-  const nav = useNavigate();
+import { Mail, Phone, MapPin } from "lucide-react";
+
+const Footer = () => {
   return (
-    <footer className="bg-gray-900 text-white py-8 sm:py-12">
-      <div className="container mx-auto px-4">
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
-          {/* Logo Section */}
+    <footer className="w-full bg-[#0B1F44] px-4 sm:px-10 md:px-20 py-10">
+      <div className="mx-auto max-w-7xl">
+
+        {/* Top Row */}
+        <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-8 mb-8">
+          
+          {/* Brand */}
           <div>
-            <div className="flex items-center mb-6 sm:mb-10">
-              <img
-                src={logo}
-                alt="Hirees Logo"
-                className="h-12 w-24 sm:h-14 sm:w-28 mr-2 object-cover rounded-full border-2 shadow-md"
-              />
-            </div>
-            <p className="text-gray-400 text-sm">
-              Bridging talent with opportunities across industries.
+            <h2 className="font-k2d font-bold text-white text-3xl mb-1">
+              Hirees
+            </h2>
+            <p className="text-white/70 text-sm max-w-xs">
+              Bridging talent with opportunities.
             </p>
           </div>
 
           {/* Quick Links */}
-          <div>
-            <h4 className="font-semibold mb-4 text-base sm:text-lg cursor-default">Quick Links</h4>
-            <ul className="space-y-2 text-sm">
-              <li>
-                <a href="#" className="hover:text-blue-400 transition-colors">
-                  Home
-                </a>
-              </li>
-              <li>
-                <a href="#" className="hover:text-blue-400 transition-colors">
-                  Jobs
-                </a>
-              </li>
-              <li>
-                <a href="#" className="hover:text-blue-400 transition-colors">
-                  Companies
-                </a>
-              </li>
-              <li>
-                <a href="#" className="hover:text-blue-400 transition-colors">
-                  About Us
-                </a>
-              </li>
-              <li>
-                <a onClick={()=>nav('/contactUs')} className="hover:text-blue-400 transition-colors cursor-pointer">
-                  Contact Us
-                </a>
-              </li>
-            </ul>
-          </div>
+          <div className="flex gap-10">
+            <div>
+              <h3 className="text-white text-sm font-semibold mb-3">
+                Quick Links
+              </h3>
+              <ul className="space-y-2 text-sm">
+                {["Home", "Find Jobs", "Post Jobs"].map((item) => (
+                  <li key={item}>
+                    <a href="#" className="text-white/60 hover:text-white transition">
+                      {item}
+                    </a>
+                  </li>
+                ))}
+              </ul>
+            </div>
 
-          {/* Legal */}
-          <div>
-            <h4 className="font-semibold mb-4 text-base sm:text-lg">Legal</h4>
-            <ul className="space-y-2 text-sm">
-              <li>
-                <a href="#" className="hover:text-blue-400 transition-colors">
-                  Privacy Policy
-                </a>
-              </li>
-              <li>
-                <a href="#" className="hover:text-blue-400 transition-colors">
-                  Terms of Service
-                </a>
-              </li>
-              <li>
-                <a href="#" className="hover:text-blue-400 transition-colors">
-                  Cookie Policy
-                </a>
-              </li>
-            </ul>
+            <div>
+              <h3 className="text-white text-sm font-semibold mb-3">
+                Legal
+              </h3>
+              <ul className="space-y-2 text-sm">
+                {["Privacy", "Terms"].map((item) => (
+                  <li key={item}>
+                    <a href="#" className="text-white/60 hover:text-white transition">
+                      {item}
+                    </a>
+                  </li>
+                ))}
+              </ul>
+            </div>
           </div>
 
           {/* Contact */}
-          <div>
-            <h4 className="font-semibold mb-4 text-base sm:text-lg">Contact</h4>
-            <div className="space-y-4 text-sm">
-              <div className="flex items-center space-x-2">
-                <Mail className="w-4 h-4 sm:w-5 sm:h-5" />
-                <span>Support@hirees.com</span>
-              </div>
-              <div className="flex items-center space-x-2">
-                <Phone className="w-4 h-4 sm:w-5 sm:h-5" />
-                <span>+ 1 732 746 0010</span>
-              </div>
-              <div className="flex items-start space-x-2">
-                <MapPin className="w-4 h-4 sm:w-5 sm:h-5 mt-1 flex-shrink-0" />
-                <span className="text-sm">
-                  FSTONE Technologies, LLC. 2003 S Easton Rd, Suite 308,
-                  Doylestown, PA | 18901
-                </span>
-              </div>
+          <div className="space-y-2 text-sm text-white/60">
+            <div className="flex items-center gap-2">
+              <Mail size={16} />
+              <a href="mailto:support@hirees.com" className="hover:text-white">
+                support@hirees.com
+              </a>
+            </div>
+            <div className="flex items-center gap-2">
+              <Phone size={16} />
+              <a href="tel:+17327460010" className="hover:text-white">
+                +1 732 746 0010
+              </a>
             </div>
           </div>
         </div>
 
-        {/* Bottom Section */}
-        <div className="border-t border-gray-700 mt-8 pt-6 flex flex-col sm:flex-row justify-between items-center gap-4">
-          <p className="text-xs sm:text-sm text-gray-400 text-center sm:text-left">
-            ©FstoneTech 2024. All Rights Reserved.
-          </p>
-          {/* Social Links - Uncomment if needed
-          <div className="flex space-x-4">
-            <a href="#" className="text-gray-400 hover:text-white transition-colors">
-              <Github className="w-5 h-5" />
-            </a>
-            <a href="#" className="text-gray-400 hover:text-white transition-colors">
-              <Linkedin className="w-5 h-5" />
-            </a>
-            <a href="#" className="text-gray-400 hover:text-white transition-colors">
-              <Twitter className="w-5 h-5" />
-            </a>
-          </div>
-          */}
-        </div>
+        {/* Divider */}
+        <div className="h-px bg-white/15 mb-4" />
+
+        {/* Bottom */}
+        <p className="text-white/50 text-xs text-center">
+          © 2024 Fstone Technologies, LLC. All rights reserved.
+        </p>
       </div>
     </footer>
   );
-}
+};
 
 export default Footer;

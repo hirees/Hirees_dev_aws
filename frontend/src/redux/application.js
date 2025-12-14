@@ -2,7 +2,7 @@ import { createSlice } from "@reduxjs/toolkit";
 
 
 const applicaationSlice = createSlice({
-  name: "Applications_dev",
+  name: "Application",
   initialState: {
     applicants:[],
   },

@@ -1,1087 +1,4 @@
-// // import { Badge } from "./ui/badge";
-// // import { Button } from "./ui/button";
-// // import {
-// //   Briefcase,
-// //   CheckCircle2,
-// //   Clock,
-// //   MapPin,
-// //   DollarSign,
-// //   CalendarDays,
-// // } from "lucide-react";
-// // import Navbar from "./shared/Navbar";
-// // import { useParams } from "react-router-dom";
-// // import useGetSingleJob from "@/hooks/useGetSingleJobs";
-// // import { setLoading } from "@/redux/authSlice";
-// // import { setAllJobs, setSingleJob } from "@/redux/jobSlice";
-// // import { APPLICATION_API_END_POINT, JOB_API_END_POINT } from "@/utils/constant";
-// // import axios from "axios";
-// // import { useEffect, useState } from "react";
-// // import { useDispatch, useSelector } from "react-redux";
-// // import store from "@/redux/store";
-// // import { toast } from "sonner";
-
-// // function JobDescription() {
-// //   const [error, setError] = useState(null);
-// //   const dispatch = useDispatch();
-
-// //   const params = useParams();
-// //   console.log(params);
-// //   const jobId = params.id;
-// //   console.log(jobId);
-// //   const { singleJob } = useSelector((store) => store.job);
-// //   const { user } = useSelector((store) => store.auth);
-// //   const isInitiallyApplied = singleJob?.applications?.some(
-// //     (application) => application.applicant === user?.id || false
-// //   );
-// //   const [isApplied, setIsApplied] = useState(isInitiallyApplied);
-
-// //   const applyJobHandler = async () => {
-// //     dispatch(setLoading(true));
-// //     try {
-// //       const res = await axios.get(
-// //         `${APPLICATION_API_END_POINT}/apply/${jobId}`,
-// //         {
-// //           withCredentials: true,
-// //         }
-// //       );
-
-// //       if (res.data.status) {
-// //         toast.success(res.data.messaage || "Applied Successfully");
-// //         setIsApplied(true);
-// //         const updateSingleJob = {
-// //           ...singleJob,
-// //           applications: [...singleJob.applications, { applicant: user?._id }],
-// //         };
-// //         dispatch(setSingleJob(updateSingleJob));
-// //         setError(null);
-// //       }
-// //     } catch (err) {
-// //       toast.error("Already Applied");
-// //       console.error("Error applying for job:", err);
-// //       setError(err);
-// //     } finally {
-// //       dispatch(setLoading(false));
-// //     }
-// //   };
-
-// //   useEffect(() => {
-// //     if (!jobId) {
-// //       console.log("Job ID is undefined");
-// //       return;
-// //     }
-
-// //     const fetchSingleJob = async () => {
-// //       dispatch(setLoading(true));
-// //       try {
-// //         const res = await axios.get(`${JOB_API_END_POINT}/get/${jobId}`, {
-// //           withCredentials: true,
-// //         });
-
-// //         if (res.data.status) {
-// //           dispatch(setSingleJob(res.data.job));
-// //           setIsApplied(
-// //             res.data.job.applications.some(
-// //               (application) => application.applicant === user?._id
-// //             )
-// //           );
-// //           setError(null);
-// //         } else {
-// //           setError(new Error("Failed to fetch jobs. Status not true."));
-// //         }
-// //       } catch (err) {
-// //         toast.error(err.messaage);
-// //         console.error("Error fetching jobs:", err);
-// //         setError(err);
-// //       } finally {
-// //         dispatch(setLoading(false));
-// //       }
-// //     };
-
-// //     fetchSingleJob();
-// //   }, [jobId, dispatch, user?._id]);
-
-// //   return (
-// //     <div className="bg-gray-50 min-h-screen">
-// //       <Navbar />
-
-// //       <div className="max-w-4xl mx-auto my-14 px-6">
-// //         <div
-// //           className="bg-white shadow-lg border border-gray-100 rounded-2xl p-8 relative
-// //           hover:shadow-xl transition-all duration-300"
-// //         >
-// //           {/* Apply Button / Applied Status */}
-// //           {!isApplied ? (
-// //             <Button
-// //               onClick={isApplied ? null : applyJobHandler}
-// //               className="absolute top-6 right-6 bg-blue-600 text-white rounded-xl
-// //               px-6 py-2 hover:bg-blue-700 transition-colors group"
-// //             >
-// //               Apply Now
-// //               <span className="ml-2 group-hover:translate-x-1 transition-transform">
-// //                 →
-// //               </span>
-// //             </Button>
-// //           ) : (
-// //             <div
-// //               className="absolute top-6 right-6 text-green-600 font-medium flex items-center
-// //               bg-green-50 px-4 py-2 rounded-xl"
-// //             >
-// //               <CheckCircle2 className="mr-2 w-5 h-5" />
-// //               Applied
-// //             </div>
-// //           )}
-
-// //           {/* Job Header */}
-// //           <div className="mb-6">
-// //             <h1 className="font-bold text-3xl text-gray-900 mb-4">
-// //               {singleJob?.title}
-// //             </h1>
-
-// //             {/* Job Metadata */}
-// //             <div className="flex items-center gap-4 flex-wrap">
-// //               {/* <div className="flex items-center gap-2 bg-blue-50 text-blue-800 px-3 py-1 rounded-full text-sm">
-// //                 <Briefcase className="w-4 h-4" />
-// //                 {singleJob?.position} Position
-// //               </div> */}
-// //               <div className="flex items-center gap-2 bg-green-50 text-green-800 px-3 py-1 rounded-full text-sm">
-// //                 <Clock className="w-4 h-4" />
-// //                 {singleJob?.jobType}
-// //               </div>
-// //               <div className="flex items-center gap-2 bg-purple-50 text-purple-800 px-3 py-1 rounded-full text-sm">
-// //                 <DollarSign className="w-4 h-4" />
-// //                 {singleJob?.salary} K
-// //               </div>
-// //             </div>
-// //           </div>
-
-// //           {/* Detailed Job Information */}
-// //           <div className="grid md:grid-cols-2 gap-6 mb-6 bg-gray-50 p-6 rounded-xl">
-// //             <div className="space-y-3">
-// //               <div className="flex items-center gap-3">
-// //                 <MapPin className="w-5 h-5 text-blue-600" />
-// //                 <span className="text-gray-700">
-// //                   <strong>Location:</strong> {singleJob?.location}
-// //                 </span>
-// //               </div>
-// //               <div className="flex items-center gap-3">
-// //                 <CalendarDays className="w-5 h-5 text-green-600" />
-// //                 <span className="text-gray-700">
-// //                   <strong>Posted Date:</strong>{" "}
-// //                   {singleJob?.createdAt.split("T")[0]}
-// //                 </span>
-// //               </div>
-// //             </div>
-// //             <div className="space-y-3">
-// //               <div className="flex items-center gap-3">
-// //                 <Briefcase className="w-5 h-5 text-purple-600" />
-// //                 <span className="text-gray-700">
-// //                   <strong>Experience:</strong> {singleJob?.experience} Yrs
-// //                 </span>
-// //               </div>
-// //               <div className="flex items-center gap-3">
-// //                 <CheckCircle2 className="w-5 h-5 text-green-600" />
-// //                 <span className="text-gray-700">
-// //                   <strong>Total Applicants:</strong>{" "}
-// //                   {singleJob?.applications?.length}
-// //                 </span>
-// //               </div>
-// //             </div>
-// //           </div>
-
-// //           {/* Job Description */}
-// //           <div className="space-y-4">
-// //             <h2 className="text-xl font-semibold border-b pb-2 text-gray-800">
-// //               Job Description
-// //             </h2>
-// //             <p className="text-gray-700 leading-relaxed">
-// //               {singleJob?.description}
-// //             </p>
-// //           </div>
-// //         </div>
-// //       </div>
-// //     </div>
-// //   );
-// // }
-
-// // export default JobDescription;
-// // import { Badge } from "./ui/badge";
-// // import { Button } from "./ui/button";
-// // import {
-// //   Briefcase,
-// //   CheckCircle2,
-// //   Clock,
-// //   MapPin,
-// //   DollarSign,
-// //   CalendarDays,
-// //   ListChecks,
-// // } from "lucide-react";
-// // import Navbar from "./shared/Navbar";
-// // import { useParams } from "react-router-dom";
-// // import useGetSingleJob from "@/hooks/useGetSingleJobs";
-// // import { setLoading } from "@/redux/authSlice";
-// // import { setAllJobs, setSingleJob } from "@/redux/jobSlice";
-// // import { APPLICATION_API_END_POINT, JOB_API_END_POINT } from "@/utils/constant";
-// // import axios from "axios";
-// // import { useEffect, useState } from "react";
-// // import { useDispatch, useSelector } from "react-redux";
-// // import store from "@/redux/store";
-// // import { toast } from "sonner";
-
-// // function JobDescription() {
-// //   const [error, setError] = useState(null);
-// //   const [isApplying, setIsApplying] = useState(false);
-// //   const dispatch = useDispatch();
-
-// //   const params = useParams();
-// //   const jobId = params.id;
-// //   const { singleJob } = useSelector((store) => store.job);
-// //   const { user } = useSelector((store) => store.auth);
-// //   const isInitiallyApplied = singleJob?.applications?.some(
-// //     (application) => application.applicant === user?.id || false
-// //   );
-// //   const [isApplied, setIsApplied] = useState(isInitiallyApplied);
-
-// //   const applyJobHandler = async () => {
-// //     setIsApplying(true);
-// //     dispatch(setLoading(true));
-// //     try {
-// //       const res = await axios.get(
-// //         `${APPLICATION_API_END_POINT}/apply/${jobId}`,
-// //         {
-// //           withCredentials: true,
-// //         }
-// //       );
-
-// //       if (res.data.status) {
-// //         toast.success(res.data.messaage || "Applied Successfully");
-// //         setIsApplied(true);
-// //         const updateSingleJob = {
-// //           ...singleJob,
-// //           applications: [...singleJob.applications, { applicant: user?._id }],
-// //         };
-// //         dispatch(setSingleJob(updateSingleJob));
-// //         setError(null);
-// //       }
-// //     } catch (err) {
-// //       toast.error("Already Applied");
-// //       console.error("Error applying for job:", err);
-// //       setError(err);
-// //     } finally {
-// //       setIsApplying(false);
-// //       dispatch(setLoading(false));
-// //     }
-// //   };
-
-// //   useEffect(() => {
-// //     if (!jobId) {
-// //       console.log("Job ID is undefined");
-// //       return;
-// //     }
-
-// //     const fetchSingleJob = async () => {
-// //       dispatch(setLoading(true));
-// //       try {
-// //         const res = await axios.get(`${JOB_API_END_POINT}/get/${jobId}`, {
-// //           withCredentials: true,
-// //         });
-
-// //         if (res.data.status) {
-// //           dispatch(setSingleJob(res.data.job));
-// //           setIsApplied(
-// //             res.data.job.applications.some(
-// //               (application) => application.applicant === user?._id
-// //             )
-// //           );
-// //           setError(null);
-// //         } else {
-// //           setError(new Error("Failed to fetch jobs. Status not true."));
-// //         }
-// //       } catch (err) {
-// //         toast.error(err.messaage);
-// //         console.error("Error fetching jobs:", err);
-// //         setError(err);
-// //       } finally {
-// //         dispatch(setLoading(false));
-// //       }
-// //     };
-
-// //     fetchSingleJob();
-// //   }, [jobId, dispatch, user?._id]);
-
-// //   return (
-// //     <div className="bg-gray-50 min-h-screen">
-// //       <Navbar />
-
-// //       <div className="max-w-4xl mx-auto my-14 px-6">
-// //         <div
-// //           className="bg-white shadow-lg border border-gray-100 rounded-2xl p-8 relative
-// //           hover:shadow-xl transition-all duration-300"
-// //         >
-// //           {/* Apply Button / Applied Status */}
-// //           {!isApplied ? (
-// //             <Button
-// //               onClick={isApplied ? null : applyJobHandler}
-// //               disabled={isApplying}
-// //               className="absolute top-6 right-6 bg-blue-600 text-white rounded-xl
-// //               px-6 py-2 hover:bg-blue-700 transition-colors group disabled:opacity-70"
-// //             >
-// //               {isApplying ? "Applying..." : "Apply Now"}
-// //               {!isApplying && (
-// //                 <span className="ml-2 group-hover:translate-x-1 transition-transform">
-// //                   →
-// //                 </span>
-// //               )}
-// //             </Button>
-// //           ) : (
-// //             <div
-// //               className="absolute top-6 right-6 text-green-600 font-medium flex items-center
-// //               bg-green-50 px-4 py-2 rounded-xl"
-// //             >
-// //               <CheckCircle2 className="mr-2 w-5 h-5" />
-// //               Applied
-// //             </div>
-// //           )}
-
-// //           {/* Job Header */}
-// //           <div className="mb-6">
-// //             <h1 className="font-bold text-3xl text-gray-900 mb-4">
-// //               {singleJob?.title}
-// //             </h1>
-
-// //             {/* Job Metadata */}
-// //             <div className="flex items-center gap-4 flex-wrap">
-// //               <div className="flex items-center gap-2 bg-green-50 text-green-800 px-3 py-1 rounded-full text-sm">
-// //                 <Clock className="w-4 h-4" />
-// //                 {Array.isArray(singleJob?.jobType)
-// //                   ? singleJob?.jobType[0]
-// //                   : singleJob?.jobType}
-// //               </div>
-// //               <div className="flex items-center gap-2 bg-purple-50 text-purple-800 px-3 py-1 rounded-full text-sm">
-// //                 <DollarSign className="w-4 h-4" />
-// //                 {singleJob?.salary} K
-// //               </div>
-// //             </div>
-// //           </div>
-
-// //           {/* Detailed Job Information */}
-// //           <div className="grid md:grid-cols-2 gap-6 mb-6 bg-gray-50 p-6 rounded-xl">
-// //             <div className="space-y-3">
-// //               <div className="flex items-center gap-3">
-// //                 <MapPin className="w-5 h-5 text-blue-600" />
-// //                 <span className="text-gray-700">
-// //                   <strong>Location:</strong> {singleJob?.location}
-// //                 </span>
-// //               </div>
-// //               <div className="flex items-center gap-3">
-// //                 <CalendarDays className="w-5 h-5 text-green-600" />
-// //                 <span className="text-gray-700">
-// //                   <strong>Posted Date:</strong>{" "}
-// //                   {singleJob?.createdAt.split("T")[0]}
-// //                 </span>
-// //               </div>
-// //             </div>
-// //             <div className="space-y-3">
-// //               <div className="flex items-center gap-3">
-// //                 <Briefcase className="w-5 h-5 text-purple-600" />
-// //                 <span className="text-gray-700">
-// //                   <strong>Experience:</strong> {singleJob?.experience} Yrs
-// //                 </span>
-// //               </div>
-// //               {/* <div className="flex items-center gap-3">
-// //                 <CheckCircle2 className="w-5 h-5 text-green-600" />
-// //                 <span className="text-gray-700">
-// //                   <strong>Total Applicants:</strong>{" "}
-// //                   {singleJob?.applications?.length}
-// //                 </span>
-// //               </div> */}
-// //             </div>
-// //           </div>
-
-// //           {/* Job Description */}
-// //           <div className="space-y-4 mb-8">
-// //             <h2 className="text-xl font-semibold border-b pb-2 text-gray-800">
-// //               Job Description
-// //             </h2>
-// //             <p className="text-gray-700 leading-relaxed">
-// //               {singleJob?.description}
-// //             </p>
-// //           </div>
-
-// //           {/* Requirements Section */}
-// //           <div className="space-y-4">
-// //             <h2 className="text-xl font-semibold border-b pb-2 text-gray-800 flex items-center gap-2">
-// //               <ListChecks className="w-6 h-6 text-blue-600" />
-// //               Requirements
-// //             </h2>
-// //             <ul className="list-disc pl-6 space-y-2">
-// //               {singleJob?.requirements?.map((requirement, index) => (
-// //                 <li key={index} className="text-gray-700">
-// //                   {requirement}
-// //                 </li>
-// //               ))}
-// //             </ul>
-// //           </div>
-// //         </div>
-// //       </div>
-// //     </div>
-// //   );
-// // }
-
-// // export default JobDescription;
-// // import { Badge } from "./ui/badge";
-// // import { Button } from "./ui/button";
-// // import {
-// //   Briefcase,
-// //   CheckCircle2,
-// //   Clock,
-// //   MapPin,
-// //   DollarSign,
-// //   CalendarDays,
-// //   ListChecks,
-// //   LogIn,
-// // } from "lucide-react";
-// // import Navbar from "./shared/Navbar";
-// // import { useParams } from "react-router-dom";
-// // import useGetSingleJob from "@/hooks/useGetSingleJobs";
-// // import { setLoading } from "@/redux/authSlice";
-// // import { setAllJobs, setSingleJob } from "@/redux/jobSlice";
-// // import { APPLICATION_API_END_POINT, JOB_API_END_POINT } from "@/utils/constant";
-// // import axios from "axios";
-// // import { useEffect, useState } from "react";
-// // import { useDispatch, useSelector } from "react-redux";
-// // import store from "@/redux/store";
-// // import { toast } from "sonner";
-// // import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "./ui/dialog";
-// // import Login from "./auth/Login";
-
-// // const renderFormattedText = (text, lineClamp = 0) => {
-// //   return (
-// //     <div
-// //       className={`whitespace-pre-wrap ${
-// //         lineClamp > 0 ? `line-clamp-${lineClamp}` : ""
-// //       } text-gray-700 leading-relaxed`}
-// //     >
-// //       {text}
-// //     </div>
-// //   );
-// // };
-
-// // function JobDescription() {
-// //   const [error, setError] = useState(null);
-// //   const [showAuthModal, setShowAuthModal] = useState(false);
-// //   const [isApplying, setIsApplying] = useState(false);
-// //   const dispatch = useDispatch();
-
-// //   const params = useParams();
-// //   const jobId = params.id;
-// //   const { singleJob } = useSelector((store) => store.job);
-// //   const { user } = useSelector((store) => store.auth);
-// //   const u = useSelector((state) => state.auth?.user);
-// //   const isAuthenticated = !!u;
-
-// //   const isInitiallyApplied = singleJob?.applications?.some(
-// //     (application) => application.applicant === user?.id || false
-// //   );
-// //   const [isApplied, setIsApplied] = useState(isInitiallyApplied);
-
-// //   const applyJobHandler = async () => {
-// //      if (!isAuthenticated) {
-// //       setShowAuthModal(true);
-// //       return;
-// //     }
-// //     setIsApplying(true);
-// //     dispatch(setLoading(true));
-
-// //     try {
-// //       const res = await axios.get(
-// //         `${APPLICATION_API_END_POINT}/apply/${jobId}`,
-// //         { withCredentials: true }
-// //       );
-
-// //       if (res.data.status) {
-// //         toast.success(res.data.messaage || "Applied Successfully");
-// //         setIsApplied(true);
-// //         const updateSingleJob = {
-// //           ...singleJob,
-// //           applications: [...singleJob.applications, { applicant: user?._id }],
-// //         };
-// //         dispatch(setSingleJob(updateSingleJob));
-// //         setError(null);
-// //       }
-// //     } catch (err) {
-// //       toast.error("Already Applied");
-// //       console.error("Error applying for job:", err);
-// //       setError(err);
-// //     } finally {
-// //       setIsApplying(false);
-// //       dispatch(setLoading(false));
-// //     }
-// //   };
-
-// //   useEffect(() => {
-// //     if (!jobId) {
-// //       console.log("Job ID is undefined");
-// //       return;
-// //     }
-
-// //     const fetchSingleJob = async () => {
-// //       dispatch(setLoading(true));
-
-// //       try {
-// //         const res = await axios.get(`${JOB_API_END_POINT}/get/${jobId}`, {
-// //           withCredentials: true,
-// //         });
-
-// //         if (res.data.status) {
-// //           dispatch(setSingleJob(res.data.job));
-// //           setIsApplied(
-// //             res.data.job.applications.some(
-// //               (application) => application.applicant === user?._id
-// //             )
-// //           );
-// //           setError(null);
-// //         } else {
-// //           setError(new Error("Failed to fetch jobs. Status not true."));
-// //         }
-// //       } catch (err) {
-// //         toast.error(err.messaage);
-// //         console.error("Error fetching jobs:", err);
-// //         setError(err);
-// //       } finally {
-// //         dispatch(setLoading(false));
-// //       }
-// //     };
-
-// //     fetchSingleJob();
-// //   }, [jobId, dispatch, user?._id]);
-
-// //   return (
-// //     <div className="bg-gray-50 min-h-screen">
-// //       <Navbar />
-// //       {!isAuthenticated && (
-// //         <Dialog open={showAuthModal} onOpenChange={setShowAuthModal}>
-// //           <DialogContent className="sm:max-w-md">
-// //             <DialogHeader>
-// //               <DialogTitle>Sign in Required</DialogTitle>
-// //               <DialogDescription>
-// //                 Please sign in to view job details and save jobs to your profile.
-// //               </DialogDescription>
-// //             </DialogHeader>
-// //             <div className="flex flex-col gap-4 py-4">
-// //               <p className="text-sm text-gray-500">
-// //                 Create an account or sign in to access all features and apply to
-// //                 jobs.
-// //               </p>
-// //               <div className="flex justify-end gap-3">
-// //                 <Button variant="outline" onClick={() => setShowAuthModal(false)}>
-// //                   Cancel
-// //                 </Button>
-// //                 <Button
-// //                   className="bg-blue-600 hover:bg-blue-700 text-white"
-// //                   onClick={() => {
-// //                     setShowAuthModal(false);
-// //                     navigate("/signup/candidate");
-// //                   }}
-// //                 >
-// //                   <LogIn className="w-4 h-4 mr-2" />
-// //                   Sign Up
-// //                 </Button>
-// //               </div>
-// //             </div>
-// //             <a
-// //               className="cursor-pointer hover:text-blue-700 hover:underline text-right mr-2"
-// //               onClick={() => navigate('/login')}
-// //             >
-// //               <div className="text-xs">Already Registered?</div>
-// //             </a>
-// //           </DialogContent>
-// //         </Dialog>
-// //       )}
-
-// //       <div className="max-w-4xl mx-auto my-14 px-6">
-// //         <div className="bg-white shadow-lg border border-gray-100 rounded-2xl p-8 relative hover:shadow-xl transition-all duration-300">
-// //           {/* Apply Button / Applied Status */}
-// //           {!isApplied ? (
-// //             <Button
-// //               onClick={isApplied ? null : applyJobHandler}
-// //               disabled={isApplying}
-// //               className="absolute top-6 right-6 bg-blue-600 text-white rounded-xl px-6 py-2 hover:bg-blue-700 transition-colors group disabled:opacity-70"
-// //             >
-// //               {isApplying ? "Applying..." : "Apply Now"}
-// //               {!isApplying && (
-// //                 <span className="ml-2 group-hover:translate-x-1 transition-transform">
-// //                   →
-// //                 </span>
-// //               )}
-// //             </Button>
-// //           ) : (
-// //             <div className="absolute top-6 right-6 text-green-600 font-medium flex items-center bg-green-50 px-4 py-2 rounded-xl">
-// //               <CheckCircle2 className="mr-2 w-5 h-5" />
-// //               Applied
-// //             </div>
-// //           )}
-
-// //           {/* Job Header */}
-// //           <div className="mb-6">
-// //             <h1 className="font-bold text-3xl text-gray-900 mb-4">
-// //               {singleJob?.title}
-// //             </h1>
-
-// //             {/* Job Metadata */}
-// //             <div className="flex items-center gap-4 flex-wrap">
-// //               <div className="flex items-center gap-2 bg-green-50 text-green-800 px-3 py-1 rounded-full text-sm">
-// //                 <Clock className="w-4 h-4" />
-// //                 {Array.isArray(singleJob?.jobType)
-// //                   ? singleJob?.jobType[0]
-// //                   : singleJob?.jobType}
-// //               </div>
-// //               {singleJob?.salary && singleJob.salary !== "" && (
-// //                 <div className="flex items-center gap-2 bg-purple-50 text-purple-800 px-3 py-1 rounded-full text-sm">
-// //                   <DollarSign className="w-4 h-4" />
-// //                   {singleJob.salary} K
-// //                 </div>
-// //               )}
-// //             </div>
-// //           </div>
-
-// //           {/* Detailed Job Information */}
-// //           <div className="grid md:grid-cols-2 gap-6 mb-6 bg-gray-50 p-6 rounded-xl">
-// //             <div className="space-y-3">
-// //               <div className="flex items-center gap-3">
-// //                 <MapPin className="w-5 h-5 text-blue-600" />
-// //                 <span className="text-gray-700">
-// //                   <strong>Location:</strong> {singleJob?.location}
-// //                 </span>
-// //               </div>
-// //               <div className="flex items-center gap-3">
-// //                 <CalendarDays className="w-5 h-5 text-green-600" />
-// //                 <span className="text-gray-700">
-// //                   <strong>Posted Date:</strong>{" "}
-// //                   {singleJob?.createdAt.split("T")[0]}
-// //                 </span>
-// //               </div>
-// //             </div>
-// //             <div className="space-y-3">
-// //               <div className="flex items-center gap-3">
-// //                 <Briefcase className="w-5 h-5 text-purple-600" />
-// //                 <span className="text-gray-700">
-// //                   <strong>Experience:</strong> {singleJob?.experience} Yrs
-// //                 </span>
-// //               </div>
-// //             </div>
-// //           </div>
-
-// //           {/* Job Description */}
-// //           <div className="space-y-4 mb-8">
-// //             <h2 className="text-xl font-semibold border-b pb-2 text-gray-800">
-// //               Job Description
-// //             </h2>
-// //             {renderFormattedText(singleJob?.description)}
-// //           </div>
-
-// //           {/* Requirements Section */}
-// //           <div className="space-y-4">
-// //             <h2 className="text-xl font-semibold border-b pb-2 text-gray-800 flex items-center gap-2">
-// //               <ListChecks className="w-6 h-6 text-blue-600" />
-// //               Requirements
-// //             </h2>
-// //             <ul className="list-disc pl-6 space-y-2">
-// //               {singleJob?.requirements?.map((requirement, index) => (
-// //                 <li key={index} className="text-gray-700">
-// //                   {renderFormattedText(requirement)}
-// //                 </li>
-// //               ))}
-// //             </ul>
-// //           </div>
-// //         </div>
-// //       </div>
-// //     </div>
-// //   );
-// // }
-
-// // export default JobDescription;
-// import { useEffect, useState } from "react";
-// import { useParams, useNavigate } from "react-router-dom";
-// import { useDispatch, useSelector } from "react-redux";
-// import axios from "axios";
-// import {
-//   Briefcase,
-//   CheckCircle2,
-//   Clock,
-//   MapPin,
-//   DollarSign,
-//   CalendarDays,
-//   ListChecks,
-//   LogIn,
-//   Building2,
-//   Users,
-// } from "lucide-react";
-
-// import { Button } from "./ui/button";
-// import Navbar from "./shared/Navbar";
-// import {
-//   Dialog,
-//   DialogContent,
-//   DialogDescription,
-//   DialogHeader,
-//   DialogTitle,
-// } from "./ui/dialog";
-// import { APPLICATION_API_END_POINT, JOB_API_END_POINT } from "@/utils/constant";
-// import { setLoading } from "@/redux/authSlice";
-// import { setSingleJob } from "@/redux/jobSlice";
-// import { toast } from "sonner";
-
-// const renderFormattedText = (text, lineClamp = 0) => (
-//   <div
-//     className={`whitespace-pre-wrap ${
-//       lineClamp > 0 ? `line-clamp-${lineClamp}` : ""
-//     } text-gray-600 leading-relaxed`}
-//   >
-//     {text}
-//   </div>
-// );
-
-// const MetadataBadge = ({ icon: Icon, text, color }) => (
-//   <div
-//     className={`flex items-center gap-2 bg-${color}-50 text-${color}-700 px-3 py-1.5 rounded-lg text-sm font-medium`}
-//   >
-//     <Icon className="w-4 h-4" />
-//     {text}
-//   </div>
-// );
-
-// function JobDescription() {
-//   const navigate = useNavigate();
-//   const dispatch = useDispatch();
-//   const params = useParams();
-//   const jobId = params.id;
-
-//   const [error, setError] = useState(null);
-//   const [showAuthModal, setShowAuthModal] = useState(false);
-//   const [isApplying, setIsApplying] = useState(false);
-
-//   const { singleJob } = useSelector((store) => store.job);
-//   const { user } = useSelector((store) => store.auth);
-//   const u = useSelector((state) => state.auth?.user);
-//   const isAuthenticated = !!u;
-
-//   const isInitiallyApplied = singleJob?.applications?.some(
-//     (application) => application.applicant === user?.id || false
-//   );
-//   const [isApplied, setIsApplied] = useState(isInitiallyApplied);
-
-//   // Parse hiring team data safely
-//   const hiringTeam = (() => {
-//     try {
-//       return typeof singleJob?.hiringTeam === "string"
-//         ? JSON.parse(singleJob.hiringTeam)
-//         : Array.isArray(singleJob?.hiringTeam)
-//         ? singleJob.hiringTeam
-//         : [];
-//     } catch (e) {
-//       console.error("Error parsing hiring team:", e);
-//       return [];
-//     }
-//   })();
-
-//   // Parse requirements safely
-//   const requirements = (() => {
-//     try {
-//       return typeof singleJob?.requirements === "string"
-//         ? singleJob.requirements.split("\n").filter(Boolean)
-//         : Array.isArray(singleJob?.requirements)
-//         ? singleJob.requirements
-//         : [];
-//     } catch (e) {
-//       console.error("Error parsing requirements:", e);
-//       return [];
-//     }
-//   })();
-
-//   const applyJobHandler = async () => {
-//     if (!isAuthenticated) {
-//       setShowAuthModal(true);
-//       return;
-//     }
-
-//     setIsApplying(true);
-//     dispatch(setLoading(true));
-
-//     try {
-//       const res = await axios.get(
-//         `${APPLICATION_API_END_POINT}/apply/${jobId}`,
-//         { withCredentials: true }
-//       );
-
-//       if (res.data.status) {
-//         toast.success(res.data.message || "Applied Successfully");
-//         setIsApplied(true);
-//         dispatch(
-//           setSingleJob({
-//             ...singleJob,
-//             applications: [
-//               ...(singleJob.applications || []),
-//               { applicant: user?._id },
-//             ],
-//           })
-//         );
-//       }
-//     } catch (err) {
-//       toast.error("Already Applied");
-//       console.error("Error applying for job:", err);
-//       setError(err);
-//     } finally {
-//       setIsApplying(false);
-//       dispatch(setLoading(false));
-//     }
-//   };
-
-//   useEffect(() => {
-//     if (!jobId) return;
-
-//     const fetchSingleJob = async () => {
-//       dispatch(setLoading(true));
-
-//       try {
-//         const res = await axios.get(`${JOB_API_END_POINT}/get/${jobId}`, {
-//           withCredentials: true,
-//         });
-
-//         if (res.data.status) {
-//           dispatch(setSingleJob(res.data.job));
-//           setIsApplied(
-//             res.data.job.applications?.some(
-//               (application) => application.applicant === user?._id
-//             ) || false
-//           );
-//         } else {
-//           setError(new Error("Failed to fetch job details."));
-//         }
-//       } catch (err) {
-//         toast.error(err.message || "Error fetching job details");
-//         console.error("Error fetching job:", err);
-//         setError(err);
-//       } finally {
-//         dispatch(setLoading(false));
-//       }
-//     };
-
-//     fetchSingleJob();
-//   }, [jobId, dispatch, user?._id]);
-
-//   if (error) {
-//     return (
-//       <div className="min-h-screen bg-gray-50 flex items-center justify-center">
-//         <div className="bg-white p-8 rounded-xl shadow-lg max-w-md text-center">
-//           <h2 className="text-2xl font-bold text-red-600 mb-4">
-//             Error Loading Job
-//           </h2>
-//           <p className="text-gray-600 mb-4">
-//             {error.message || "Failed to load job details"}
-//           </p>
-//           <Button onClick={() => window.location.reload()} className="w-full">
-//             Try Again
-//           </Button>
-//         </div>
-//       </div>
-//     );
-//   }
-
-//   return (
-//     <div className="min-h-screen bg-gray-50">
-//       <Navbar />
-
-//       <Dialog
-//         open={showAuthModal && !isAuthenticated}
-//         onOpenChange={setShowAuthModal}
-//       >
-//         <DialogContent className="sm:max-w-md">
-//           <DialogHeader>
-//             <DialogTitle className="text-xl font-semibold">
-//               Sign in Required
-//             </DialogTitle>
-//             <DialogDescription className="text-gray-600 mt-2">
-//               Please sign in to apply for jobs and access all features.
-//             </DialogDescription>
-//           </DialogHeader>
-//           <div className="flex flex-col gap-4 py-4">
-//             <p className="text-sm text-gray-500">
-//               Create an account or sign in to apply for jobs and track your
-//               applications.
-//             </p>
-//             <div className="flex justify-end gap-3">
-//               <Button variant="outline" onClick={() => setShowAuthModal(false)}>
-//                 Cancel
-//               </Button>
-//               <Button
-//                 className="bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white"
-//                 onClick={() => {
-//                   setShowAuthModal(false);
-//                   navigate("/signup/candidate");
-//                 }}
-//               >
-//                 <LogIn className="w-4 h-4 mr-2" />
-//                 Sign Up
-//               </Button>
-//             </div>
-//             <button
-//               className="text-sm text-gray-600 hover:text-blue-600 hover:underline text-right"
-//               onClick={() => navigate("/login")}
-//             >
-//               Already have an account? Sign in
-//             </button>
-//           </div>
-//         </DialogContent>
-//       </Dialog>
-
-//       <div className="max-w-4xl mx-auto py-12 px-4">
-//         <div className="bg-white shadow-lg rounded-2xl p-8 transition-all duration-300 hover:shadow-xl border border-gray-100">
-//           {/* Header Section */}
-//           <div className="mb-8">
-//             <div className="flex justify-between items-start mb-6">
-//               <div className="flex-1">
-//                 {/* Company Info */}
-//                 {singleJob?.company?.name && (
-//                   <div className="flex items-center gap-3 mb-4">
-//                     <Building2 className="w-5 h-5 text-blue-600" />
-//                     <span className="text-lg font-medium text-gray-700">
-//                       {singleJob.company.name}
-//                     </span>
-//                   </div>
-//                 )}
-
-//                 {/* Job Title */}
-//                 <h1 className="text-3xl font-bold text-gray-900">
-//                   {singleJob?.title}
-//                 </h1>
-//               </div>
-
-//               {/* Action Button */}
-//               <div className="ml-4">
-//                 {isApplied ? (
-//                   <div className="inline-flex items-center gap-2 bg-green-50 text-green-700 px-4 py-2 rounded-xl font-medium">
-//                     <CheckCircle2 className="w-5 h-5" />
-//                     Applied Successfully
-//                   </div>
-//                 ) : (
-//                   <Button
-//                     onClick={applyJobHandler}
-//                     disabled={isApplying}
-//                     className="bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white rounded-xl px-6 py-2.5 font-medium transition-all"
-//                   >
-//                     {isApplying ? (
-//                       "Applying..."
-//                     ) : (
-//                       <>
-//                         Apply Now
-//                         <span className="ml-2 group-hover:translate-x-1 transition-transform">
-//                           →
-//                         </span>
-//                       </>
-//                     )}
-//                   </Button>
-//                 )}
-//               </div>
-//             </div>
-
-//             {/* Job Metadata */}
-//             <div className="flex flex-wrap gap-3 mt-6">
-//               {singleJob?.jobType && (
-//                 <MetadataBadge
-//                   icon={Clock}
-//                   text={
-//                     Array.isArray(singleJob.jobType)
-//                       ? singleJob.jobType[0]
-//                       : singleJob.jobType
-//                   }
-//                   color="green"
-//                 />
-//               )}
-//               {singleJob?.salary && (
-//                 <MetadataBadge
-//                   icon={DollarSign}
-//                   text={`${singleJob.salary}K`}
-//                   color="purple"
-//                 />
-//               )}
-//               {singleJob?.location && (
-//                 <MetadataBadge
-//                   icon={MapPin}
-//                   text={singleJob.location}
-//                   color="blue"
-//                 />
-//               )}
-//               {singleJob?.experience && (
-//                 <MetadataBadge
-//                   icon={Briefcase}
-//                   text={`${singleJob.experience} years`}
-//                   color="indigo"
-//                 />
-//               )}
-//             </div>
-//           </div>
-
-//           {/* Hiring Team Section */}
-//           {hiringTeam.length > 0 && (
-//             <div className="mb-8">
-//               <h2 className="text-xl font-semibold text-gray-900 mb-4 flex items-center gap-2">
-//                 <Users className="w-6 h-6 text-blue-600" />
-//                 Hiring Team
-//               </h2>
-//               <div className="grid md:grid-cols-2 gap-4">
-//                 {hiringTeam.map((member, index) => (
-//                   <div
-//                     key={index}
-//                     className="p-4 bg-gray-50 rounded-lg border border-gray-100 hover:shadow-md transition-all"
-//                   >
-//                     <h3 className="font-medium text-gray-900">{member.name}</h3>
-//                     <p className="text-sm text-gray-600">{member.position}</p>
-//                     {member.email && (
-//                       <p className="text-sm text-blue-600 mt-1">
-//                         {member.email}
-//                       </p>
-//                     )}
-//                   </div>
-//                 ))}
-//               </div>
-//             </div>
-//           )}
-
-//           {/* Description Section */}
-//           {singleJob?.description && (
-//             <div className="space-y-6 mb-8">
-//               <h2 className="text-xl font-semibold text-gray-900 border-b border-gray-200 pb-2">
-//                 Job Description
-//               </h2>
-//               {renderFormattedText(singleJob.description)}
-//             </div>
-//           )}
-
-//           {/* Requirements Section */}
-//           {requirements.length > 0 && (
-//             <div className="space-y-6">
-//               <h2 className="text-xl font-semibold text-gray-900 border-b border-gray-200 pb-2 flex items-center gap-2">
-//                 <ListChecks className="w-6 h-6 text-blue-600" />
-//                 Requirements
-//               </h2>
-//               <ul className="space-y-3">
-//                 {requirements.map((requirement, index) => (
-//                   <li key={index} className="flex items-start gap-3">
-//                     <span className="w-1.5 h-1.5 rounded-full bg-blue-600 mt-2.5" />
-//                     <span className="text-gray-700">{requirement}</span>
-//                   </li>
-//                 ))}
-//               </ul>
-//             </div>
-//           )}
-//         </div>
-//       </div>
-//     </div>
-//   );
-// }
-
-// export default JobDescription;
-import { useEffect, useState, startTransition } from "react";
+import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import axios from "axios";
@@ -1091,15 +8,22 @@ import {
   Clock,
   MapPin,
   DollarSign,
-  CalendarDays,
   ListChecks,
   LogIn,
   Building2,
+  Calendar,
+  ExternalLink,
+  ArrowLeft,
   Users,
+  Globe,
+  BookmarkIcon,
+  ArrowRight,
 } from "lucide-react";
+import PropTypes from "prop-types";
 
 import { Button } from "./ui/button";
 import Navbar from "./shared/Navbar";
+import Job from "./Job";
 import {
   Dialog,
   DialogContent,
@@ -1107,10 +31,11 @@ import {
   DialogHeader,
   DialogTitle,
 } from "./ui/dialog";
-import { APPLICATION_API_END_POINT, JOB_API_END_POINT } from "@/utils/constant";
+import { APPLICATION_API_END_POINT, JOB_API_END_POINT, COMPANY_API_END_POINT, SAVED_JOBS_API_END_POINT } from "@/utils/constant";
 import { setLoading } from "@/redux/authSlice";
 import { setSingleJob } from "@/redux/jobSlice";
 import { toast } from "sonner";
+import Footer from "./Footer";
 
 const renderFormattedText = (text, lineClamp = 0) => (
   <div
@@ -1131,6 +56,12 @@ const MetadataBadge = ({ icon: Icon, text, color }) => (
   </div>
 );
 
+MetadataBadge.propTypes = {
+  icon: PropTypes.elementType.isRequired,
+  text: PropTypes.string.isRequired,
+  color: PropTypes.string.isRequired,
+};
+
 function JobDescription() {
   const navigate = useNavigate();
   const dispatch = useDispatch();
@@ -1140,6 +71,11 @@ function JobDescription() {
   const [error, setError] = useState(null);
   const [showAuthModal, setShowAuthModal] = useState(false);
   const [isApplying, setIsApplying] = useState(false);
+  const [companyDetails, setCompanyDetails] = useState(null);
+  const [moreJobs, setMoreJobs] = useState([]);
+  const [isSaved, setIsSaved] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+  const [lastAction, setLastAction] = useState(null);
 
   const { singleJob } = useSelector((store) => store.job);
   const { user } = useSelector((store) => store.auth);
@@ -1150,28 +86,6 @@ function JobDescription() {
     (application) => application.applicant === user?.id || false
   );
   const [isApplied, setIsApplied] = useState(isInitiallyApplied);
-
-  //  useEffect(() => {
-  //   if (user?.role === 'recruiter') {
-  //     startTransition(() => {
-  //       navigate("/admin/companies");
-  //     });
-  //   }
-  // }, [user?.role, navigate]);
-
-  // Parse hiring team data safely
-  const hiringTeam = (() => {
-    try {
-      return typeof singleJob?.hiringTeam === "string"
-        ? JSON.parse(singleJob.hiringTeam)
-        : Array.isArray(singleJob?.hiringTeam)
-        ? singleJob.hiringTeam
-        : [];
-    } catch (e) {
-      console.error("Error parsing hiring team:", e);
-      return [];
-    }
-  })();
 
   // Parse requirements safely
   const requirements = (() => {
@@ -1187,6 +101,74 @@ function JobDescription() {
     }
   })();
 
+  // Parse hiring team data safely
+  const hiringTeam = (() => {
+    try {
+      return typeof singleJob?.hiringTeam === "string"
+        ? JSON.parse(singleJob.hiringTeam)
+        : Array.isArray(singleJob?.hiringTeam)
+        ? singleJob.hiringTeam
+        : [];
+    } catch (e) {
+      console.error("Error parsing hiring team:", e);
+      return [];
+    }
+  })();
+
+  // Check if job is saved when component mounts
+  useEffect(() => {
+    if (isAuthenticated) {
+      const checkSavedStatus = async () => {
+        try {
+          const response = await axios.get(
+            `${SAVED_JOBS_API_END_POINT}/check/${jobId}`,
+            { withCredentials: true }
+          );
+          setIsSaved(response.data.isSaved);
+        } catch (error) {
+          console.error("Error checking saved status:", error);
+        }
+      };
+      checkSavedStatus();
+    }
+  }, [jobId, isAuthenticated]);
+
+  const handleAction = (action) => {
+    if (!isAuthenticated) {
+      setLastAction(action);
+      setShowAuthModal(true);
+      return;
+    }
+
+    if (action === "save") {
+      handleSaveJob();
+    }
+  };
+
+  const handleSaveJob = async () => {
+    try {
+      setIsLoading(true);
+      if (!isSaved) {
+        await axios.post(
+          `${SAVED_JOBS_API_END_POINT}/save`,
+          { jobId },
+          { withCredentials: true }
+        );
+        setIsSaved(true);
+      } else {
+        await axios.delete(
+          `${SAVED_JOBS_API_END_POINT}/saved`,
+          { data: { jobId }, withCredentials: true }
+        );
+        setIsSaved(false);
+      }
+    } catch (error) {
+      console.error("Error saving/unsaving job:", error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   const applyJobHandler = async () => {
     if (!isAuthenticated) {
       setShowAuthModal(true);
@@ -1197,9 +179,8 @@ function JobDescription() {
     dispatch(setLoading(true));
 
     try {
-      const res = await axios.post(
+      const res = await axios.get(
         `${APPLICATION_API_END_POINT}/apply/${jobId}`,
-        {},
         { withCredentials: true }
       );
 
@@ -1233,6 +214,7 @@ function JobDescription() {
       dispatch(setLoading(true));
 
       try {
+        // Fetch job details
         const res = await axios.get(`${JOB_API_END_POINT}/get/${jobId}`, {
           withCredentials: true,
         });
@@ -1244,13 +226,42 @@ function JobDescription() {
               (application) => application.applicant === user?._id
             ) || false
           );
+
+          // Fetch company details
+          if (res.data.job.companyId) {
+            try {
+              const companyRes = await axios.get(
+                `${COMPANY_API_END_POINT}/get/${res.data.job.companyId}`
+              );
+              if (companyRes.data.status) {
+                setCompanyDetails(companyRes.data.data);
+              }
+            } catch (companyErr) {
+              console.error("Error fetching company details:", companyErr);
+              toast.error("Error fetching company details");
+            }
+          }
+
+          // Fetch latest jobs
+          try {
+            const latestJobsRes = await axios.get(
+              `${JOB_API_END_POINT}/getlatest?limit=2&exclude=${jobId}`
+            );
+            if (latestJobsRes.data.status) {
+              setMoreJobs(latestJobsRes.data.jobs);
+            }
+          } catch (latestJobsErr) {
+            console.error("Error fetching latest jobs:", latestJobsErr);
+            // Don't show error toast for latest jobs as it's not critical
+          }
         } else {
           setError(new Error("Failed to fetch job details."));
+          toast.error("Failed to fetch job details");
         }
       } catch (err) {
-        toast.error(err.message || "Error fetching job details");
         console.error("Error fetching job:", err);
         setError(err);
+        toast.error(err.response?.data?.message || "Error fetching job details");
       } finally {
         dispatch(setLoading(false));
       }
@@ -1259,9 +270,75 @@ function JobDescription() {
     fetchSingleJob();
   }, [jobId, dispatch, user?._id]);
 
+  const JobCard = ({ job }) => (
+    <div className="bg-white border border-gray-300 rounded-xl p-4 md:p-3 md:px-6 transition duration-300 hover:shadow-lg hover:border-blue-100 relative group">
+      <div className="flex items-start md:items-center mb-4 space-x-3 md:space-x-4 mt-2">
+        <div className="h-14 w-14 md:h-20 md:w-20 shrink-0 rounded-xl flex items-center justify-center">
+          {job?.company?.logo ? (
+            <img
+              src={job?.company?.logo}
+              alt={`${job?.company?.name || "Company"} logo`}
+              className="w-full h-full object-cover rounded-lg"
+            />
+          ) : (
+            <Building2 className="w-6 h-6 md:w-8 md:h-8 text-gray-400" />
+          )}
+        </div>
+        <div className="flex-1 min-w-0">
+          <div className="flex flex-col md:flex-row md:justify-between md:items-center gap-1 md:gap-2">
+            <h2 className="text-sm md:text-sm font-semibold text-[#949494] truncate">
+              {job?.company?.CompanyName || "Company Name"}
+            </h2>
+          </div>
+          <h1 className="text-base md:text-xl font-semibold text-gray-700">
+            {job?.title || "Position not specified"}
+          </h1>
+          <div className="flex items-center space-x-1 p-2 rounded-lg">
+            <MapPin className="w-4 h-4 md:w-5 md:h-5 text-[#012760]" />
+            <span className="text-xs text-gray-600 truncate">
+              {job?.location || "Location not specified"}
+            </span>
+          </div>
+        </div>
+      </div>
+
+      <div className="h-px bg-gray-300"></div>
+
+      <div className="grid grid-cols-1 sm:grid-cols-6 gap-2 mb-4 mt-3">
+        <div className="flex items-center space-x-2 bg-[#97C0FF] bg-opacity-25 p-2 rounded-lg justify-center">
+          <span className="text-xs text-[#444444] truncate">
+            {job?.salary ? `${job.salary}` : "Salary not specified"}
+          </span>
+        </div>
+        <div className="flex items-center space-x-2 bg-[#97C0FF] bg-opacity-25 p-2 rounded-lg justify-center">
+          <span className="text-xs text-[#444444] truncate">
+            {job?.jobType || "Job type not specified"}
+          </span>
+        </div>
+      </div>
+
+      <div>
+        <div className="flex gap-10">
+          <div className="mb-4 w-1/2 text-[#444444]">
+            {renderFormattedText(job?.description || "No description available", 2)}
+          </div>
+
+          <div className="ml-56 mt-6 flex flex-col sm:flex-row gap-2 sm:gap-3">
+            <button
+              onClick={() => navigate(`/job/${job._id}`)}
+              className="text-m md:text-m w-full sm:w-auto underline text-[#012760]"
+            >
+              View Details
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+
   if (error) {
     return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center p-4">
+      <div className="min-h-screen bg-white flex items-center justify-center p-4">
         <div className="bg-white p-6 md:p-8 rounded-xl shadow-lg w-full max-w-md text-center">
           <h2 className="text-xl md:text-2xl font-bold text-red-600 mb-4">
             Error Loading Job
@@ -1278,7 +355,7 @@ function JobDescription() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-white">
       <Navbar />
 
       <Dialog
@@ -1328,34 +405,50 @@ function JobDescription() {
         </DialogContent>
       </Dialog>
 
-      <div className="max-w-4xl mx-auto py-6 md:py-12 px-4">
-        <div className="bg-white shadow-lg rounded-2xl p-4 md:p-8 transition-all duration-300 hover:shadow-xl border border-gray-100">
-          {/* Top Section with Fixed Apply Button */}
-          <div className="flex justify-between items-start gap-4 mb-6">
-            <div className="flex-1 min-w-0">
-              {/* Company Info */}
-              {singleJob?.company?.name && (
-                <div className="flex items-center gap-3 mb-4">
-                  <Building2 className="w-5 h-5 flex-shrink-0 text-blue-600" />
-                  <span className="text-base md:text-lg font-medium text-gray-700 truncate">
-                    {singleJob.company.name}
-                  </span>
-                </div>
-              )}
+      <div className="max-w-4xl mx-auto py-6 md:py-12 px-4 mt-6">
+        <div className="bg-white p-6 md:p-8">
+          {/* Back Button */}
+          <button
+            onClick={() => navigate(-1)}
+            className="flex items-center gap-2 text-gray-600 hover:text-gray-900 mb-9 group"
+          >
+            <ArrowLeft className="w-5 h-5 group-hover:-translate-x-1 transition-transform" />
+            <span className="text-m font-bold">Go back</span>
+          </button>
 
-              {/* Job Title */}
-              <h1 className="text-2xl md:text-3xl font-bold text-gray-900 break-words">
+          {/* Company Logo */}
+          <div className="mb-4">
+            <img
+              src={companyDetails?.logo || "https://via.placeholder.com/100"}
+              alt={companyDetails?.CompanyName || "Company Logo"}
+              className="w-20 h-20 rounded-lg object-contain border border-gray-200"
+            />
+          </div>
+
+          {/* Position and Apply Button Row */}
+          <div className="flex justify-between items-start mb-3">
+            <div className="flex-1">
+              <h1 className="text-4xl font-bold text-[#444444] mb-2">
                 {singleJob?.title}
               </h1>
             </div>
-
-            {/* Fixed Apply Button */}
-            {user?.role === "recruiter" ? (
-              <></>
-            ) : (
-              <div className="flex-shrink-0">
+            {user?.role !== "recruiter" && (
+              <div className="flex items-center gap-3">
+                <button
+                  onClick={() => handleAction("save")}
+                  disabled={isLoading}
+                  className="relative transition duration-300 disabled:cursor-not-allowed"
+                >
+                  <BookmarkIcon
+                    className={`w-8 h-8 ${
+                      isSaved
+                        ? "text-[#012760] fill-current"
+                        : "text-[#012760]"
+                    }`}
+                  />
+                </button>
                 {isApplied ? (
-                  <div className="inline-flex items-center gap-2 bg-green-50 text-green-700 px-4 py-2 rounded-xl font-medium whitespace-nowrap">
+                  <div className="inline-flex items-center gap-2 bg-green-50 text-green-700 px-4 py-2 rounded-xl font-medium">
                     <CheckCircle2 className="w-5 h-5" />
                     Applied
                   </div>
@@ -1363,115 +456,196 @@ function JobDescription() {
                   <Button
                     onClick={applyJobHandler}
                     disabled={isApplying}
-                    className="bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white rounded-xl px-6 py-2.5 font-medium transition-all whitespace-nowrap"
+                    className="text-lg bg-gradient-to-r from-blue-700 to-blue-900 hover:opacity-90 transition-all duration-300 text-white rounded-lg px-7 py-5 font-semibold"
                   >
-                    {isApplying ? (
-                      "Applying..."
-                    ) : (
-                      <>
-                        Apply Now
-                        <span className="ml-2 group-hover:translate-x-1 transition-transform">
-                          →
-                        </span>
-                      </>
-                    )}
+                    {isApplying ? "Applying..." : "Apply Now"}
+                    <ArrowRight className="w-5 h-5 ml-2" />
                   </Button>
                 )}
               </div>
             )}
           </div>
 
-          {/* Job Metadata */}
-          <div className="flex flex-wrap gap-2 md:gap-3 mb-8">
-            {singleJob?.jobType && (
-              <MetadataBadge
-                icon={Clock}
-                text={
-                  Array.isArray(singleJob.jobType)
-                    ? singleJob.jobType[0]
-                    : singleJob.jobType
-                }
-                color="green"
-              />
-            )}
-            {singleJob?.salary && (
-              <MetadataBadge
-                icon={DollarSign}
-                text={`${singleJob.salary}`}
-                color="purple"
-              />
-            )}
-            {singleJob?.location && (
-              <MetadataBadge
-                icon={MapPin}
-                text={singleJob.location}
-                color="blue"
-              />
-            )}
-            {singleJob?.experience && (
-              <MetadataBadge
-                icon={Briefcase}
-                text={`${singleJob.experience} years`}
-                color="indigo"
-              />
+          {/* Company Location and Website */}
+          <div className="flex items-center gap-2 mb-4 ">
+            <div className="flex items-center gap-2 px-3 py-1.5 rounded-lg">
+              <MapPin className="w-4 h-4 text-[#012760]" />
+              <span className="text-[#949494] text-m">{singleJob?.location}</span>
+            </div>
+            {companyDetails?.website && (
+              <a
+                href={companyDetails.website}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex items-center gap-2  px-3 py-1.5 rounded-lg hover:bg-opacity-20 transition-all duration-300"
+              >
+                <Globe className="w-4 h-4 text-[#012760]" />
+                <span className="text-[#949494] text-m">{companyDetails.website}</span>
+              </a>
             )}
           </div>
-          {hiringTeam.length > 0 && (
-            <div className="mb-8">
-              <h2 className="text-xl font-semibold text-gray-900 mb-4 flex items-center gap-2">
-                <Users className="w-6 h-6 text-blue-600" />
-                Hiring Team
-              </h2>
-              <div className="grid md:grid-cols-2 gap-4">
-                {hiringTeam.map((member, index) => (
-                  <div
-                    key={index}
-                    className="p-4 bg-gray-50 rounded-lg border border-gray-100 hover:shadow-md transition-all"
-                  >
-                    <h3 className="font-medium text-gray-900">{member.name}</h3>
-                    <p className="text-sm text-gray-600">{member.position}</p>
-                    {member.email && (
-                      <p className="text-sm text-blue-600 mt-1 break-all">
-                        {member.email}
-                      </p>
-                    )}
-                  </div>
-                ))}
+
+          {/* Tags and Posted Date Row */}
+          <div className="flex justify-between items-center mb-8">
+            <div className="flex flex-wrap gap-3">
+              {singleJob?.jobType && (
+                <div className="bg-[#97C0FF] bg-opacity-30 px-3 py-1.5 rounded-lg">
+                  <span className="text-[#444444] text-sm">
+                    {Array.isArray(singleJob.jobType) ? singleJob.jobType[0] : singleJob.jobType}
+                  </span>
+                </div>
+              )}
+              {singleJob?.salary && (
+                <div className="bg-[#97C0FF] bg-opacity-30 px-3 py-1.5 rounded-lg">
+                  <span className="text-[#444444] text-sm">
+                    {singleJob.salary}
+                  </span>
+                </div>
+              )}
+              {singleJob?.experience && (
+                <div className="bg-[#97C0FF] bg-opacity-30 px-3 py-1.5 rounded-lg">
+                  <span className="text-[#444444] text-sm">
+                    {`${singleJob.experience} years`}
+                  </span>
+                </div>
+              )}
+            </div>
+            {singleJob?.createdAt && (
+              <div className="text-[#949494] text-sm">
+                Posted {(() => {
+                  const today = new Date();
+                  const jobDate = new Date(singleJob.createdAt);
+                  const diffTime = today - jobDate;
+                  const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
+                  return diffDays === 0 ? 'today' : 
+                         diffDays === 1 ? 'yesterday' : 
+                         `${diffDays} days ago`;
+                })()}
               </div>
-            </div>
-          )}
+            )}
+          </div>
 
-          {/* Description Section */}
-          {singleJob?.description && (
-            <div className="mb-8">
-              <h2 className="text-xl font-semibold text-gray-900 mb-4">
-                Job Description
+          
+
+          <div className="h-px bg-gray-200 w-full my-10"></div>
+
+
+          {/* Main Content Sections */}
+          <div className="space-y-8 text-[#747474]">
+            {/* Job Role Overview */}
+            <section>
+              <h2 className="text-3xl font-semibold text-[#444444] mb-4">
+                Job Role Overview
               </h2>
-              {renderFormattedText(singleJob.description)}
-            </div>
-          )}
+              <div className="text-[#747474]">{renderFormattedText(singleJob?.description)}</div>
+              
+            </section>
 
-          {/* Requirements Section */}
-          {requirements.length > 0 && (
-            <div className="mb-8">
-              <h2 className="text-xl font-semibold text-gray-900 mb-4 flex items-center gap-2">
-                <ListChecks className="w-6 h-6 text-blue-600" />
-                Requirements
-              </h2>
-              <ul className="space-y-3">
-                {requirements.map((requirement, index) => (
-                  <li key={index} className="flex items-start gap-3">
-                    <span className="w-1.5 h-1.5 rounded-full bg-blue-600 mt-2.5" />
-                    <span className="text-gray-700">{requirement}</span>
-                  </li>
-                ))}
-              </ul>
-            </div>
-          )}
+            {/* Qualifications */}
+            {requirements.length > 0 && (
+              <section>
+                <h2 className="text-3xl font-semibold text-[#444444] mb-4 flex items-center gap-2">
+                  Qualifications
+                </h2>
+                <ul className="space-y-2 ml-5">
+                  {requirements.map((requirement, index) => (
+                    <li key={index} className="flex items-start gap-3">
+                      <span className="w-1 h-1 rounded-full bg-gray-600 mt-2.5" />
+                      <span className="text-[#747474]">{requirement}</span>
+                    </li>
+                  ))}
+                </ul>
+              </section>
+            )}
 
-          {/* Hiring Team Section */}
+            {/* Key Responsibilities */}
+            {singleJob?.responsibilities && (
+              <section>
+                <h2 className="text-3xl font-semibold text-[#444444] mb-4">
+                  Key Responsibilities
+                </h2>
+                {renderFormattedText(singleJob.responsibilities)}
+              </section>
+            )}
+
+            {/* Hiring Team */}
+            {hiringTeam.length > 0 && (
+              <section>
+                <h2 className="text-3xl font-semibold text-[#444444] mb-4 flex items-center gap-2">
+                  <Users className="w-6 h-6 text-blue-600" />
+                  Hiring Team
+                </h2>
+                <div className="grid md:grid-cols-2 gap-4">
+                  {hiringTeam.map((member, index) => (
+                    <div
+                      key={index}
+                      className="p-4 bg-gray-50 rounded-lg border border-gray-100 hover:shadow-md transition-all"
+                    >
+                      <h3 className="font-medium text-gray-900">{member.name}</h3>
+                      <p className="text-sm text-gray-600">{member.position}</p>
+                      {member.email && (
+                        <p className="text-sm text-blue-600 mt-1 break-all">
+                          {member.email}
+                        </p>
+                      )}
+                    </div>
+                  ))}
+                </div>
+              </section>
+            )}
+            <div className="h-px bg-gray-200 w-full my-6"></div>
+            {/* About Company */}
+            {companyDetails && (
+              <section>
+                <div className="flex justify-between items-start">
+                  <h2 className="text-5xl font-semibold text-[#444444] mb-4">
+                    About Company
+                  </h2>
+                  {companyDetails.website && (
+                    <a
+                      href={companyDetails.website}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="inline-flex items-center gap-2 text-[#012760] underline"
+                    >
+                      <ExternalLink className="w-4 h-4" />
+                      <span>{companyDetails?.website}</span>
+                    </a>
+                  )}
+                </div>
+                <div className="rounded-lg mt-2 text-[#747474]">
+                  {renderFormattedText(companyDetails.description)}
+                </div>
+              </section>
+            )}
+
+            {/* More Jobs Section */}
+            {moreJobs.length > 0 && (
+              <section>
+                <div className="h-px bg-gray-200 w-full my-6"></div>
+                <div className="flex justify-between items-center mb-14">
+                  <h2 className="text-5xl font-bold text-[#444444]">
+                    More Jobs
+                  </h2>
+                  <Button
+                    onClick={() => navigate('/jobs')}
+                    variant="outline"
+                    className="text-[#012760] border-[#012760] hover:bg-[#012760] hover:text-white transition-all duration-300"
+                  >
+                    View All Jobs
+                  </Button>
+                </div>
+                <div className="grid grid-cols-1 gap-4">
+                  {moreJobs.slice(0, 2).map((job) => (
+                    <Job key={job._id} job={job} />
+                  ))}
+                </div>
+              </section>
+            )}
+          </div>
         </div>
       </div>
+      <Footer/>
     </div>
   );
 }

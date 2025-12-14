@@ -1,1413 +1,36 @@
-// // // // // // // import React, { useState } from "react";
-// // // // // // // import { motion } from "framer-motion";
-// // // // // // // import { Briefcase, CheckCircle, Search, UploadCloud } from "lucide-react";
-// // // // // // // import { Button } from "./ui/button";
-// // // // // // // import { useNavigate } from "react-router-dom";
-// // // // // // // import { useDispatch } from "react-redux";
-// // // // // // // import GridPattern from "./ui/grid-pattern";
-// // // // // // // import { setSearchQuery } from "@/redux/jobSlice";
-
-// // // // // // // function HeroSection() {
-
-// // // // // // //   const dispatch = useDispatch();
-// // // // // // //   const navigate = useNavigate();
-// // // // // // //   const [query, setQuery] = useState("");
-
-// // // // // // //   const handleSearch = (e) => {
-// // // // // // //     e?.preventDefault();
-// // // // // // //     const trimmedQuery = query.trim();
-
-// // // // // // //     if (trimmedQuery) {
-// // // // // // //       dispatch(setSearchQuery(trimmedQuery));
-// // // // // // //       navigate("/browse");
-// // // // // // //     }
-// // // // // // //   };
-
-// // // // // // //   const handleUploadClick = () => {
-// // // // // // //     navigate("/profile");
-// // // // // // //   };
-
-// // // // // // //   return (
-
-// // // // // // // <div className="relative bg-white overflow-hidden">
-// // // // // // //       <div className="container mx-auto px-4 py-16 lg:py-10 relative z-10">
-// // // // // // //         <div className="grid grid-cols-1 lg:grid-cols-[3fr_1fr] gap-8 items-center">
-// // // // // // //         <GridPattern
-// // // // // // //             className="absolute inset-0 w-full h-full text-gray-500"
-// // // // // // //             style={{
-// // // // // // //               maskImage:
-// // // // // // //                 "radial-gradient(circle, rgba(0, 0, 0, 1) 50%, rgba(0, 0, 0, 0) 100%)",
-// // // // // // //               WebkitMaskImage:
-// // // // // // //                 "radial-gradient(circle, rgba(0, 0, 0, 1) 50%, rgba(0, 0, 0, 0) 100%)",
-// // // // // // //               opacity: 0.3, // Adjust the overall opacity
-// // // // // // //             }}
-// // // // // // //           />
-// // // // // // //           {/* Left Section - Now larger */}
-// // // // // // //           <div className="container mx-auto px-16 py-16 lg:py-20 relative z-10">
-// // // // // // //             <div className="flex flex-col items-center justify-center text-center lg:items-start lg:text-left">
-// // // // // // //               {/* Badge */}
-// // // // // // //               <div className="flex items-center justify-center lg:justify-start mb-6">
-// // // // // // //                 <span className="inline-flex items-center px-4 py-2 rounded-full bg-blue-50 text-blue-800 font-semibold shadow-sm transform transition hover:scale-105 hover:shadow-md">
-// // // // // // //                   <CheckCircle className="w-5 h-5 mr-2 text-blue-600" />
-// // // // // // //                   No. 1 Job Hunt Website
-// // // // // // //                 </span>
-// // // // // // //               </div>
-
-// // // // // // //               {/* Heading */}
-// // // // // // //               <h1 className="text-5xl md:text-7xl font-extrabold text-gray-900 leading-tight mb-6">
-// // // // // // //                 Search, Apply &
-// // // // // // //                 <br />
-// // // // // // //                 Get Your <span className="text-blue-700">Dream Job</span>
-// // // // // // //               </h1>
-
-// // // // // // //               {/* Subtext */}
-// // // // // // //               <p className="text-xl text-gray-600 max-w-2xl mb-8">
-// // // // // // //                 Discover opportunities that match your skills, passion, and
-// // // // // // //                 career goals. Your next professional milestone is just a search
-// // // // // // //                 away.
-// // // // // // //               </p>
-
-// // // // // // //               {/* Search Container */}
-// // // // // // //               <div className="w-full max-w-2xl">
-// // // // // // //                 <div className="w-full relative flex shadow-lg rounded-full border border-gray-200 overflow-hidden focus-within:ring-2 focus-within:ring-blue-500 transition-all duration-300 mb-6">
-// // // // // // //                   <div className="absolute left-4 top-1/2 -translate-y-1/2">
-// // // // // // //                     <Briefcase className="w-5 h-5 text-gray-400" />
-// // // // // // //                   </div>
-// // // // // // //                   <input
-// // // // // // //                     type="text"
-// // // // // // //                     value={query}
-// // // // // // //                     onChange={(e) => setQuery(e.target.value)}
-// // // // // // //                     placeholder="Find your dream job"
-// // // // // // //                     className="w-full pl-12 pr-4 py-4 text-lg outline-none border-none placeholder-gray-400"
-// // // // // // //                   />
-// // // // // // //                   <Button
-// // // // // // //                     onClick={handleSearch}
-// // // // // // //                     className="bg-blue-700 hover:bg-blue-800 text-white rounded-r-full px-8 h-auto transition transform hover:scale-105 flex items-center gap-2"
-// // // // // // //                   >
-// // // // // // //                     <Search className="w-5 h-5" />
-// // // // // // //                     Search
-// // // // // // //                   </Button>
-// // // // // // //                 </div>
-// // // // // // //               </div>
-// // // // // // //             </div>
-// // // // // // //           </div>
-
-// // // // // // //           <div className="-translate-x-24">
-// // // // // // //   <motion.div
-// // // // // // //     initial={{ opacity: 0, y: 50 }}
-// // // // // // //     animate={{ opacity: 1, y: 0 }}
-// // // // // // //     transition={{ duration: 0.8, ease: "easeOut" }}
-// // // // // // //     className="relative flex flex-col items-center justify-center bg-blue-600 rounded-lg p-4 shadow-lg"
-// // // // // // //   >
-
-// // // // // // //     <motion.div
-// // // // // // //       className="absolute -top-4 -left-4 w-12 h-12 bg-black rounded-full opacity-30"
-// // // // // // //       animate={{
-// // // // // // //         scale: [1, 1.2, 1],
-// // // // // // //         rotate: [0, 360],
-// // // // // // //         opacity: [0.4, 0.6, 0.4],
-// // // // // // //       }}
-// // // // // // //       transition={{ duration: 5, repeat: Infinity }}
-// // // // // // //     />
-// // // // // // //     <motion.div
-// // // // // // //       className="absolute -bottom-4 -right-4 w-10 h-10 bg-blue-900 rounded-full opacity-30"
-// // // // // // //       animate={{
-// // // // // // //         scale: [1, 1.3, 1],
-// // // // // // //         opacity: [0.4, 0.6, 0.4],
-// // // // // // //       }}
-// // // // // // //       transition={{ duration: 6, repeat: Infinity }}
-// // // // // // //     />
-
-
-// // // // // // //     <h2 className="text-2xl font-extrabold text-white mb-3 text-center">
-// // // // // // //       Upload Resume
-// // // // // // //     </h2>
-// // // // // // //     <p className="text-sm text-white text-center mb-4 leading-relaxed">
-// // // // // // //       Unlock endless career opportunities!
-// // // // // // //     </p>
-
-// // // // // // //     <div className="text-center space-y-2 mb-4">
-// // // // // // //       <p className="text-xs text-black bg-white p-2 rounded-lg shadow-md">
-// // // // // // //         📂 Organize career details
-// // // // // // //       </p>
-// // // // // // //       <p className="text-xs text-black bg-white p-2 rounded-lg shadow-md">
-// // // // // // //         🚀 Get automated suggestions
-// // // // // // //       </p>
-// // // // // // //       <p className="text-xs text-black bg-white p-2 rounded-lg shadow-md">
-// // // // // // //         🔒 Secure information sharing
-// // // // // // //       </p>
-// // // // // // //     </div>
-
-
-// // // // // // //     <Button
-// // // // // // //       onClick={handleUploadClick}
-// // // // // // //       className="bg-black text-white px-4 py-2 rounded-full text-sm shadow-md hover:bg-blue-700 transition-all duration-300 flex items-center gap-1"
-// // // // // // //     >
-// // // // // // //       <UploadCloud className="w-4 h-4" />
-// // // // // // //       Upload
-// // // // // // //     </Button>
-// // // // // // //   </motion.div>
-// // // // // // // </div>
-
-// // // // // // //         </div>
-// // // // // // //       </div>
-// // // // // // //     </div>
-// // // // // // //   );
-// // // // // // // }
-
-// // // // // // // export default HeroSection;
-
-
-
-
-
-
-
-
-
-// // // // // // // import React from "react";
-// // // // // // // import { motion } from "framer-motion";
-// // // // // // // import { Briefcase, CheckCircle, Search, Users_dev, Building, Trophy } from "lucide-react";
-// // // // // // // import { Button } from "./ui/button";
-
-// // // // // // // import { useDispatch } from "react-redux";
-// // // // // // // import GridPattern from "./ui/grid-pattern";
-// // // // // // // import { setSearchQuery } from "@/redux/jobSlice";
-// // // // // // // import { useNavigate } from "react-router-dom";
-
-// // // // // // // function HeroSection() {
-// // // // // // //   const dispatch = useDispatch();
-// // // // // // //   const navigate = useNavigate();
-// // // // // // //   const [query, setQuery] = React.useState("");
-
-// // // // // // //   const handleSearch = (e) => {
-// // // // // // //     e?.preventDefault();
-// // // // // // //     const trimmedQuery = query.trim();
-// // // // // // //     if (trimmedQuery) {
-// // // // // // //       dispatch(setSearchQuery(trimmedQuery));
-// // // // // // //       navigate("/browse");
-// // // // // // //     }
-// // // // // // //   };
-
-// // // // // // //   return (
-// // // // // // //     <div className="relative bg-gradient-to-br from-blue-50 via-white to-blue-50">
-// // // // // // //       <div className="container mx-auto px-4 py-16 lg:py-10 relative z-10">
-// // // // // // //         <div className="grid grid-cols-1 lg:grid-cols-[3fr_2fr] gap-8 items-center">
-// // // // // // //           <GridPattern
-// // // // // // //             className="absolute inset-0 w-full h-full text-blue-200"
-// // // // // // //             style={{
-// // // // // // //               maskImage: "radial-gradient(circle, rgba(0, 0, 0, 1) 50%, rgba(0, 0, 0, 0) 100%)",
-// // // // // // //               WebkitMaskImage: "radial-gradient(circle, rgba(0, 0, 0, 1) 50%, rgba(0, 0, 0, 0) 100%)",
-// // // // // // //               opacity: 0.4,
-// // // // // // //             }}
-// // // // // // //           />
-
-// // // // // // //           <div className="container mx-auto px-16 py-16 lg:py-20 relative z-10">
-// // // // // // //             <div className="flex flex-col items-center justify-center text-center lg:items-start lg:text-left">
-// // // // // // //               <div className="flex items-center justify-center lg:justify-start mb-6">
-// // // // // // //                 <span className="inline-flex items-center px-4 py-2 rounded-full bg-blue-50 text-blue-800 font-semibold shadow-sm transform transition hover:scale-105 hover:shadow-md">
-// // // // // // //                   <CheckCircle className="w-5 h-5 mr-2 text-blue-600" />
-// // // // // // //                   No. 1 Job Hunt Website
-// // // // // // //                 </span>
-// // // // // // //               </div>
-
-// // // // // // //               <h1 className="text-5xl md:text-7xl font-extrabold text-gray-900 leading-tight mb-6">
-// // // // // // //                 Search, Apply &
-// // // // // // //                 <br />
-// // // // // // //                 Get Your <span className="text-blue-700">Dream Job</span>
-// // // // // // //               </h1>
-
-// // // // // // //               <p className="text-xl text-gray-600 max-w-2xl mb-8">
-// // // // // // //                 Discover opportunities that match your skills, passion, and
-// // // // // // //                 career goals. Your next professional milestone is just a search
-// // // // // // //                 away.
-// // // // // // //               </p>
-
-// // // // // // //               <div className="w-full max-w-2xl">
-// // // // // // //                 <div className="w-full relative flex shadow-lg rounded-full border border-gray-200 overflow-hidden focus-within:ring-2 focus-within:ring-blue-500 transition-all duration-300 mb-6">
-// // // // // // //                   <div className="absolute left-4 top-1/2 -translate-y-1/2">
-// // // // // // //                     <Briefcase className="w-5 h-5 text-gray-400" />
-// // // // // // //                   </div>
-// // // // // // //                   <input
-// // // // // // //                     type="text"
-// // // // // // //                     value={query}
-// // // // // // //                     onChange={(e) => setQuery(e.target.value)}
-// // // // // // //                     placeholder="Find your dream job"
-// // // // // // //                     className="w-full pl-12 pr-4 py-4 text-lg outline-none border-none placeholder-gray-400"
-// // // // // // //                   />
-// // // // // // //                   <Button
-// // // // // // //                     onClick={handleSearch}
-// // // // // // //                     className="bg-blue-700 hover:bg-blue-800 text-white rounded-r-full px-8 h-auto transition transform hover:scale-105 flex items-center gap-2"
-// // // // // // //                   >
-// // // // // // //                     <Search className="w-5 h-5" />
-// // // // // // //                     Search
-// // // // // // //                   </Button>
-// // // // // // //                 </div>
-// // // // // // //               </div>
-// // // // // // //             </div>
-// // // // // // //           </div>
-
-// // // // // // //           <div className="relative h-full mt-10">
-// // // // // // //             <motion.div
-// // // // // // //               initial={{ opacity: 0, y: 20 }}
-// // // // // // //               animate={{ opacity: 1, y: 0 }}
-// // // // // // //               transition={{ duration: 0.8 }}
-// // // // // // //               className="bg-white rounded-2xl shadow-2xl p-8 relative overflow-hidden"
-// // // // // // //             >
-// // // // // // //               <div className="absolute top-0 right-0 w-32 h-32 bg-blue-100 rounded-bl-full opacity-50" />
-
-// // // // // // //               <h2 className="text-2xl font-bold text-gray-900 mb-6">Job Portal Stats</h2>
-
-// // // // // // //               <div className="space-y-6">
-// // // // // // //                 <motion.div
-// // // // // // //                   className="flex items-center gap-4 bg-blue-50 p-4 rounded-xl"
-// // // // // // //                   whileHover={{ scale: 1.02 }}
-// // // // // // //                 >
-// // // // // // //                   <div className="p-3 bg-blue-100 rounded-lg">
-// // // // // // //                     <Users_dev className="w-6 h-6 text-blue-600" />
-// // // // // // //                   </div>
-// // // // // // //                   <div>
-// // // // // // //                     <h3 className="text-2xl font-bold text-gray-900">50K+</h3>
-// // // // // // //                     <p className="text-gray-600">Active Job Seekers</p>
-// // // // // // //                   </div>
-// // // // // // //                 </motion.div>
-
-// // // // // // //                 <motion.div
-// // // // // // //                   className="flex items-center gap-4 bg-green-50 p-4 rounded-xl"
-// // // // // // //                   whileHover={{ scale: 1.02 }}
-// // // // // // //                 >
-// // // // // // //                   <div className="p-3 bg-green-100 rounded-lg">
-// // // // // // //                     <Building className="w-6 h-6 text-green-600" />
-// // // // // // //                   </div>
-// // // // // // //                   <div>
-// // // // // // //                     <h3 className="text-2xl font-bold text-gray-900">10K+</h3>
-// // // // // // //                     <p className="text-gray-600">Companies Hiring</p>
-// // // // // // //                   </div>
-// // // // // // //                 </motion.div>
-
-// // // // // // //                 <motion.div
-// // // // // // //                   className="flex items-center gap-4 bg-purple-50 p-4 rounded-xl"
-// // // // // // //                   whileHover={{ scale: 1.02 }}
-// // // // // // //                 >
-// // // // // // //                   <div className="p-3 bg-purple-100 rounded-lg">
-// // // // // // //                     <Trophy className="w-6 h-6 text-purple-600" />
-// // // // // // //                   </div>
-// // // // // // //                   <div>
-// // // // // // //                     <h3 className="text-2xl font-bold text-gray-900">95%</h3>
-// // // // // // //                     <p className="text-gray-600">Success Rate</p>
-// // // // // // //                   </div>
-// // // // // // //                 </motion.div>
-// // // // // // //               </div>
-// // // // // // //             </motion.div>
-// // // // // // //           </div>
-// // // // // // //         </div>
-// // // // // // //       </div>
-// // // // // // //     </div>
-// // // // // // //   );
-// // // // // // // }
-
-// // // // // // // export default HeroSection;
-
-
-
-
-
-
-
-
-
-
-
-
-
-// // // // // // import React from "react";
-// // // // // // import { motion } from "framer-motion";
-// // // // // // import { Briefcase, CheckCircle, Search} from "lucide-react";
-// // // // // // import { Button } from "./ui/button";
-
-// // // // // // import { useDispatch } from "react-redux";
-// // // // // // import GridPattern from "./ui/grid-pattern";
-// // // // // // import { setSearchQuery } from "@/redux/jobSlice";
-// // // // // // import { useNavigate } from "react-router-dom";
-// // // // // // import TestimonialsSection from "./TestimonialsSection";
-// // // // // // import { IconCloudDemo } from "./IconCloudDemo";
-
-// // // // // // const FloatingIcon = ({ icon: Icon, delay, x, y }) => (
-// // // // // //   <motion.div
-// // // // // //     className="absolute"
-// // // // // //     style={{ x, y }}
-// // // // // //     animate={{
-// // // // // //       y: [y, y - 20, y],
-// // // // // //       opacity: [0.5, 1, 0.5],
-// // // // // //     }}
-// // // // // //     transition={{
-// // // // // //       duration: 3,
-// // // // // //       delay,
-// // // // // //       repeat: Infinity,
-// // // // // //       ease: "easeInOut",
-// // // // // //     }}
-// // // // // //   >
-// // // // // //     <div className="p-3 bg-white/90 rounded-2xl shadow-lg backdrop-blur-sm">
-// // // // // //       <Icon className="w-6 h-6 text-blue-600" />
-// // // // // //     </div>
-// // // // // //   </motion.div>
-// // // // // // );
-
-// // // // // // function HeroSection() {
-// // // // // //   const dispatch = useDispatch();
-// // // // // //   const navigate = useNavigate();
-// // // // // //   const [query, setQuery] = React.useState("");
-
-// // // // // //   const handleSearch = (e) => {
-// // // // // //     e?.preventDefault();
-// // // // // //     const trimmedQuery = query.trim();
-// // // // // //     if (trimmedQuery) {
-// // // // // //       dispatch(setSearchQuery(trimmedQuery));
-// // // // // //       navigate("/browse");
-// // // // // //     }
-// // // // // //   };
-
-// // // // // //   return (
-// // // // // //     <div className="relative bg-gradient-to-br from-blue-50 via-white to-blue-50 overflow-hidden ">
-// // // // // //       <div className="container mx-auto px-4 py-16 lg:py-10 relative z-10">
-// // // // // //         <div className="grid grid-cols-1 lg:grid-cols-[3fr_2fr] gap-8 items-center">
-// // // // // //           <GridPattern
-// // // // // //             className="absolute inset-0 w-full h-full text-blue-200"
-// // // // // //             style={{
-// // // // // //               maskImage: "radial-gradient(circle, rgba(0, 0, 0, 1) 50%, rgba(0, 0, 0, 0) 100%)",
-// // // // // //               WebkitMaskImage: "radial-gradient(circle, rgba(0, 0, 0, 1) 50%, rgba(0, 0, 0, 0) 100%)",
-// // // // // //               opacity: 0.4,
-// // // // // //             }}
-// // // // // //           />
-
-// // // // // //           <div className="container mx-auto px-16 py-16 lg:py-20 relative z-10">
-// // // // // //             <div className="flex flex-col items-center justify-center text-center lg:items-start lg:text-left">
-// // // // // //               <div className="flex items-center justify-center lg:justify-start mb-6">
-// // // // // //                 <span className="inline-flex items-center px-4 py-2 rounded-full bg-blue-50 text-blue-800 font-semibold shadow-sm transform transition hover:scale-105 hover:shadow-md">
-// // // // // //                   <CheckCircle className="w-5 h-5 mr-2 text-blue-600" />
-// // // // // //                   No. 1 Job Hunt Website
-// // // // // //                 </span>
-// // // // // //               </div>
-
-// // // // // //               <h1 className="text-5xl md:text-7xl font-extrabold text-gray-900 leading-tight mb-6">
-// // // // // //                 Search, Apply &
-// // // // // //                 <br />
-// // // // // //                 Get Your <span className="text-blue-700">Dream Job</span>
-// // // // // //               </h1>
-
-// // // // // //               <p className="text-xl text-gray-600 max-w-2xl mb-8">
-// // // // // //                 Discover opportunities that match your skills, passion, and
-// // // // // //                 career goals. Your next professional milestone is just a search
-// // // // // //                 away.
-// // // // // //               </p>
-
-// // // // // //               <div className="w-full max-w-2xl">
-// // // // // //                 <div className="w-full relative flex shadow-lg rounded-full border border-gray-200 overflow-hidden focus-within:ring-2 focus-within:ring-blue-500 transition-all duration-300 mb-6">
-// // // // // //                   <div className="absolute left-4 top-1/2 -translate-y-1/2">
-// // // // // //                     <Briefcase className="w-5 h-5 text-gray-400" />
-// // // // // //                   </div>
-// // // // // //                   <input
-// // // // // //                     type="text"
-// // // // // //                     value={query}
-// // // // // //                     onChange={(e) => setQuery(e.target.value)}
-// // // // // //                     placeholder="Find your dream job"
-// // // // // //                     className="w-full pl-12 pr-4 py-4 text-lg outline-none border-none placeholder-gray-400"
-// // // // // //                   />
-// // // // // //                   <Button
-// // // // // //                     onClick={handleSearch}
-// // // // // //                     className="bg-blue-700 hover:bg-blue-800 text-white rounded-r-full px-8 h-auto transition transform hover:scale-105 flex items-center gap-2"
-// // // // // //                   >
-// // // // // //                     <Search className="w-5 h-5" />
-// // // // // //                     Search
-// // // // // //                   </Button>
-// // // // // //                 </div>
-// // // // // //               </div>
-// // // // // //             </div>
-// // // // // //           </div>
-
-// // // // // //           <div className="relative h-96 bottom-28 ">
-// // // // // //             <IconCloudDemo></IconCloudDemo>
-
-// // // // // //           </div>
-// // // // // //         </div>
-// // // // // //       </div>
-// // // // // //     </div>
-// // // // // //   );
-// // // // // // }
-
-// // // // // // export default HeroSection;
-// // // // // import React from "react";
-// // // // // import { motion } from "framer-motion";
-// // // // // import { Briefcase, CheckCircle, Search, MapPin } from "lucide-react";
-// // // // // import { Button } from "./ui/button";
-// // // // // import { useDispatch } from "react-redux";
-// // // // // import GridPattern from "./ui/grid-pattern";
-// // // // // import { setSearchQuery } from "@/redux/jobSlice";
-// // // // // import { useNavigate } from "react-router-dom";
-// // // // // import { IconCloudDemo } from "./IconCloudDemo";
-
-// // // // // const FloatingIcon = ({ icon: Icon, delay, x, y }) => (
-// // // // //   <motion.div
-// // // // //     className="absolute"
-// // // // //     style={{ x, y }}
-// // // // //     animate={{
-// // // // //       y: [y, y - 20, y],
-// // // // //       opacity: [0.5, 1, 0.5],
-// // // // //     }}
-// // // // //     transition={{
-// // // // //       duration: 3,
-// // // // //       delay,
-// // // // //       repeat: Infinity,
-// // // // //       ease: "easeInOut",
-// // // // //     }}
-// // // // //   >
-// // // // //     <div className="p-3 bg-white/90 rounded-2xl shadow-lg backdrop-blur-sm">
-// // // // //       <Icon className="w-6 h-6 text-blue-600" />
-// // // // //     </div>
-// // // // //   </motion.div>
-// // // // // );
-
-// // // // // function HeroSection() {
-// // // // //   const dispatch = useDispatch();
-// // // // //   const navigate = useNavigate();
-// // // // //   const [jobQuery, setJobQuery] = React.useState("");
-// // // // //   const [locationQuery, setLocationQuery] = React.useState("");
-
-// // // // //   const handleSearch = (e) => {
-// // // // //     e?.preventDefault();
-// // // // //     const trimmedJobQuery = jobQuery.trim();
-// // // // //     const trimmedLocationQuery = locationQuery.trim();
-// // // // //     if (trimmedJobQuery || trimmedLocationQuery) {
-// // // // //       dispatch(setSearchQuery({ job: trimmedJobQuery, location: trimmedLocationQuery }));
-// // // // //       navigate("/browse");
-// // // // //     }
-// // // // //   };
-
-// // // // //   return (
-// // // // //     <div className="relative bg-gradient-to-br from-blue-50 via-white to-blue-50 overflow-hidden">
-// // // // //       <div className="container mx-auto px-4 py-16 lg:py-10 relative z-10">
-// // // // //         <div className="grid grid-cols-1 lg:grid-cols-[3fr_2fr] gap-8 items-center">
-// // // // //           <GridPattern
-// // // // //             className="absolute inset-0 w-full h-full text-blue-200"
-// // // // //             style={{
-// // // // //               maskImage: "radial-gradient(circle, rgba(0, 0, 0, 1) 50%, rgba(0, 0, 0, 0) 100%)",
-// // // // //               WebkitMaskImage: "radial-gradient(circle, rgba(0, 0, 0, 1) 50%, rgba(0, 0, 0, 0) 100%)",
-// // // // //               opacity: 0.4,
-// // // // //             }}
-// // // // //           />
-
-// // // // //           <div className="container mx-auto px-16 py-16 lg:py-20 relative z-10">
-// // // // //             <div className="flex flex-col items-center justify-center text-center lg:items-start lg:text-left">
-// // // // //               <div className="flex items-center justify-center lg:justify-start mb-6">
-// // // // //                 <span className="inline-flex items-center px-4 py-2 rounded-full bg-blue-50 text-blue-800 font-semibold shadow-sm transform transition hover:scale-105 hover:shadow-md">
-// // // // //                   <CheckCircle className="w-5 h-5 mr-2 text-blue-600" />
-// // // // //                   No. 1 Job Hunt Website
-// // // // //                 </span>
-// // // // //               </div>
-
-// // // // //               <h1 className="text-5xl md:text-7xl font-extrabold text-gray-900 leading-tight mb-6">
-// // // // //                 Search, Apply &
-// // // // //                 <br />
-// // // // //                 Get Your <span className="text-blue-700">Dream Job</span>
-// // // // //               </h1>
-
-// // // // //               <p className="text-xl text-gray-600 max-w-2xl mb-8">
-// // // // //                 Discover opportunities that match your skills, passion, and
-// // // // //                 career goals. Your next professional milestone is just a search
-// // // // //                 away.
-// // // // //               </p>
-
-// // // // //               <div className="w-full max-w-2xl">
-// // // // //                 <form onSubmit={handleSearch} className="space-y-3">
-// // // // //                   {/* Job Skills Search */}
-// // // // //                   <div className="relative flex shadow-lg rounded-full border border-gray-200 overflow-hidden focus-within:ring-2 focus-within:ring-blue-500 transition-all duration-300">
-// // // // //                     <div className="absolute left-4 top-1/2 -translate-y-1/2">
-// // // // //                       <Briefcase className="w-5 h-5 text-gray-400" />
-// // // // //                     </div>
-// // // // //                     <input
-// // // // //                       type="text"
-// // // // //                       value={jobQuery}
-// // // // //                       onChange={(e) => setJobQuery(e.target.value)}
-// // // // //                       placeholder="Job title, keywords, or company"
-// // // // //                       className="w-full pl-12 pr-4 py-4 text-lg outline-none border-none placeholder-gray-400"
-// // // // //                     />
-// // // // //                   </div>
-
-// // // // //                   {/* Location Search */}
-// // // // //                   <div className="relative flex shadow-lg rounded-full border border-gray-200 overflow-hidden focus-within:ring-2 focus-within:ring-blue-500 transition-all duration-300">
-// // // // //                     <div className="absolute left-4 top-1/2 -translate-y-1/2">
-// // // // //                       <MapPin className="w-5 h-5 text-gray-400" />
-// // // // //                     </div>
-// // // // //                     <input
-// // // // //                       type="text"
-// // // // //                       value={locationQuery}
-// // // // //                       onChange={(e) => setLocationQuery(e.target.value)}
-// // // // //                       placeholder="City, state, or remote"
-// // // // //                       className="w-full pl-12 pr-4 py-4 text-lg outline-none border-none placeholder-gray-400"
-// // // // //                     />
-// // // // //                     <Button
-// // // // //                       type="submit"
-// // // // //                       className="bg-blue-700 hover:bg-blue-800 text-white rounded-r-full px-8 h-auto transition transform hover:scale-105 flex items-center gap-2"
-// // // // //                     >
-// // // // //                       <Search className="w-5 h-5" />
-// // // // //                       Search
-// // // // //                     </Button>
-// // // // //                   </div>
-// // // // //                 </form>
-// // // // //               </div>
-// // // // //             </div>
-// // // // //           </div>
-
-// // // // //           <div className="relative h-96 bottom-28">
-// // // // //             <IconCloudDemo />
-// // // // //           </div>
-// // // // //         </div>
-// // // // //       </div>
-// // // // //     </div>
-// // // // //   );
-// // // // // }
-
-// // // // // export default HeroSection;
-// // // // import React from "react";
-// // // // import { motion } from "framer-motion";
-// // // // import { Briefcase, CheckCircle, Search, MapPin } from "lucide-react";
-// // // // import { Button } from "./ui/button";
-// // // // import { useDispatch } from "react-redux";
-// // // // import GridPattern from "./ui/grid-pattern";
-// // // // import { setSearchQuery } from "@/redux/jobSlice";
-// // // // import { useNavigate } from "react-router-dom";
-// // // // import { IconCloudDemo } from "./IconCloudDemo";
-
-// // // // const FloatingIcon = ({ icon: Icon, delay, x, y }) => (
-// // // //   <motion.div
-// // // //     className="absolute"
-// // // //     style={{ x, y }}
-// // // //     animate={{
-// // // //       y: [y, y - 20, y],
-// // // //       opacity: [0.5, 1, 0.5],
-// // // //     }}
-// // // //     transition={{
-// // // //       duration: 3,
-// // // //       delay,
-// // // //       repeat: Infinity,
-// // // //       ease: "easeInOut",
-// // // //     }}
-// // // //   >
-// // // //     <div className="p-3 bg-white/90 rounded-2xl shadow-lg backdrop-blur-sm">
-// // // //       <Icon className="w-6 h-6 text-blue-600" />
-// // // //     </div>
-// // // //   </motion.div>
-// // // // );
-
-// // // // function HeroSection() {
-// // // //   const dispatch = useDispatch();
-// // // //   const navigate = useNavigate();
-// // // //   const [jobQuery, setJobQuery] = React.useState("");
-// // // //   const [locationQuery, setLocationQuery] = React.useState("");
-
-// // // //   const handleSearch = (e) => {
-// // // //     e?.preventDefault();
-// // // //     const trimmedJobQuery = jobQuery.trim();
-// // // //     const trimmedLocationQuery = locationQuery.trim();
-// // // //     if (trimmedJobQuery || trimmedLocationQuery) {
-// // // //       dispatch(setSearchQuery({ job: trimmedJobQuery, location: trimmedLocationQuery }));
-// // // //       navigate("/browse");
-// // // //     }
-// // // //   };
-
-// // // //   return (
-// // // //     <div className="relative bg-gradient-to-br from-blue-50 via-white to-blue-50 overflow-hidden">
-// // // //       <div className="container mx-auto px-4 py-16 lg:py-10 relative z-10">
-// // // //         <div className="grid grid-cols-1 lg:grid-cols-[3fr_2fr] gap-8 items-center">
-// // // //           <GridPattern
-// // // //             className="absolute inset-0 w-full h-full text-blue-200"
-// // // //             style={{
-// // // //               maskImage: "radial-gradient(circle, rgba(0, 0, 0, 1) 50%, rgba(0, 0, 0, 0) 100%)",
-// // // //               WebkitMaskImage: "radial-gradient(circle, rgba(0, 0, 0, 1) 50%, rgba(0, 0, 0, 0) 100%)",
-// // // //               opacity: 0.4,
-// // // //             }}
-// // // //           />
-
-// // // //           <div className="container mx-auto px-16 py-16 lg:py-20 relative z-10">
-// // // //             <div className="flex flex-col items-center justify-center text-center lg:items-start lg:text-left">
-// // // //               <div className="flex items-center justify-center lg:justify-start mb-6">
-// // // //                 <span className="inline-flex items-center px-4 py-2 rounded-full bg-blue-50 text-blue-800 font-semibold shadow-sm transform transition hover:scale-105 hover:shadow-md">
-// // // //                   <CheckCircle className="w-5 h-5 mr-2 text-blue-600" />
-// // // //                   No. 1 Job Hunt Website
-// // // //                 </span>
-// // // //               </div>
-
-// // // //               <h1 className="text-5xl md:text-7xl font-extrabold text-gray-900 leading-tight mb-6">
-// // // //                 Search, Apply &
-// // // //                 <br />
-// // // //                 Get Your <span className="text-blue-700">Dream Job</span>
-// // // //               </h1>
-
-// // // //               <p className="text-xl text-gray-600 max-w-2xl mb-8">
-// // // //                 Discover opportunities that match your skills, passion, and
-// // // //                 career goals. Your next professional milestone is just a search
-// // // //                 away.
-// // // //               </p>
-
-// // // //               <div className="w-full max-w-2xl">
-// // // //                 <form onSubmit={handleSearch}>
-// // // //                   <div className="flex flex-col sm:flex-row gap-2 sm:gap-0">
-// // // //                     {/* Job Skills Search */}
-// // // //                     <div className="relative flex-1 group">
-// // // //                       <div className="absolute left-4 top-1/2 -translate-y-1/2">
-// // // //                         <Briefcase className="w-5 h-5 text-gray-400" />
-// // // //                       </div>
-// // // //                       <input
-// // // //                         type="text"
-// // // //                         value={jobQuery}
-// // // //                         onChange={(e) => setJobQuery(e.target.value)}
-// // // //                         placeholder="Job title or skills"
-// // // //                         className="w-full pl-12 pr-4 py-4 text-lg outline-none border border-gray-200 rounded-l-full sm:border-r-0 focus:ring-2 focus:ring-blue-200 transition-all duration-300"
-// // // //                       />
-// // // //                     </div>
-
-// // // //                     {/* Location Search */}
-// // // //                     <div className="relative flex-1 group">
-// // // //                       <div className="absolute left-4 top-1/2 -translate-y-1/2">
-// // // //                         <MapPin className="w-5 h-5 text-gray-400" />
-// // // //                       </div>
-// // // //                       <input
-// // // //                         type="text"
-// // // //                         value={locationQuery}
-// // // //                         onChange={(e) => setLocationQuery(e.target.value)}
-// // // //                         placeholder="Location"
-// // // //                         className="w-full pl-12 pr-4 py-4 text-lg outline-none border border-gray-200 sm:rounded-none rounded-r-full focus:ring-2 focus:ring-blue-500 transition-all duration-300"
-// // // //                       />
-// // // //                     </div>
-
-// // // //                     {/* Search Button */}
-// // // //                     <Button
-// // // //                       type="submit"
-// // // //                       className="w-full sm:w-auto bg-blue-700 hover:bg-blue-800 text-white rounded-full sm:rounded-l-none px-8 py-4 h-auto transition transform hover:scale-105 flex items-center justify-center gap-2"
-// // // //                     >
-// // // //                       <Search className="w-5 h-5" />
-// // // //                       Search
-// // // //                     </Button>
-// // // //                   </div>
-// // // //                 </form>
-// // // //               </div>
-// // // //             </div>
-// // // //           </div>
-
-// // // //           <div className="relative h-96 bottom-28">
-// // // //             <IconCloudDemo />
-// // // //           </div>
-// // // //         </div>
-// // // //       </div>
-// // // //     </div>
-// // // //   );
-// // // // }
-
-// // // // export default HeroSection;
-// // // import React, { useState } from "react";
-// // // import { motion } from "framer-motion";
-// // // import { Briefcase, CheckCircle, Search, MapPin } from "lucide-react";
-// // // import { Button } from "./ui/button";
-// // // import { useNavigate } from "react-router-dom";
-// // // import GridPattern from "./ui/grid-pattern";
-// // // import { IconCloudDemo } from "./IconCloudDemo";
-
-// // // const FloatingIcon = ({ icon: Icon, delay, x, y }) => (
-// // //   <motion.div
-// // //     className="absolute"
-// // //     style={{ x, y }}
-// // //     animate={{
-// // //       y: [y, y - 20, y],
-// // //       opacity: [0.5, 1, 0.5],
-// // //     }}
-// // //     transition={{
-// // //       duration: 3,
-// // //       delay,
-// // //       repeat: Infinity,
-// // //       ease: "easeInOut",
-// // //     }}
-// // //   >
-// // //     <div className="p-3 bg-white/90 rounded-2xl shadow-lg backdrop-blur-sm">
-// // //       <Icon className="w-6 h-6 text-blue-600" />
-// // //     </div>
-// // //   </motion.div>
-// // // );
-
-// // // function HeroSection() {
-// // //   const navigate = useNavigate();
-// // //   const [jobQuery, setJobQuery] = useState("");
-// // //   const [locationQuery, setLocationQuery] = useState("");
-
-// // //   const handleSearch = (e) => {
-// // //     e?.preventDefault();
-// // //     const trimmedJobQuery = jobQuery.trim();
-// // //     const trimmedLocationQuery = locationQuery.trim();
-
-// // //     // Construct query parameters
-// // //     const params = new URLSearchParams();
-// // //     if (trimmedJobQuery) params.append('keyword', trimmedJobQuery);
-// // //     if (trimmedLocationQuery) params.append('location', trimmedLocationQuery);
-
-// // //     // Navigate with search parameters
-// // //     navigate({
-// // //       pathname: '/browse',
-// // //       search: params.toString()
-// // //     });
-// // //   };
-
-// // //   return (
-// // //     <div className="relative bg-gradient-to-br from-blue-50 via-white to-blue-50 overflow-hidden">
-// // //       <div className="container mx-auto px-4 py-16 lg:py-10 relative z-10">
-// // //         <div className="grid grid-cols-1 lg:grid-cols-[3fr_2fr] gap-8 items-center">
-// // //           <GridPattern
-// // //             className="absolute inset-0 w-full h-full text-blue-200"
-// // //             style={{
-// // //               maskImage: "radial-gradient(circle, rgba(0, 0, 0, 1) 50%, rgba(0, 0, 0, 0) 100%)",
-// // //               WebkitMaskImage: "radial-gradient(circle, rgba(0, 0, 0, 1) 50%, rgba(0, 0, 0, 0) 100%)",
-// // //               opacity: 0.4,
-// // //             }}
-// // //           />
-
-// // //           <div className="container mx-auto px-16 py-16 lg:py-20 relative z-10">
-// // //             <div className="flex flex-col items-center justify-center text-center lg:items-start lg:text-left">
-// // //               <div className="flex items-center justify-center lg:justify-start mb-6">
-// // //                 <span className="inline-flex items-center px-4 py-2 rounded-full bg-blue-50 text-blue-800 font-semibold shadow-sm transform transition hover:scale-105 hover:shadow-md">
-// // //                   <CheckCircle className="w-5 h-5 mr-2 text-blue-600" />
-// // //                   No. 1 Job Hunt Website
-// // //                 </span>
-// // //               </div>
-
-// // //               <h1 className="text-5xl md:text-7xl font-extrabold text-gray-900 leading-tight mb-6">
-// // //                 Search, Apply &
-// // //                 <br />
-// // //                 Get Your <span className="text-blue-700">Dream Job</span>
-// // //               </h1>
-
-// // //               <p className="text-xl text-gray-600 max-w-2xl mb-8">
-// // //                 Discover opportunities that match your skills, passion, and
-// // //                 career goals. Your next professional milestone is just a search
-// // //                 away.
-// // //               </p>
-
-// // //               <div className="w-full max-w-2xl">
-// // //                 <form onSubmit={handleSearch}>
-// // //                   <div className="flex flex-col sm:flex-row gap-2 sm:gap-0">
-// // //                     {/* Job Skills Search */}
-// // //                     <div className="relative flex-1 group">
-// // //                       <div className="absolute left-4 top-1/2 -translate-y-1/2">
-// // //                         <Briefcase className="w-5 h-5 text-gray-400" />
-// // //                       </div>
-// // //                       <input
-// // //                         type="text"
-// // //                         value={jobQuery}
-// // //                         onChange={(e) => setJobQuery(e.target.value)}
-// // //                         placeholder="Job title or skills"
-// // //                         className="w-full pl-12 pr-4 py-4 text-lg outline-none border border-gray-200 rounded-l-full sm:border-r-0 focus:ring-2 focus:ring-blue-200 transition-all duration-300"
-// // //                       />
-// // //                     </div>
-
-// // //                     {/* Location Search */}
-// // //                     <div className="relative flex-1 group">
-// // //                       <div className="absolute left-4 top-1/2 -translate-y-1/2">
-// // //                         <MapPin className="w-5 h-5 text-gray-400" />
-// // //                       </div>
-// // //                       <input
-// // //                         type="text"
-// // //                         value={locationQuery}
-// // //                         onChange={(e) => setLocationQuery(e.target.value)}
-// // //                         placeholder="Location"
-// // //                         className="w-full pl-12 pr-4 py-4 text-lg outline-none border border-gray-200 sm:rounded-none rounded-r-full focus:ring-2 focus:ring-blue-500 transition-all duration-300"
-// // //                       />
-// // //                     </div>
-
-// // //                     {/* Search Button */}
-// // //                     <Button
-// // //                       type="submit"
-// // //                       className="w-full sm:w-auto bg-blue-700 hover:bg-blue-800 text-white rounded-full sm:rounded-l-none px-8 py-4 h-auto transition transform hover:scale-105 flex items-center justify-center gap-2"
-// // //                     >
-// // //                       <Search className="w-5 h-5" />
-// // //                       Search
-// // //                     </Button>
-// // //                   </div>
-// // //                 </form>
-// // //               </div>
-// // //             </div>
-// // //           </div>
-
-// // //           <div className="relative h-96 bottom-28">
-// // //             <IconCloudDemo />
-// // //           </div>
-// // //         </div>
-// // //       </div>
-// // //     </div>
-// // //   );
-// // // }
-
-// // // export default HeroSection;
-
-
-
-
-
-
-
-
-// // // import React, { useState, memo } from "react";
-// // // import { motion } from "framer-motion";
-// // // import { Briefcase, CheckCircle, Search, MapPin } from "lucide-react";
-// // // import { Button } from "./ui/button";
-// // // import { useNavigate } from "react-router-dom";
-// // // import GridPattern from "./ui/grid-pattern";
-// // // import IconCloudDemo from "./IconCloudDemo";
-
-
-// // // // Memoize the IconCloudDemo component
-// // // const MemoizedIconCloud = memo(IconCloudDemo);
-
-// // // function HeroSection() {
-// // //   const navigate = useNavigate();
-// // //   const [jobQuery, setJobQuery] = useState("");
-// // //   const [locationQuery, setLocationQuery] = useState("");
-
-// // //   const handleSearch = (e) => {
-// // //     e.preventDefault();
-// // //     const trimmedJobQuery = jobQuery.trim();
-// // //     const trimmedLocationQuery = locationQuery.trim();
-
-// // //     const params = new URLSearchParams();
-// // //     if (trimmedJobQuery) params.append('keyword', trimmedJobQuery);
-// // //     if (trimmedLocationQuery) params.append('location', trimmedLocationQuery);
-
-// // //     navigate({
-// // //       pathname: '/browse',
-// // //       search: params.toString()
-// // //     });
-// // //   };
-
-// // //   return (
-// // //     <div className="relative bg-gradient-to-br from-blue-50 via-white to-blue-50 overflow-hidden ">
-// // //       <div className="container mx-auto px-4 py-16 lg:py-10 relative z-10">
-// // //         <div className="grid grid-cols-1 lg:grid-cols-[3fr_2fr] gap-8 items-center">
-// // //           <GridPattern
-// // //             className="absolute inset-0 w-full h-full text-blue-200"
-// // //             style={{
-// // //               maskImage: "radial-gradient(circle, rgba(0, 0, 0, 1) 50%, rgba(0, 0, 0, 0) 100%)",
-// // //               WebkitMaskImage: "radial-gradient(circle, rgba(0, 0, 0, 1) 50%, rgba(0, 0, 0, 0) 100%)",
-// // //               opacity: 0.4,
-// // //             }}
-// // //           />
-
-// // //           <div className="container mx-auto px-16 py-16 lg:py-12 relative z-10">
-// // //             <div className="flex flex-col items-center justify-center text-center lg:items-start lg:text-left ">
-// // //               <div className="flex items-center justify-center lg:justify-start mb-6 ">
-// // //                 <span className="inline-flex items-center px-4 py-2 rounded-full bg-blue-50 text-blue-800 font-semibold shadow-sm transform transition hover:scale-105 hover:shadow-md">
-// // //                   <CheckCircle className="w-5 h-5 mr-2 text-blue-600" />
-// // //                   No. 1 Job Hunt Website
-// // //                 </span>
-// // //               </div>
-
-// // //               <h1 className="text-5xl md:text-7xl font-extrabold text-gray-900 leading-tight mb-6">
-// // //                 Search, Apply &
-// // //                 <br />
-// // //                 Get Your <span className="text-blue-700">Dream Job</span>
-// // //               </h1>
-
-// // //               <p className="text-xl text-gray-600 max-w-2xl mb-8">
-// // //                 Discover opportunities that match your skills, passion, and
-// // //                 career goals. Your next professional milestone is just a search
-// // //                 away.
-// // //               </p>
-
-// // //               <div className="w-full max-w-2xl">
-// // //                 <form onSubmit={handleSearch}>
-// // //                   <div className="flex flex-col sm:flex-row gap-2 sm:gap-0">
-// // //                     <div className="relative flex-1 group">
-// // //                       <div className="absolute left-4 top-1/2 -translate-y-1/2">
-// // //                         <Briefcase className="w-5 h-5 text-gray-400" />
-// // //                       </div>
-// // //                       <input
-// // //                         type="text"
-// // //                         value={jobQuery}
-// // //                         onChange={(e) => setJobQuery(e.target.value)}
-// // //                         placeholder="Job title or skills"
-// // //                         className="w-full pl-12 pr-4 py-4 text-lg outline-none border border-gray-200 rounded-l-full sm:border-r-0 focus:ring-2 focus:ring-blue-200 transition-all duration-300"
-// // //                       />
-// // //                     </div>
-
-// // //                     <div className="relative flex-1 group">
-// // //                       <div className="absolute left-4 top-1/2 -translate-y-1/2">
-// // //                         <MapPin className="w-5 h-5 text-gray-400" />
-// // //                       </div>
-// // //                       <input
-// // //                         type="text"
-// // //                         value={locationQuery}
-// // //                         onChange={(e) => setLocationQuery(e.target.value)}
-// // //                         placeholder="Location"
-// // //                         className="w-full pl-12 pr-4 py-4 text-lg outline-none border border-gray-200 sm:rounded-none rounded-r-full focus:ring-2 focus:ring-blue-500 transition-all duration-300"
-// // //                       />
-// // //                     </div>
-
-// // //                     <Button
-// // //                       type="submit"
-// // //                       className="w-full sm:w-auto bg-blue-700 hover:bg-blue-800 text-white rounded-full sm:rounded-l-none px-8 py-4 h-auto transition transform hover:scale-105 flex items-center justify-center gap-2"
-// // //                     >
-// // //                       <Search className="w-5 h-5" />
-// // //                       Search
-// // //                     </Button>
-// // //                   </div>
-// // //                 </form>
-// // //               </div>
-// // //             </div>
-// // //           </div>
-
-// // //           <div className="relative h-96 bottom-28">
-// // //             <MemoizedIconCloud />
-// // //           </div>
-// // //         </div>
-// // //       </div>
-// // //     </div>
-// // //   );
-// // // }
-
-// // // export default HeroSection;
-// // import React, { useState, memo } from "react";
-// // import { motion } from "framer-motion";
-// // import { Briefcase, CheckCircle, Search, MapPin } from "lucide-react";
-// // import { Button } from "./ui/button";
-// // import { useNavigate } from "react-router-dom";
-// // import GridPattern from "./ui/grid-pattern";
-// // import IconCloudDemo from "./IconCloudDemo";
-// // const MemoizedIconCloud = memo(IconCloudDemo);
-
-// // // Memoize the Hero Section content for performance optimization
-// // const MemoizedHeroText = memo(() => {
-// //   return (
-// //     <div className="flex flex-col items-center justify-center text-center lg:items-start lg:text-left ">
-// //       <div className="flex items-center justify-center lg:justify-start mb-6 ">
-// //         <span className="inline-flex items-center px-4 py-2 rounded-full bg-blue-50 text-blue-800 font-semibold shadow-sm transform transition hover:scale-105 hover:shadow-md">
-// //           <CheckCircle className="w-5 h-5 mr-2 text-blue-600" />
-// //           No. 1 Job Hunt Website
-// //         </span>
-// //       </div>
-
-// //       <h1 className="text-5xl md:text-7xl font-extrabold text-gray-900 leading-tight mb-6">
-// //         Search, Apply &
-// //         <br />
-// //         Get Your <span className="text-blue-700">Dream Job</span>
-// //       </h1>
-
-// //       <p className="text-xl text-gray-600 max-w-2xl mb-8">
-// //         Discover opportunities that match your skills, passion, and career goals. Your next professional milestone is just a search away.
-// //       </p>
-// //     </div>
-// //   );
-// // });
-
-// // function HeroSection() {
-// //   const navigate = useNavigate();
-// //   const [jobQuery, setJobQuery] = useState("");
-// //   const [locationQuery, setLocationQuery] = useState("");
-
-// //   const handleSearch = (e) => {
-// //     e.preventDefault();
-// //     const trimmedJobQuery = jobQuery.trim();
-// //     const trimmedLocationQuery = locationQuery.trim();
-
-// //     const params = new URLSearchParams();
-// //     if (trimmedJobQuery) params.append('keyword', trimmedJobQuery);
-// //     if (trimmedLocationQuery) params.append('location', trimmedLocationQuery);
-
-// //     navigate({
-// //       pathname: '/browse',
-// //       search: params.toString()
-// //     });
-// //   };
-
-// //   return (
-// //     <div className="relative bg-gradient-to-br from-blue-50 via-white to-blue-50 overflow-hidden">
-// //       <div className="container mx-auto px-4 py-16 lg:py-10 relative z-10">
-// //         <div className="grid grid-cols-1 lg:grid-cols-[3fr_2fr] gap-8 items-center">
-// //           <GridPattern
-// //             className="absolute inset-0 w-full h-full text-blue-200"
-// //             style={{
-// //               maskImage: "radial-gradient(circle, rgba(0, 0, 0, 1) 50%, rgba(0, 0, 0, 0) 100%)",
-// //               WebkitMaskImage: "radial-gradient(circle, rgba(0, 0, 0, 1) 50%, rgba(0, 0, 0, 0) 100%)",
-// //               opacity: 0.4,
-// //             }}
-// //           />
-
-// //           <div className="container mx-auto px-16 py-16 lg:py-12 relative z-10">
-// //             {/* Memoized Hero Text Component */}
-// //             <MemoizedHeroText />
-
-// //             <div className="w-full max-w-2xl">
-// //               <form onSubmit={handleSearch}>
-// //                 <div className="flex flex-col sm:flex-row gap-2 sm:gap-0">
-// //                   <div className="relative flex-1 group">
-// //                     <div className="absolute left-4 top-1/2 -translate-y-1/2">
-// //                       <Briefcase className="w-5 h-5 text-gray-400" />
-// //                     </div>
-// //                     <input
-// //                       type="text"
-// //                       value={jobQuery}
-// //                       onChange={(e) => setJobQuery(e.target.value)}
-// //                       placeholder="Job title or skills"
-// //                       className="w-full pl-12 pr-4 py-4 text-lg outline-none border border-gray-200 rounded-l-full sm:border-r-0 focus:ring-2 focus:ring-blue-200 transition-all duration-300"
-// //                     />
-// //                   </div>
-
-// //                   <div className="relative flex-1 group">
-// //                     <div className="absolute left-4 top-1/2 -translate-y-1/2">
-// //                       <MapPin className="w-5 h-5 text-gray-400" />
-// //                     </div>
-// //                     <input
-// //                       type="text"
-// //                       value={locationQuery}
-// //                       onChange={(e) => setLocationQuery(e.target.value)}
-// //                       placeholder="Location"
-// //                       className="w-full pl-12 pr-4 py-4 text-lg outline-none border border-gray-200 sm:rounded-none rounded-r-full focus:ring-2 focus:ring-blue-500 transition-all duration-300"
-// //                     />
-// //                   </div>
-
-// //                   <Button
-// //                     type="submit"
-// //                     className="w-full sm:w-auto bg-blue-700 hover:bg-blue-800 text-white rounded-full sm:rounded-l-none px-8 py-4 h-auto transition transform hover:scale-105 flex items-center justify-center gap-2"
-// //                   >
-// //                     <Search className="w-5 h-5" />
-// //                     Search
-// //                   </Button>
-// //                 </div>
-// //               </form>
-// //             </div>
-// //           </div>
-
-// //           <div className="relative h-96 bottom-28">
-// //             <MemoizedIconCloud />
-// //           </div>
-// //         </div>
-// //       </div>
-// //     </div>
-// //   );
-// // }
-
-// // export default HeroSection;
-// import React, { useState, memo, Suspense, lazy } from "react";
-// import { Briefcase, CheckCircle, Search, MapPin } from "lucide-react";
-// import { Button } from "./ui/button";
-// import { useNavigate } from "react-router-dom";
-// import GridPattern from "./ui/grid-pattern";
-
-// // Lazy load the IconCloudDemo component if it's large
-// const MemoizedIconCloud = lazy(() => import("./IconCloudDemo"));
-
-// // Memoize static Hero text content
-// const MemoizedHeroText = memo(() => {
-//   return (
-//     <div className="flex flex-col items-center justify-center text-center lg:items-start lg:text-left">
-//       <div className="flex items-center justify-center lg:justify-start mb-6">
-//         <span className="inline-flex items-center px-4 py-2 rounded-full bg-blue-50 text-blue-800 font-semibold shadow-sm transform transition hover:scale-105 hover:shadow-md">
-//           <CheckCircle className="w-5 h-5 mr-2 text-blue-600" />
-//           No. 1 Job Hunt Website
-//         </span>
-//       </div>
-
-//       <h1 className="text-5xl md:text-7xl font-extrabold text-gray-900 leading-tight mb-6">
-//         Search, Apply & Get Your <span className="text-blue-700">Dream Job</span>
-//       </h1>
-
-//       <p className="text-xl text-gray-600 max-w-2xl mb-8">
-//         Discover opportunities that match your skills, passion, and career goals.
-//         Your next professional milestone is just a search away.
-//       </p>
-//     </div>
-//   );
-// });
-
-// function HeroSection() {
-//   const navigate = useNavigate();
-//   const [jobQuery, setJobQuery] = useState("");
-//   const [locationQuery, setLocationQuery] = useState("");
-
-//   const handleSearch = (e) => {
-//     e.preventDefault();
-//     const trimmedJobQuery = jobQuery.trim();
-//     const trimmedLocationQuery = locationQuery.trim();
-
-//     const params = new URLSearchParams();
-//     if (trimmedJobQuery) params.append("keyword", trimmedJobQuery);
-//     if (trimmedLocationQuery) params.append("location", trimmedLocationQuery);
-
-//     navigate({
-//       pathname: "/browse",
-//       search: params.toString(),
-//     });
-//   };
-
-//   return (
-//     <div className="relative bg-gradient-to-br from-blue-50 via-white to-blue-50 overflow-hidden">
-//       <div className="container mx-auto px-4 py-16 lg:py-10 relative z-10">
-//         <div className="grid grid-cols-1 lg:grid-cols-[3fr_2fr] gap-8 items-center">
-//           <GridPattern
-//             className="absolute inset-0 w-full h-full text-blue-200"
-//             style={{
-//               maskImage:
-//                 "radial-gradient(circle, rgba(0, 0, 0, 1) 50%, rgba(0, 0, 0, 0) 100%)",
-//               WebkitMaskImage:
-//                 "radial-gradient(circle, rgba(0, 0, 0, 1) 50%, rgba(0, 0, 0, 0) 100%)",
-//               opacity: 0.4,
-//             }}
-//           />
-
-//           <div className="container mx-auto px-16 py-16 lg:py-12 relative z-10">
-//             {/* Memoized Hero Text */}
-//             <MemoizedHeroText />
-
-//             <div className="w-full max-w-2xl">
-//               <form onSubmit={handleSearch}>
-//                 <div className="flex flex-col sm:flex-row gap-2 sm:gap-0">
-//                   <div className="relative flex-1 group">
-//                     <div className="absolute left-4 top-1/2 -translate-y-1/2">
-//                       <Briefcase className="w-5 h-5 text-gray-400" />
-//                     </div>
-//                     <input
-//                       type="text"
-//                       value={jobQuery}
-//                       onChange={(e) => setJobQuery(e.target.value)}
-//                       placeholder="Job title or skills"
-//                       className="w-full pl-12 pr-4 py-4 text-lg outline-none border border-gray-200 rounded-l-full sm:border-r-0 focus:ring-2 focus:ring-blue-200 transition-all duration-300"
-//                     />
-//                   </div>
-
-//                   <div className="relative flex-1 group">
-//                     <div className="absolute left-4 top-1/2 -translate-y-1/2">
-//                       <MapPin className="w-5 h-5 text-gray-400" />
-//                     </div>
-//                     <input
-//                       type="text"
-//                       value={locationQuery}
-//                       onChange={(e) => setLocationQuery(e.target.value)}
-//                       placeholder="Location"
-//                       className="w-full pl-12 pr-4 py-4 text-lg outline-none border border-gray-200 sm:rounded-none rounded-r-full focus:ring-2 focus:ring-blue-500 transition-all duration-300"
-//                     />
-//                   </div>
-
-//                   <Button
-//                     type="submit"
-//                     className="w-full sm:w-auto bg-blue-700 hover:bg-blue-800 text-white rounded-full sm:rounded-l-none px-8 py-4 h-auto transition transform hover:scale-105 flex items-center justify-center gap-2"
-//                   >
-//                     <Search className="w-5 h-5" />
-//                     Search
-//                   </Button>
-//                 </div>
-//               </form>
-//             </div>
-//           </div>
-
-//           <div className="relative h-96 bottom-28">
-//             {/* Lazy load IconCloud */}
-//             <Suspense fallback={<div>Loading...</div>}>
-//               <MemoizedIconCloud />
-//             </Suspense>
-//           </div>
-//         </div>
-//       </div>
-//     </div>
-//   );
-// }
-
-// export default HeroSection;
-
-
-
-
-// import React, { useState, memo, Suspense, lazy } from "react";
-// import { Briefcase, CheckCircle, Search, MapPin } from "lucide-react";
-// import { Button } from "./ui/button";
-// import { useNavigate } from "react-router-dom";
-// import GridPattern from "./ui/grid-pattern";
-
-// // Lazy load the IconCloudDemo component if it's large
-// const MemoizedIconCloud = lazy(() => import("./IconCloudDemo"));
-
-// // Memoize static Hero text content
-// const MemoizedHeroText = memo(() => {
-//   return (
-//     <div className="flex flex-col items-center justify-center text-center lg:items-start lg:text-left">
-//       <div className="flex items-center justify-center lg:justify-start mb-6">
-//         <span className="inline-flex items-center px-4 py-2 rounded-full bg-blue-50 text-blue-800 font-semibold shadow-sm transform transition hover:scale-105 hover:shadow-md">
-//           <CheckCircle className="w-5 h-5 mr-2 text-blue-600" />
-//           No. 1 Job Hunt Website
-//         </span>
-//       </div>
-
-//       <h1 className="text-5xl md:text-7xl font-extrabold text-gray-900 leading-tight mb-6">
-//         Search, Apply & Get Your <span className="text-blue-700">Dream Job</span>
-//       </h1>
-
-//       <p className="text-xl text-gray-600 max-w-2xl mb-8">
-//         Discover opportunities that match your skills, passion, and career goals.
-//         Your next professional milestone is just a search away.
-//       </p>
-//     </div>
-//   );
-// });
-
-// // Memoize GridPattern
-// const MemoizedGridPattern = memo(GridPattern);
-
-// function HeroSection() {
-//   const navigate = useNavigate();
-//   const [jobQuery, setJobQuery] = useState("");
-//   const [locationQuery, setLocationQuery] = useState("");
-
-//   const handleSearch = (e) => {
-//     e.preventDefault();
-//     const trimmedJobQuery = jobQuery.trim();
-//     const trimmedLocationQuery = locationQuery.trim();
-
-//     const params = new URLSearchParams();
-//     if (trimmedJobQuery) params.append("keyword", trimmedJobQuery);
-//     if (trimmedLocationQuery) params.append("location", trimmedLocationQuery);
-
-//     navigate({
-//       pathname: "/browse",
-//       search: params.toString(),
-//     });
-//   };
-
-//   return (
-//     <div className="relative bg-gradient-to-br from-blue-50 via-white to-blue-50 overflow-hidden">
-//       <div className="container mx-auto px-4 py-16 lg:py-10 relative z-10">
-//         <div className="grid grid-cols-1 lg:grid-cols-[3fr_2fr] gap-8 items-center">
-//           <MemoizedGridPattern
-//             className="absolute inset-0 w-full h-full text-blue-200"
-//             style={{
-//               maskImage:
-//                 "radial-gradient(circle, rgba(0, 0, 0, 1) 50%, rgba(0, 0, 0, 0) 100%)",
-//               WebkitMaskImage:
-//                 "radial-gradient(circle, rgba(0, 0, 0, 1) 50%, rgba(0, 0, 0, 0) 100%)",
-//               opacity: 0.4,
-//             }}
-//           />
-
-//           <div className="container mx-auto px-16 py-16 lg:py-12 relative z-10">
-//             {/* Memoized Hero Text */}
-//             <MemoizedHeroText />
-
-//             <div className="w-full max-w-2xl">
-//               <form onSubmit={handleSearch}>
-//                 <div className="flex flex-col sm:flex-row gap-2 sm:gap-0">
-//                   <div className="relative flex-1 group">
-//                     <div className="absolute left-4 top-1/2 -translate-y-1/2">
-//                       <Briefcase className="w-5 h-5 text-gray-400" />
-//                     </div>
-//                     <input
-//                       type="text"
-//                       value={jobQuery}
-//                       onChange={(e) => setJobQuery(e.target.value)}
-//                       placeholder="Job title or skills"
-//                       className="w-full pl-12 pr-4 py-4 text-lg outline-none border border-gray-200 rounded-l-full sm:border-r-0 focus:ring-2 focus:ring-blue-200 transition-all duration-300"
-//                     />
-//                   </div>
-
-//                   <div className="relative flex-1 group">
-//                     <div className="absolute left-4 top-1/2 -translate-y-1/2">
-//                       <MapPin className="w-5 h-5 text-gray-400" />
-//                     </div>
-//                     <input
-//                       type="text"
-//                       value={locationQuery}
-//                       onChange={(e) => setLocationQuery(e.target.value)}
-//                       placeholder="Location"
-//                       className="w-full pl-12 pr-4 py-4 text-lg outline-none border border-gray-200 sm:rounded-none rounded-r-full focus:ring-2 focus:ring-blue-500 transition-all duration-300"
-//                     />
-//                   </div>
-
-//                   <Button
-//                     type="submit"
-//                     className="w-full sm:w-auto bg-blue-700 hover:bg-blue-800 text-white rounded-full sm:rounded-l-none px-8 py-4 h-auto transition transform hover:scale-105 flex items-center justify-center gap-2"
-//                   >
-//                     <Search className="w-5 h-5" />
-//                     Search
-//                   </Button>
-//                 </div>
-//               </form>
-//             </div>
-//           </div>
-
-//           <div className="relative h-96 bottom-28">
-//             {/* Lazy load IconCloud */}
-//             <Suspense fallback={<div>Loading...</div>}>
-//               <MemoizedIconCloud />
-//             </Suspense>
-//           </div>
-//         </div>
-//       </div>
-//     </div>
-//   );
-// }
-
-// export default HeroSection;
-
-import React, { useState, memo, Suspense, lazy } from "react";
-import { Briefcase, CheckCircle, Search, MapPin } from "lucide-react";
-import { Button } from "./ui/button";
+import React, { useState, useEffect } from "react";
+import { Search, MapPin, Briefcase } from "lucide-react";
 import { useNavigate } from "react-router-dom";
-import GridPattern from "./ui/grid-pattern";
+import bp from "../assets/bp.svg";
+import hbg from "../assets/group 7.svg";
+import avatars from "../assets/avatars.svg"
 
-// Lazy load the IconCloudDemo component for desktop only
-const MemoizedIconCloud = lazy(() => import("./IconCloudDemo"));
-
-// Memoize static Hero text content
-const MemoizedHeroText = memo(() => {
-  return (
-    <div className="flex flex-col items-center justify-center text-center lg:items-start lg:text-left">
-      <div className="flex items-center justify-center lg:justify-start mb-4 lg:mb-6">
-        <span className="inline-flex items-center px-3 py-1 lg:px-4 lg:py-2 rounded-full bg-blue-50 text-blue-800 text-sm lg:text-base font-semibold shadow-sm transform transition hover:scale-105 hover:shadow-md">
-          <CheckCircle className="w-4 h-4 lg:w-5 lg:h-5 mr-2 text-blue-600" />
-          No. 1 Job Hunt Website
-        </span>
-      </div>
-
-      <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-extrabold text-gray-900 leading-tight mb-4 lg:mb-6">
-        Search, Apply & Get Your <span className="text-blue-700">Dream Job</span>
-      </h1>
-
-      <p className="text-lg lg:text-xl text-gray-600 max-w-2xl mb-6 lg:mb-8 px-4 lg:px-0">
-        Discover opportunities that match your skills, passion, and career goals.
-        Your next professional milestone is just a search away.
-      </p>
-    </div>
-  );
-});
-
-// Memoize GridPattern
-const MemoizedGridPattern = memo(GridPattern);
-
-function HeroSection() {
+export default function HeroSection() {
   const navigate = useNavigate();
   const [jobQuery, setJobQuery] = useState("");
   const [locationQuery, setLocationQuery] = useState("");
-  const [isDesktop, setIsDesktop] = useState(window.innerWidth >= 1024);
+  const [experienceLevel, setExperienceLevel] = useState("");
+  const [isDesktop, setIsDesktop] = useState(window.innerWidth >= 768);
 
   // Handle window resize
-  React.useEffect(() => {
+  useEffect(() => {
     const handleResize = () => {
-      setIsDesktop(window.innerWidth >= 1024);
+      setIsDesktop(window.innerWidth >= 768);
     };
 
-    window.addEventListener('resize', handleResize);
-    return () => window.removeEventListener('resize', handleResize);
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
   }, []);
 
   const handleSearch = (e) => {
-    e.preventDefault();
+    if (e) e.preventDefault();
     const trimmedJobQuery = jobQuery.trim();
     const trimmedLocationQuery = locationQuery.trim();
 
     const params = new URLSearchParams();
     if (trimmedJobQuery) params.append("keyword", trimmedJobQuery);
     if (trimmedLocationQuery) params.append("location", trimmedLocationQuery);
+    if (experienceLevel) params.append("experience", experienceLevel);
 
     navigate({
       pathname: "/browse",
@@ -1416,68 +39,172 @@ function HeroSection() {
   };
 
   return (
-    <div className="relative bg-gradient-to-br from-blue-50 via-white to-blue-50 overflow-hidden">
-      <div className="container mx-auto px-4 py-8 lg:py-16 relative z-10">
-        <div className="grid grid-cols-1 lg:grid-cols-[3fr_2fr] gap-8 items-center">
-          <MemoizedGridPattern
-            className="absolute inset-0 w-full h-full text-blue-200"
-            style={{
-              maskImage: "radial-gradient(circle, rgba(0, 0, 0, 1) 50%, rgba(0, 0, 0, 0) 100%)",
-              WebkitMaskImage: "radial-gradient(circle, rgba(0, 0, 0, 1) 50%, rgba(0, 0, 0, 0) 100%)",
-              opacity: 0.4,
-            }}
-          />
+    <div
+      className="w-full min-h-[50vh] sm:min-h-[70vh] md:min-h-[73vh] lg:min-h-[66vh] lg:mt-7 bg-fit bg-center bg-no-repeat overflow-hidden  "
+      style={{
+        backgroundImage: `url(${hbg})`,
+        boxShadow: "none", // Remove bottom shadow
+      }}
+      draggable="false"
+    >
+      <div className="container mx-auto px-4 md:px-8 lg:px-12 py-4 md:py-8">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 md:gap-8 items-center">
+          {/* Left Side */}
+          <div className="flex flex-col items-center md:items-start gap-3 mt-24 sm:mt-20 md:mt-12 md:ml-8 lg:ml-24 ">
+            {/* Trusted by users tag */}
+            <div className="bg-[#97C0FF]  rounded-full px-5 py-1.5 sm:px-4 sm:py-2 flex items-center gap-2">
+              <div className="flex -space-x-4 sm:-space-x-6">
+                <img
+                  src={avatars}
+                  alt="Avatars"
+                  className="w-16 sm:w-20 h-8 sm:h-10 rounded-full object-cover"
+                  draggable="false"
+                />
+              </div>
 
-          <div className="container mx-auto px-4 lg:px-16 py-8 lg:py-12 relative z-10">
-            <MemoizedHeroText />
+              <span className="text-[#012760] font-medium text-xs sm:text-sm">
+                Trusted by more than <span className="text-[#0350C6] font-extrabold">100k+ users</span>
+              </span>
+            </div>
 
-            <div className="w-full max-w-2xl mx-auto lg:mx-0">
-              <form onSubmit={handleSearch} className="space-y-4 sm:space-y-0">
-                <div className="flex flex-col sm:flex-row gap-4 sm:gap-0">
-                  <div className="relative flex-1">
-                    <div className="absolute left-4 top-1/2 -translate-y-1/2">
-                      <Briefcase className="w-5 h-5 text-gray-400" />
-                    </div>
+            {/* Headings with better responsive sizing */}
+            <div className="text-center md:text-left w-full">
+              <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-4xl font-bold text-[#444444]">
+                Find the <span className="text-[#012760]">right job</span>
+              </h1>
+              <h2 className="text-[#444444] text-2xl sm:text-3xl md:text-4xl lg:text-4xl font-bold mt-1 md:mt-2">
+                Work without boarders
+              </h2>
+            </div>
+
+            {/* Search bar */}
+            <div className="w-full mt-4 sm:mt-6">
+              <div className=" relative w-full md:w-[76vh] h-12 sm:h-14 md:h-16 bg-neutral-50 rounded-full shadow-lg overflow-hidden">
+                {/* Search input fields container */}
+                <div className="flex items-center h-full">
+                  {/* Job search field */}
+                  <div className="flex items-center gap-1 sm:gap-2 md:gap-3 px-3 flex-grow">
+                    <Search className="w-4 h-4 md:w-5 md:h-5 text-gray-500 flex-shrink-0" />
                     <input
                       type="text"
                       value={jobQuery}
                       onChange={(e) => setJobQuery(e.target.value)}
-                      placeholder="Job title or skills"
-                      className="w-full pl-12 pr-4 py-3 lg:py-4 text-base lg:text-lg outline-none border border-gray-200 rounded-full sm:rounded-l-full sm:rounded-r-none focus:ring-2 focus:ring-blue-200 transition-all duration-300"
+                      placeholder="search jobs"
+                      className="w-full sm:w-16 md:w-24 bg-transparent font-medium text-gray-500 text-xs sm:text-sm md:text-lg focus:outline-none"
                     />
                   </div>
 
-                  <div className="relative flex-1">
-                    <div className="absolute left-4 top-1/2 -translate-y-1/2">
-                      <MapPin className="w-5 h-5 text-gray-400" />
-                    </div>
+                  {/* Divider */}
+                  <div className="w-px h-6 md:h-8 bg-gray-300"></div>
+
+                  {/* Location field */}
+                  <div className="flex items-center gap-1 sm:gap-2 md:gap-3 px-2 md:px-4 flex-grow sm:flex-grow-0">
+                    <MapPin className="w-4 h-4 md:w-5 md:h-5 text-gray-500 flex-shrink-0" />
                     <input
                       type="text"
                       value={locationQuery}
                       onChange={(e) => setLocationQuery(e.target.value)}
-                      placeholder="Location"
-                      className="w-full pl-12 pr-4 py-3 lg:py-4 text-base lg:text-lg outline-none border border-gray-200 rounded-full sm:rounded-none focus:ring-2 focus:ring-blue-500 transition-all duration-300"
+                      placeholder="location"
+                      className="w-full sm:w-16 md:w-24 bg-transparent font-medium text-gray-500 text-xs sm:text-sm md:text-lg focus:outline-none"
                     />
                   </div>
 
-                  <Button
-                    type="submit"
-                    className="w-full sm:w-auto bg-blue-700 hover:bg-blue-800 text-white rounded-full sm:rounded-l-none px-6 lg:px-8 py-3 lg:py-4 h-auto transition transform hover:scale-105 flex items-center justify-center gap-2"
+                  {/* Experience field - hidden on mobile */}
+                  <div className="hidden sm:flex items-center gap-2 px-2 md:px-4">
+                    <div className="w-px h-6 md:h-8 bg-gray-300 mr-1 sm:mr-2"></div>
+                    <Briefcase className="w-4 h-4 md:w-5 md:h-5 text-gray-500" />
+                    <select
+                      value={experienceLevel}
+                      onChange={(e) => setExperienceLevel(e.target.value)}
+                      className="w-16 sm:w-20 md:w-24 bg-transparent font-medium text-gray-500 text-xs sm:text-sm md:text-lg focus:outline-none appearance-none cursor-pointer"
+                    >
+                      <option value="">experience</option>
+                      <option value="entry">Entry Level</option>
+                      <option value="mid">Mid Level</option>
+                      <option value="senior">Senior Level</option>
+                    </select>
+                  </div>
+
+                  {/* Search button with gradient background */}
+                  <button
+                    onClick={handleSearch}
+                    className="ml-auto w-10 sm:w-12 md:w-16 lg:w-24 h-12 sm:h-14 md:h-16 flex items-center justify-center bg-gradient-to-r from-red-500 to-orange-500 cursor-pointer"
+
                   >
-                    <Search className="w-5 h-5" />
-                    <span className="hidden sm:inline">Search</span>
-                  </Button>
+                     <img
+                      onClick={handleSearch}
+                      className="w-5 h-5 sm:w-6 sm:h-6 md:w-8 md:h-8 cursor-pointer"
+                      alt="Search"
+                      src="https://c.animaapp.com/Bqbe6AXD/img/material-symbols-light-line-end-arrow.svg"
+                      draggable="false"
+                    />
+
+
+                  </button>
                 </div>
-              </form>
+              </div>
             </div>
           </div>
 
-          {/* Only render IconCloud on desktop */}
+          {/* Right Side - Only shown on desktop */}
           {isDesktop && (
-            <div className="hidden lg:block relative ">
-              <Suspense fallback={<div>Loading...</div>}>
-                <MemoizedIconCloud />
-              </Suspense>
+            <div className="hidden md:block relative h-full w-full ">
+              {/* Main content area */}
+              <div className="relative w-full h-full flex justify-center mt-6 md:mt-12">
+                {/* Main image container */}
+                <div className="relative flex justify-center items-center w-full h-full mt-[8vh]">
+                  <img
+                    src={bp}
+                    alt="Three professional business people"
+                    className="h-auto max-h-64 md:max-h-80 lg:max-h-96 w-auto object-contain z-10"
+                    draggable="false"
+                  />
+
+                  {/* Message bubbles layout */}
+                  <div className="absolute w-full flex flex-col items-center top-3 md:top-0 pointer-events-none">
+                    {/* Center message bubble (on top) */}
+                    <div className="mb-4 md:mb-6 mt-[-2vh] md:mt-[-1vh]">
+                      <div className="inline-flex items-center justify-center px-3 py-2 md:px-5 md:py-3 bg-white rounded-full shadow-lg">
+                        <p className="font-sans text-xs md:text-sm text-center whitespace-nowrap">
+                          <span className="font-medium text-gray-700">
+                            Helping in connect with the{" "}
+                          </span>
+                          <span className="font-semibold text-red-500">
+                            top companies
+                          </span>
+                        </p>
+                      </div>
+                    </div>
+
+                    {/* Bottom bubbles (left and right) */}
+                    <div className="flex justify-center items-center gap-x-4 md:gap-x-16">
+                      {/* Left message */}
+                      <div className="inline-flex items-center justify-center px-3 py-2 md:px-5 md:py-3 bg-white rounded-full shadow-lg">
+                        <p className="font-sans text-xs md:text-sm text-center whitespace-nowrap">
+                          <span className="font-medium text-gray-700">
+                            One stop solution for your{" "}
+                          </span>
+                          <span className="font-semibold text-orange-400">
+                            job hunt
+                          </span>
+                        </p>
+                      </div>
+
+                      {/* Right message */}
+                      <div className="inline-flex items-center justify-center px-3 py-2 md:px-5 md:py-3 bg-white rounded-full shadow-lg">
+                        <p className="font-sans text-xs md:text-sm text-center whitespace-nowrap">
+                          <span className="font-medium text-gray-700">
+                            Empowering you to{" "}
+                          </span>
+                          <span className="font-semibold text-blue-500">
+                            grow faster
+                          </span>
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
             </div>
           )}
         </div>
@@ -1485,5 +212,3 @@ function HeroSection() {
     </div>
   );
 }
-
-export default HeroSection;

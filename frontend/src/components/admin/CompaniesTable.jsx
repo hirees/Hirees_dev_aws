@@ -1,255 +1,9 @@
-// // import { useState, useEffect } from "react";
-// // import useGetAllCompany from "@/hooks/useGetAllCompanies";
-// // import { useSelector } from "react-redux";
-// // import {
-// //   Table,
-// //   TableBody,
-// //   TableCaption,
-// //   TableCell,
-// //   TableHead,
-// //   TableHeader,
-// //   TableRow,
-// // } from "../ui/table";
-// // import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover";
-// // import { Edit2, MoreHorizontal } from "lucide-react";
-// // import { Avatar, AvatarImage } from "../ui/avatar";
-// // import { useNavigate } from "react-router-dom";
-
-// // function CompaniesTable() {
-// //   useGetAllCompany();
-// //   const navigate = useNavigate();
-// //   const { allCompanies: companies } = useSelector((store) => store.company);
-// //   const [filterCompany, setFilterCompany] = useState([]);
-// //   console.log(companies)
-
-// //   // Use useEffect instead of useState for initialization
-// //   useEffect(() => {
-// //     setFilterCompany(companies);
-// //   }, [companies]);
-
-// //   const handleFilter = (e) => {
-// //     const searchTerm = e.target.value.toLowerCase();
-// //     const filtered = companies.filter((company) =>
-// //       company.CompanyName.toLowerCase().includes(searchTerm)
-// //     );
-// //     setFilterCompany(filtered);
-// //   };
-
-// //   return (
-// //     <div>
-// //       <div className="mb-4">
-// //         <input
-// //           type="text"
-// //           placeholder="Search companies..."
-// //           className="border rounded px-3 py-2 w-full"
-// //           onChange={handleFilter}
-// //         />
-// //       </div>
-
-// //       <Table>
-// //         <TableCaption>A list of your recent registered companies</TableCaption>
-// //         <TableHeader>
-// //           <TableRow>
-// //             <TableHead>Logo</TableHead>
-// //             <TableHead>Name</TableHead>
-// //             <TableHead>Date</TableHead>
-// //             <TableHead className="text-right">Action</TableHead>
-// //           </TableRow>
-// //         </TableHeader>
-// //         <TableBody>
-// //           {filterCompany.length === 0 ? (
-// //             <TableRow>
-// //               <TableCell colSpan={4} className="text-center">
-// //                 No Companies found
-// //               </TableCell>
-// //             </TableRow>
-// //           ) : (
-// //             filterCompany.map((company) => (
-// //               <TableRow key={company.companyId}>
-// //                 <TableCell>
-// //                   <Avatar className="cursor-pointer hover:opacity-80 transition-opacity">
-// //                     <AvatarImage
-// //                       src={company.logo}
-// //                       alt={`${company.CompanyName} logo`}
-// //                     />
-// //                   </Avatar>
-// //                 </TableCell>
-// //                 <TableCell>{company.CompanyName}</TableCell>
-// //                 <TableCell>
-// //                   {company.createdAt?.split("T")[0] || "N/A"}
-// //                 </TableCell>
-// //                 <TableCell className="text-right cursor-pointer">
-// //                   <Popover>
-// //                     <PopoverTrigger>
-// //                       <MoreHorizontal />
-// //                     </PopoverTrigger>
-// //                     <PopoverContent className="w-32 flex bg-black text-white rounded-2xl px-8">
-// //                       <div
-// //                         onClick={() =>
-// //                           navigate(`/admin/companies/${company.companyId}`)
-// //                         }
-// //                         className="flex items-center gap-2 w-fit cursor-pointer"
-// //                       >
-// //                         <Edit2 className="w-4" />
-// //                         <span>Edit</span>
-// //                       </div>
-// //                     </PopoverContent>
-// //                   </Popover>
-// //                 </TableCell>
-// //               </TableRow>
-// //             ))
-// //           )}
-// //         </TableBody>
-// //       </Table>
-// //     </div>
-// //   );
-// // }
-
-// // export default CompaniesTable;
-// import React from "react";
-// import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-// import { Button } from "@/components/ui/button";
-// import { Building2, MapPin, Globe, Edit2 } from "lucide-react";
-// import { useNavigate } from "react-router-dom";
-// import useGetAllCompany from "@/hooks/useGetAllCompanies";
-// import store from "@/redux/store";
-// import { useSelector } from "react-redux";
-
-// const CompanyDashboard = () => {
-//   useGetAllCompany();
-//   const navigate = useNavigate();
-//   const { allCompanies: companies } = useSelector((store) => store.company);
-//   const company = companies[0]; // Since we're only dealing with one company
-
-//   const formatDate = (dateString) => {
-//     return new Date(dateString).toLocaleDateString("en-US", {
-//       year: "numeric",
-//       month: "long",
-//       day: "numeric",
-//     });
-//   };
-
-//   return (
-//     <div className="max-w-5xl mx-auto p-6">
-//       <Card className="bg-white shadow-lg">
-//         <CardHeader className="border-b">
-//           <div className="flex items-center justify-between">
-//             <div className="flex items-center space-x-6">
-//               <div className="h-20 w-20 rounded-lg border bg-white p-1">
-//                 <img
-//                   src={company.logo}
-//                   alt="Company Logo"
-//                   className="h-full w-full object-contain"
-//                 />
-//               </div>
-//               <div>
-//                 <h1 className="text-2xl font-bold text-blue-700">
-//                   {company.CompanyName}
-//                 </h1>
-//                 <p className="text-sm text-gray-500">
-//                   Registered on {formatDate(company.createdAt)}
-//                 </p>
-//               </div>
-//             </div>
-//             <Button
-//               onClick={() => navigate(`/admin/companies/${company.companyId}`)}
-//               className="bg-blue-700 hover:bg-blue-800"
-//             >
-//               <Edit2 className="h-4 w-4 mr-2" />
-//               Edit Details
-//             </Button>
-//           </div>
-//         </CardHeader>
-
-//         <CardContent className="mt-6">
-//           <div className="grid md:grid-cols-2 gap-8">
-//             <div className="space-y-6">
-//               <div>
-//                 <div className="flex items-center gap-2 text-blue-700 mb-2">
-//                   <Building2 className="h-5 w-5" />
-//                   <h2 className="font-semibold">Company Details</h2>
-//                 </div>
-//                 <p className="text-gray-600">
-//                   {company.description !== "nothing"
-//                     ? company.description
-//                     : "No description provided"}
-//                 </p>
-//               </div>
-
-//               <div>
-//                 <div className="flex items-center gap-2 text-blue-700 mb-2">
-//                   <MapPin className="h-5 w-5" />
-//                   <h2 className="font-semibold">Location</h2>
-//                 </div>
-//                 <p className="text-gray-600">
-//                   {company.location !== "nothing"
-//                     ? company.location
-//                     : "Location not specified"}
-//                 </p>
-//               </div>
-//             </div>
-
-//             <div className="space-y-6">
-//               <div>
-//                 <div className="flex items-center gap-2 text-blue-700 mb-2">
-//                   <Globe className="h-5 w-5" />
-//                   <h2 className="font-semibold">Website</h2>
-//                 </div>
-//                 <p className="text-gray-600">
-//                   {company.website !== "nothing" ? (
-//                     <a
-//                       href={
-//                         company.website.startsWith("http")
-//                           ? company.website
-//                           : `https://${company.website}`
-//                       } // Ensure the URL has the correct protocol
-//                       target="_blank"
-//                       rel="noopener noreferrer"
-//                       className="text-blue-700 hover:underline"
-//                     >
-//                       {company.website}
-//                     </a>
-//                   ) : (
-//                     "Website not provided"
-//                   )}
-//                 </p>
-//               </div>
-
-//               <div>
-//                 <div className="flex items-center gap-2 text-blue-700 mb-2">
-//                   <svg
-//                     className="h-5 w-5"
-//                     fill="none"
-//                     stroke="currentColor"
-//                     viewBox="0 0 24 24"
-//                   >
-//                     <path
-//                       strokeLinecap="round"
-//                       strokeLinejoin="round"
-//                       strokeWidth="2"
-//                       d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
-//                     />
-//                   </svg>
-//                   <h2 className="font-semibold">Contact</h2>
-//                 </div>
-//                 <p className="text-gray-600">{company.userId}</p>
-//               </div>
-//             </div>
-//           </div>
-//         </CardContent>
-//       </Card>
-//     </div>
-//   );
-// };
-
-// export default CompanyDashboard;
-import React from "react";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { CardContent, CardHeader } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Building2, MapPin, Globe, Edit2 } from "lucide-react";
+import { Building2, MapPin, Globe, Edit2, Building } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import useGetAllCompany from "@/hooks/useGetAllCompanies";
-import store from "@/redux/store";
+
 import { useSelector } from "react-redux";
 
 const CompanyDashboard = () => {
@@ -269,31 +23,33 @@ const CompanyDashboard = () => {
   return (
     <div className="w-full min-h-screen px-4 sm:px-6 lg:px-8 py-4 sm:py-6">
       <div className="max-w-5xl mx-auto">
-        <Card className="bg-white shadow-lg">
+        <div className="">
           <CardHeader className="border-b p-4 sm:p-6">
             <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 sm:gap-6">
-              <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4 sm:gap-6 w-full sm:w-auto">
-                <div className="h-16 w-16 sm:h-20 sm:w-20 rounded-lg border bg-white p-1 flex-shrink-0">
+              <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4 sm:gap-6 w-full sm:w-auto md:gap-3">
+                <div className="h-16 w-16 sm:h-20 sm:w-20  p-1 flex-shrink-0">
                   <img
                     src={company.logo}
                     alt="Company Logo"
-                    className="h-full w-full object-contain"
+                    className="h-full w-full object-cover rounded-lg"
                   />
                 </div>
                 <div className="flex-1">
-                  <h1 className="text-xl sm:text-2xl font-bold text-blue-700 break-words">
+                  <h1 className="text-xl sm:text-2xl font-medium text-[#444444] break-words md:text-3xl ">
                     {company.CompanyName}
                   </h1>
-                  <p className="text-xs sm:text-sm text-gray-500 mt-1">
+                  <p className="lg:text-sm sm:text-sm text-[#949494] mb-2 ">
                     Registered on {formatDate(company.createdAt)}
                   </p>
                 </div>
               </div>
               <Button
-                onClick={() => navigate(`/admin/companies/${company.companyId}`)}
-                className="w-full sm:w-auto bg-blue-700 hover:bg-blue-800"
+                onClick={() =>
+                  navigate(`/admin/companies/${company.companyId}`)
+                }
+                className="w-full sm:w-auto text-[#012760] bg-white border border-[#012760] hover:bg-[#012760] hover:text-white transition-all duration-300 underline font-medium"
               >
-                <Edit2 className="h-4 w-4 mr-2" />
+                <Edit2 className="h-4 w-4  text-[#012760] hover:text-white " />
                 Edit Details
               </Button>
             </div>
@@ -302,61 +58,59 @@ const CompanyDashboard = () => {
           <CardContent className="p-4 sm:p-6">
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 lg:gap-8">
               <div className="space-y-6">
-                <div className="bg-gray-50 p-4 rounded-lg">
-                  <div className="flex items-center gap-2 text-blue-700 mb-3">
-                    <Building2 className="h-5 w-5 flex-shrink-0" />
-                    <h2 className="font-semibold">Company Details</h2>
+                <div className=" p-4 rounded-lg">
+                  <div className="flex items-center gap-2  mb-5">
+                    <Building className="h-6 w-6 flex-shrink-0 text-[#012760]" />
+                    <h2 className="font-semibold text-m">About Company</h2>
                   </div>
-                  <p className="text-sm sm:text-base text-gray-600 break-words">
+                  <p className="text-sm sm:text-base text-[#949494] break-words md:text-sm">
                     {company.description !== "nothing"
                       ? company.description
                       : "No description provided"}
                   </p>
                 </div>
-
-                <div className="bg-gray-50 p-4 rounded-lg">
-                  <div className="flex items-center gap-2 text-blue-700 mb-3">
-                    <MapPin className="h-5 w-5 flex-shrink-0" />
-                    <h2 className="font-semibold">Location</h2>
-                  </div>
-                  <p className="text-sm sm:text-base text-gray-600 break-words">
-                    {company.location !== "nothing"
-                      ? company.location
-                      : "Location not specified"}
-                  </p>
-                </div>
               </div>
 
-              <div className="space-y-6">
-                <div className="bg-gray-50 p-4 rounded-lg">
-                  <div className="flex items-center gap-2 text-blue-700 mb-3">
-                    <Globe className="h-5 w-5 flex-shrink-0" />
-                    <h2 className="font-semibold">Website</h2>
+              <div className="">
+                <div className="p-3.5 rounded-lg bg-[#97C0FF]/20">
+                  <div className="flex items-center gap-2.5">
+                    <Globe className="h-4 w-4 flex-shrink-0 text-[#012760]" />
+                    <p className="text-sm break-words">
+                      {company.website !== "nothing" ? (
+                        <a
+                          href={
+                            company.website.startsWith("http")
+                              ? company.website
+                              : `https://${company.website}`
+                          }
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="hover:underline"
+                        >
+                          {company.website}
+                        </a>
+                      ) : (
+                        "Website not provided"
+                      )}
+                    </p>
                   </div>
-                  <p className="text-sm sm:text-base text-gray-600 break-words">
-                    {company.website !== "nothing" ? (
-                      <a
-                        href={
-                          company.website.startsWith("http")
-                            ? company.website
-                            : `https://${company.website}`
-                        }
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="text-blue-700 hover:underline"
-                      >
-                        {company.website}
-                      </a>
-                    ) : (
-                      "Website not provided"
-                    )}
-                  </p>
                 </div>
 
-                <div className="bg-gray-50 p-4 rounded-lg">
-                  <div className="flex items-center gap-2 text-blue-700 mb-3">
+                <div className="p-3.5 rounded-lg bg-[#97C0FF]/20 mt-4">
+                  <div className="flex items-center gap-2.5 text-blue-700">
+                    <MapPin className="h-4 w-4 flex-shrink-0 text-[#012760]" />
+                    <p className="text-sm text-gray-600 break-words">
+                      {company.location !== "nothing"
+                        ? company.location
+                        : "Location not specified"}
+                    </p>
+                  </div>
+                </div>
+
+                <div className="p-3.5 rounded-lg bg-[#97C0FF]/20 mt-4">
+                  <div className="flex items-center gap-2.5 text-blue-700">
                     <svg
-                      className="h-5 w-5 flex-shrink-0"
+                      className="h-4 w-4 flex-shrink-0 text-[#012760]"
                       fill="none"
                       stroke="currentColor"
                       viewBox="0 0 24 24"
@@ -368,16 +122,16 @@ const CompanyDashboard = () => {
                         d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
                       />
                     </svg>
-                    <h2 className="font-semibold">Contact</h2>
+                    <p className="text-sm text-gray-600 break-words">
+                      {company.userId}
+                    </p>
                   </div>
-                  <p className="text-sm sm:text-base text-gray-600 break-words">
-                    {company.userId}
-                  </p>
                 </div>
               </div>
             </div>
+            <div className="h-px bg-gray-200 mt-8"></div>
           </CardContent>
-        </Card>
+        </div>
       </div>
     </div>
   );

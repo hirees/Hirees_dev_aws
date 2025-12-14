@@ -155,7 +155,7 @@ export const savedJobsController = {
               ...savedJob,
               jobDetails: {
                 ...jobResult.Item,
-                company: companyResult.Item
+                company: companyResult.Item || {}
               }
             };
           }

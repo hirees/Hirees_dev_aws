@@ -162,7 +162,7 @@ const ChatBot = () => {
             }
 
             const data = await response.json();
-            console.log("Received response:", data);
+       
 
             // Extract the response text from the API response
             let responseText = "";
