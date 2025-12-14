@@ -458,6 +458,7 @@ import {
 import { Button } from "@/components/ui/button";
 import Navbar from "./shared/Navbar";
 import useGetCompanyById from "@/hooks/useGetCompanyById";
+import { JOB_API_END_POINT } from "@/utils/constant";
 
 const CompanyJobs = () => {
   const { companyId } = useParams();
@@ -477,7 +478,7 @@ const CompanyJobs = () => {
   const fetchCompanyJobs = async () => {
     try {
       const response = await fetch(
-        `http://3.232.10.54/api/v1/job/getCompanyJobs/${companyId}`
+        `${JOB_API_END_POINT}/getCompanyJobs/${companyId}`
       );
       const data = await response.json();
       if (data.success) {
@@ -605,7 +606,7 @@ const CompanyJobs = () => {
                     )}
                     <div className="flex items-center text-gray-600 text-sm sm:text-base">
                       <Users className="w-4 h-4 mr-1 flex-shrink-0" />
-                      <span className="truncate">{company.userIds.length || "Not specified"}</span>
+                      <span className="truncate">{company?.userIds?.length || "Not specified"}</span>
                     </div>
                   </div>
                 </div>

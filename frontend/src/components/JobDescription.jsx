@@ -1197,8 +1197,9 @@ function JobDescription() {
     dispatch(setLoading(true));
 
     try {
-      const res = await axios.get(
+      const res = await axios.post(
         `${APPLICATION_API_END_POINT}/apply/${jobId}`,
+        {},
         { withCredentials: true }
       );
 

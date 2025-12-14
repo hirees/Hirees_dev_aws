@@ -264,6 +264,7 @@ import {
 } from "lucide-react";
 import Navbar from "./shared/Navbar";
 import Footer from "./Footer";
+import { COMPANY_API_END_POINT } from "@/utils/constant";
 
 // Card component for displaying company information
 const CompanyCard = ({ company, onViewJobs }) => {
@@ -402,7 +403,7 @@ const Company = () => {
   // Fetch companies from API
   const fetchCompanies = async () => {
     try {
-      const response = await fetch("http://3.232.10.54/api/v1/company/companyinfo");
+      const response = await fetch(`${COMPANY_API_END_POINT}/companyinfo`);
       const data = await response.json();
       if (data.status) {
         setCompanies(data.companies);

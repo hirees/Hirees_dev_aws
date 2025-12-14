@@ -879,6 +879,8 @@
 
 // export default Job;
 import React, { useState, useEffect } from "react";
+import { SAVEDJOB_API_END_POINT } from "../utils/constant"
+
 import {
   Briefcase,
   MapPin,
@@ -915,7 +917,7 @@ function Job({ job }) {
       const checkSavedStatus = async () => {
         try {
           const response = await axios.get(
-            `http://3.232.10.54/api/savedjobs/check/${job.jobId}`,
+            `${SAVEDJOB_API_END_POINT}/check/${job.jobId}`,
             { withCredentials: true }
           );
           setIsSaved(response.data.isSaved);
@@ -948,14 +950,15 @@ function Job({ job }) {
     try {
       setIsLoading(true);
       if (!isSaved) {
-        await axios.post('http://3.232.10.54/api/savedjobs/save',
+        await axios.post(
+          `${SAVEDJOB_API_END_POINT}/save`,
           { jobId: job.jobId },
           { withCredentials: true }
         );
         setIsSaved(true);
       } else {
         await axios.delete(
-          `http://3.232.10.54/api/savedjobs/unsave/${job.jobId}`,
+          `${SAVEDJOB_API_END_POINT}/unsave/${job.jobId}`,
           { withCredentials: true }
         );
         setIsSaved(false);

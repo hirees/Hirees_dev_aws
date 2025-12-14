@@ -1503,8 +1503,33 @@ function PostJob() {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
+    // Validation: Check if all required fields are filled
     if (!input.company) {
       toast.error("Please create a company first");
+      return;
+    }
+    if (!input.title.trim()) {
+      toast.error("Job title is required");
+      return;
+    }
+    if (!input.description.trim()) {
+      toast.error("Job description is required");
+      return;
+    }
+    if (!input.requirements.trim()) {
+      toast.error("Requirements are required");
+      return;
+    }
+    if (!input.location.trim()) {
+      toast.error("Location is required");
+      return;
+    }
+    if (!input.jobType) {
+      toast.error("Job type is required");
+      return;
+    }
+    if (!input.experience.trim()) {
+      toast.error("Experience is required");
       return;
     }
 
@@ -1632,6 +1657,7 @@ function PostJob() {
               <div className="space-y-2">
                 <Label className="text-sm font-semibold text-blue-600">Job Type</Label>
                 <Select
+                  value={input.jobType}
                   onValueChange={(value) =>
                     setInput((prev) => ({ ...prev, jobType: value }))
                   }
