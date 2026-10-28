@@ -16,6 +16,7 @@ import CallToActionSection from "./CallToActionSection";
 import Footer from "./Footer";
 import DuoCards from "./DuoCards";
 import TestimonialsSlider from "./TestimonialsSlider";
+import FreeResumeBuilderSection from "./resumeTemplate/FreeResumeBuilderSection";
 
 function Home() {
   const navigate = useNavigate();
@@ -35,6 +36,7 @@ function Home() {
       {/* <AnimatedResumeBanner /> */}
       <TestimonialsSection />
       <DuoCards />
+      <FreeResumeBuilderSection />
       {/* <StuPath /> */}
       <Latestjob />
       {/* <Compan /> */}

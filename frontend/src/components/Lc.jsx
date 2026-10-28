@@ -35,7 +35,7 @@
 
 //       try {
 //         const response = await axios.get(
-//           `http://3.232.10.54/api/savedjobs/check/${job.jobId}`,
+//           `${SAVED_JOBS_API_END_POINT}/check/${job.jobId}`,
 //           { withCredentials: true }
 //         );
 //         setIsSaved(response.data.isSaved);
@@ -68,14 +68,14 @@
 
 //       if (!isSaved) {
 //         await axios.post(
-//           'http://3.232.10.54/api/savedjobs/save',
+//           '${SAVED_JOBS_API_END_POINT}/save',
 //           { jobId: job.jobId },
 //           { withCredentials: true }
 //         );
 //         setIsSaved(true);
 //       } else {
 //         await axios.delete(
-//           `http://3.232.10.54/api/savedjobs/unsave/${job.jobId}`,
+//           `${SAVED_JOBS_API_END_POINT}/unsave/${job.jobId}`,
 //           { withCredentials: true }
 //         );
 //         setIsSaved(false);
@@ -260,6 +260,7 @@ import {
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import axios from "axios";
+import { SAVED_JOBS_API_END_POINT } from "@/utils/constant";
 
 function Lc({ job }) {
   const navigate = useNavigate();
@@ -275,7 +276,7 @@ function Lc({ job }) {
 
       try {
         const response = await axios.get(
-          `http://3.232.10.54/api/savedjobs/check/${job.jobId}`,
+          `${SAVED_JOBS_API_END_POINT}/check/${job.jobId}`,
           { withCredentials: true }
         );
         setIsSaved(response.data.isSaved);
@@ -298,16 +299,16 @@ function Lc({ job }) {
 
       if (!isSaved) {
         await axios.post(
-          'http://3.232.10.54/api/savedjobs/save',
+          `${SAVED_JOBS_API_END_POINT}/save`,
           { jobId: job.jobId },
           { withCredentials: true }
         );
         setIsSaved(true);
       } else {
-        await axios.delete(
-          `http://3.232.10.54/api/savedjobs/unsave/${job.jobId}`,
-          { withCredentials: true }
-        );
+        await axios.delete(`${SAVED_JOBS_API_END_POINT}/saved`, {
+          data: { jobId: job.jobId },
+          withCredentials: true,
+        });
         setIsSaved(false);
       }
     } catch (error) {

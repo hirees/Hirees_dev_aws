@@ -120,8 +120,7 @@ const RecruiterSignup = () => {
                   <br /> company
                 </h1>
                 <p className="text-sm sm:text-base md:text-lg opacity-90 mt-2 sm:mt-4">
-                  Over 10,000+ professionals and <br /> companies already
-                  registered
+                  Post a role for free and reach candidates
                 </p>
               </div>
             </div>

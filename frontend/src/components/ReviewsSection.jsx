@@ -69,16 +69,16 @@ const ReviewsSection = () => {
               <span className="block text-blue-600 mt-2">Professionals</span>
             </h2>
             <p className="mt-4 sm:mt-6 text-base sm:text-lg text-gray-600 leading-relaxed">
-              Join thousands of successful professionals who found their dream careers through our platform. Our AI-powered matching system connects top talent with leading companies.
+              Candidates and employers use Hirees to post roles, apply, and track applications.
             </p>
             <div className="mt-6 sm:mt-8 flex items-center justify-center lg:justify-start gap-4">
               <div className="bg-blue-50 px-3 sm:px-4 py-2 rounded-lg">
-                <span className="text-blue-600 font-bold text-xl sm:text-2xl">98%</span>
-                <p className="text-xs sm:text-sm text-gray-600">Success Rate</p>
+                <span className="text-blue-600 font-bold text-xl sm:text-2xl">Free</span>
+                <p className="text-xs sm:text-sm text-gray-600">To post a job</p>
               </div>
               <div className="bg-blue-50 px-3 sm:px-4 py-2 rounded-lg">
-                <span className="text-blue-600 font-bold text-xl sm:text-2xl">24hr</span>
-                <p className="text-xs sm:text-sm text-gray-600">Average Response</p>
+                <span className="text-blue-600 font-bold text-xl sm:text-2xl">Direct</span>
+                <p className="text-xs sm:text-sm text-gray-600">Applications</p>
               </div>
             </div>
           </div>

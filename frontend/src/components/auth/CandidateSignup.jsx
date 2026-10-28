@@ -149,10 +149,7 @@ const CandidateSignup = () => {
                   <br /> with Hirees
                 </h1>
                 <p className="text-sm sm:text-base md:text-lg opacity-90 mt-2 sm:mt-4">
-                  Over <span className="text-[#97C0FF]">10,000+</span>{" "}
-                  professionals and
-                  <br />
-                  companies already registered
+                  Create a free profile and apply to open roles
                 </p>
               </div>
             </div>

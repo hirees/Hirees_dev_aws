@@ -10,6 +10,9 @@ import applicationRoute from './routes/application.route.js';
 import bodyParser from "body-parser";
 import path from 'path'
 import savedJobsRouter from './routes/savedJobs.routes.js'
+import feedbackRoute from './routes/feedback.route.js';
+import newsletterRoute from './routes/newsletter.route.js';
+import templateRoute from './routes/template.route.js';
 import compression from "compression";
 import { createSavedJobsTable } from "./models/savedJobs.model.js";
 
@@ -73,6 +76,9 @@ app.use("/api/v1/company", companyRoute);
 app.use("/api/v1/job",jobRoute);
 app.use("/api/v1/application",applicationRoute);
 app.use('/api/v1/savedjobs', savedJobsRouter);
+app.use('/api/v1/feedback', feedbackRoute);
+app.use('/api/v1/newsletter', newsletterRoute);
+app.use('/api/v1/templates', templateRoute);
 
 
 
