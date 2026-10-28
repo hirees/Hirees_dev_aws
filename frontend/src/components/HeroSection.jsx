@@ -401,7 +401,7 @@ export default function HeroSection() {
               <div className="flex gap-3 mt-4 z-10">
                 {[
                   "Verified employers",
-                  "H1B-friendly roles",
+                  "Open to H1B transfer",
                   "Free to post",
                 ].map((label) => (
                   <div

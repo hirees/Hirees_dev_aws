@@ -15,6 +15,7 @@ import {
 } from "lucide-react";
 import Footer from "../Footer";
 import Navbar from "../shared/Navbar";
+import { PAGE_META, usePageMeta } from "@/seo/usePageMeta";
 import { useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
 import { toast } from "sonner";
@@ -23,7 +24,7 @@ import { toast } from "sonner";
 
 const stats = [
   { number: "Verified", label: "Employers" },
-  { number: "H1B-friendly", label: "Roles" },
+  { number: "Open", label: "To H1B transfer" },
   { number: "Free", label: "To post" },
   { number: "Direct", label: "Applications" },
 ];
@@ -121,6 +122,7 @@ const faqs = [
 ];
 
 export default function AboutUs() {
+  usePageMeta(PAGE_META.about);
 
   const navigate = useNavigate();
   const { user } = useSelector((store) => store.auth);
@@ -277,7 +279,7 @@ export default function AboutUs() {
               </div>
               <div className="w-px bg-blue-100" />
               <div>
-                <p className="text-lg font-extrabold text-[#0f2057]">H1B-friendly roles</p>
+                <p className="text-lg font-extrabold text-[#0f2057]">Open to H1B transfer</p>
               </div>
               <div className="w-px bg-blue-100" />
               <div>
