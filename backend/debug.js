@@ -1,16 +1,19 @@
 // NodeMailer Send Email Script (ESM)
 import nodemailer from 'nodemailer';
+import dotenv from 'dotenv';
 
-// Configuration from your environment variables
-const EMAIL_USER = "hireessupp@gmail.com";
-const EMAIL_PASSWORD = "ctdw tvvn psqw haap";
-const RECIPIENT_EMAIL = "navalbihani15@gmail.com";
+dotenv.config();
 
-// Function to send an email
+const EMAIL_USER = process.env.EMAIL_USER;
+const EMAIL_PASSWORD = process.env.EMAIL_APP_PASSWORD;
+const RECIPIENT_EMAIL = process.env.EMAIL_USER;
+
 async function sendEmail() {
+  if (!EMAIL_USER || !EMAIL_PASSWORD) {
+    console.error("Set EMAIL_USER and EMAIL_APP_PASSWORD before running this script.");
+    return false;
+  }
   console.log("Starting email sending process...");
-  console.log(`From: ${EMAIL_USER}`);
-  console.log(`To: ${RECIPIENT_EMAIL}`);
 
   try {
     // Create a transporter with your credentials

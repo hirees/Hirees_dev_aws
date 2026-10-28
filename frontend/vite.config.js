@@ -141,5 +141,15 @@ export default defineConfig({
   },
   optimizeDeps: {
     include: ['react', 'react-dom', 'react-router-dom'],
-  }
+  },
+  server: {
+    proxy: {
+      '/api': process.env.VITE_DEV_API || 'http://127.0.0.1:3001',
+      '/sitemap.xml': process.env.VITE_DEV_API || 'http://127.0.0.1:3001',
+      '/robots.txt': process.env.VITE_DEV_API || 'http://127.0.0.1:3001',
+      '/jobs.xml': process.env.VITE_DEV_API || 'http://127.0.0.1:3001',
+      '/auth/magic': process.env.VITE_DEV_API || 'http://127.0.0.1:3001',
+      '/alerts/unsubscribe': process.env.VITE_DEV_API || 'http://127.0.0.1:3001',
+    },
+  },
 })

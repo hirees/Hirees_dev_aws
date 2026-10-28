@@ -4,6 +4,8 @@ import { marshall, unmarshall } from "@aws-sdk/util-dynamodb";
 import nodemailer from "nodemailer";
 import { GetItemCommand, UpdateItemCommand } from "@aws-sdk/client-dynamodb";
 import { Application } from "../models/application.model.js";
+import { sanitizeJobFields, sanitizeJobText } from "../seo/compliance.js";
+import { pingJobChange } from "../seo/indexing.js";
 const VALID_JOB_TYPES = [
   "Full-Time",
   "Part-Time",
@@ -19,8 +21,8 @@ const transporter = nodemailer.createTransport({
   port: 587,
   secure: false,
   auth: {
-    user: process.env.EMAIL_USER || "navalbihani15@gmail.com",
-    pass: process.env.EMAIL_APP_PASSWORD || "rsse sotb vxtr xvmj",
+    user: process.env.EMAIL_USER,
+    pass: process.env.EMAIL_APP_PASSWORD,
   },
   tls: {
     rejectUnauthorized: false,
@@ -126,13 +128,14 @@ export const postJob = async (req, res) => {
 
     const companyId = company || req.body.companyId;
     const userId = req.id;
+    const safe = sanitizeJobFields({ title, description, requirements, location });
 
     // Validation
     if (
-      !title ||
-      !description ||
-      !requirements ||
-      !location ||
+      !safe.title ||
+      !safe.description ||
+      !safe.requirements ||
+      !safe.location ||
       !jobType ||
       !experience ||
       !companyId
@@ -156,29 +159,33 @@ export const postJob = async (req, res) => {
     }
 
     const jobId = uuidv4();
-    const requirementsArray = requirements.split(",").map((req) => req.trim());
+    const requirementsArray = String(safe.requirements).split(",").map((item) => item.trim());
+    const createdAt = new Date().toISOString();
 
     const job = {
       jobId,
-      title,
-      description,
+      title: safe.title,
+      description: safe.description,
       requirements: requirementsArray,
-      location,
+      location: safe.location,
       jobType: jobTypes,
       experience,
       companyId,
       salary: salary || "",
+      status: req.body.status || "open",
+      validThrough: req.body.validThrough || new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString(),
       created_by: userId,
       applications: [],
       hiringTeam: hiringTeam || '[]',
-      createdAt: new Date().toISOString(),
-      updatedAt: new Date().toISOString(),
+      createdAt,
+      updatedAt: createdAt,
     };
 
     await dynamoDB.put({
       TableName: "Jobs_dev",
       Item: job,
     });
+    pingJobChange(jobId, job.status === "closed" ? "URL_DELETED" : "URL_UPDATED");
 
     return res.status(201).json({
       message: "Job posted successfully",
@@ -262,8 +269,8 @@ export const getAllJobs = async (req, res) => {
         const debugInfo = {};
 
         if (keyword) {
-          const titleMatch = job.title
-           3 .toLowerCase()
+          const titleMatch = String(job.title || "")
+            .toLowerCase()
             .includes(keyword.toLowerCase());
           const descMatch = job.description
             .toLowerCase()
@@ -473,7 +480,9 @@ export const updateJob = async (req, res) => {
       "experience",
       "location",
       "jobType",
-      "hiringTeam"
+      "hiringTeam",
+      "status",
+      "validThrough",
     ];
 
     let updateExpression = "SET ";
@@ -482,6 +491,7 @@ export const updateJob = async (req, res) => {
 
     allowedFields.forEach((field) => {
       if (updates[field] !== undefined) {
+        if (typeof updates[field] === "string") updates[field] = sanitizeJobText(updates[field]);
         updateExpression += `#${field} = :${field}, `;
         expressionAttributeNames[`#${field}`] = field;
         expressionAttributeValues[`:${field}`] = updates[field];
@@ -503,6 +513,8 @@ export const updateJob = async (req, res) => {
 
     const result = await dynamoDB.send(new UpdateItemCommand(updateParams));
 
+    const closed = String(updates.status || "").toLowerCase() === "closed";
+    pingJobChange(jobId, closed ? "URL_DELETED" : "URL_UPDATED");
     res.status(200).json({
       message: "Job updated successfully",
       job: result.Attributes ? unmarshall(result.Attributes) : null,
@@ -740,6 +752,7 @@ export const deleteJob = async (req, res) => {
       TableName: "Jobs_dev",
       Key: { jobId },
     });
+    pingJobChange(jobId, "URL_DELETED");
 
     return res.status(200).json({
       message: "Job and related applications deleted successfully",

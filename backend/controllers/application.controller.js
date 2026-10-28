@@ -12,8 +12,8 @@
 //   port: 587,
 //   secure: false,
 //   auth: {
-//     user: process.env.EMAIL_USER || "navalbihani15@gmail.com",
-//     pass: process.env.EMAIL_APP_PASSWORD || "rsse sotb vxtr xvmj"
+//     user: process.env.EMAIL_USER,
+//     pass: process.env.EMAIL_APP_PASSWORD
 //   },
 //   tls: {
 //     rejectUnauthorized: false
@@ -609,8 +609,8 @@ const transporter = nodemailer.createTransport({
   port: 587,
   secure: false,
   auth: {
-    user: process.env.EMAIL_USER || "hireessupp@gmail.com",
-    pass: process.env.EMAIL_APP_PASSWORD || "ctdw tvvn psqw haap",
+    user: process.env.EMAIL_USER,
+    pass: process.env.EMAIL_APP_PASSWORD,
   },
   tls: {
     rejectUnauthorized: false,

@@ -3,6 +3,8 @@ import axios from "axios";
 import { JOB_API_END_POINT } from "@/utils/constant";
 import Job from "./Job";
 import Navbar from "./shared/Navbar";
+import ResumeMatchBox from "./ResumeMatchBox";
+import { PAGE_META, usePageMeta } from "@/seo/usePageMeta";
 import {
   Search,
   MapPin,
@@ -80,6 +82,7 @@ function Jobs() {
   });
 
   const [isMobileFiltersOpen, setIsMobileFiltersOpen] = useState(false);
+  usePageMeta(PAGE_META.jobs);
   const [commonSkills, setCommonSkills] = useState([
     "JavaScript",
     "Python",
@@ -775,6 +778,9 @@ function Jobs() {
   return (
     <div className="min-h-screen">
       <Navbar />
+      <div className="relative z-30 mx-auto mt-24 max-w-5xl">
+        <ResumeMatchBox compact />
+      </div>
       <div className="mx-auto mt-20">
         <div className="">
           <div className="fixed top-20 left-0 right-0 z-40 bg-[#DFECFF] h-48 flex flex-col items-start justify-start overflow-hidden">

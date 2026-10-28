@@ -21,6 +21,16 @@ import CompanyJobs from "./components/CompanyJobs";
 import ContactPage from "./components/ContactPage";
 import RecruiterDashboard from "./components/shared/RecruiterDashboard";
 import RegisterLanding from "./components/auth/RegisterLanding.jsx";
+import NotFound from "./components/NotFound";
+import UploadResumePage from "./components/UploadResumePage";
+import MagicLink from "./components/auth/MagicLink";
+import PageFrame from "./components/PageFrame";
+import PrivacyPolicy from "./components/shared/PrivacyPolicy";
+import TermsConditions from "./components/shared/TermsConditions";
+import CookiePolicy from "./components/shared/CookiePolicy";
+import AboutUs from "./components/ui/AboutUs";
+import ResumeTemplates from "./components/resumeTemplate/ResumeTemplates";
+import ResumeEditor from "./components/resumeTemplate/ResumeEditor";
 
 // Lazy load everything else
 const Login = lazy(() => import("./components/auth/Login"));
@@ -166,6 +176,62 @@ const router = createBrowserRouter([
   {
     path: "/admin/dashboard",
     element: withProtectedLoader(() => <RecruiterDashboard />),
+  },
+  {
+    path: "/resume-templates",
+    element: withLoader(() => (
+      <PageFrame>
+        <ResumeTemplates />
+      </PageFrame>
+    )),
+  },
+  {
+    path: "/resume-editor",
+    element: withLoader(() => (
+      <PageFrame>
+        <ResumeEditor />
+      </PageFrame>
+    )),
+  },
+  {
+    path: "/privacy-policy",
+    element: withLoader(() => (
+      <PageFrame>
+        <PrivacyPolicy />
+      </PageFrame>
+    )),
+  },
+  {
+    path: "/terms-conditions",
+    element: withLoader(() => (
+      <PageFrame>
+        <TermsConditions />
+      </PageFrame>
+    )),
+  },
+  {
+    path: "/cookie-policy",
+    element: withLoader(() => (
+      <PageFrame>
+        <CookiePolicy />
+      </PageFrame>
+    )),
+  },
+  {
+    path: "/about",
+    element: withLoader(() => <AboutUs />),
+  },
+  {
+    path: "/upload-resume",
+    element: withLoader(() => <UploadResumePage />),
+  },
+  {
+    path: "/auth/magic",
+    element: withLoader(() => <MagicLink />),
+  },
+  {
+    path: "*",
+    element: <NotFound />,
   },
 ]);
 

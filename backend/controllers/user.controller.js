@@ -15,7 +15,6 @@ import { s3Client } from "../config/s3Config.js";
 import dotenv from "dotenv";
 dotenv.config();
 
-console.log("Email User:", process.env.EMAIL_USER);
 console.log("Email Password Loaded:", !!process.env.EMAIL_APP_PASSWORD);
 
 const transporter = nodemailer.createTransport({
@@ -24,7 +23,7 @@ const transporter = nodemailer.createTransport({
   secure: false,
   auth: {
     user: process.env.EMAIL_USER,
-    pass: process.env.EMAIL_APP_PASSWORD||"ctdw tvvn psqw haap",
+    pass: process.env.EMAIL_APP_PASSWORD,
   },
   tls: {
     rejectUnauthorized: false,

@@ -36,6 +36,8 @@ import { setLoading } from "@/redux/authSlice";
 import { setSingleJob } from "@/redux/jobSlice";
 import { toast } from "sonner";
 import Footer from "./Footer";
+import ResumeMatchBox from "./ResumeMatchBox";
+import { jobPostingJsonLd, usePageMeta } from "@/seo/usePageMeta";
 
 const renderFormattedText = (text, lineClamp = 0) => (
   <div
@@ -78,6 +80,13 @@ function JobDescription() {
   const [lastAction, setLastAction] = useState(null);
 
   const { singleJob } = useSelector((store) => store.job);
+  const companyLabel = singleJob?.company?.CompanyName || singleJob?.company?.companyName || "the hiring company";
+  usePageMeta({
+    title: singleJob?.title ? `${singleJob.title} at ${companyLabel} | Hirees` : "Job | Hirees",
+    description: String(singleJob?.description || "Job listing on Hirees.").slice(0, 180),
+    path: `/description/${jobId || ""}`,
+    jsonLd: jobPostingJsonLd(singleJob),
+  });
   const { user } = useSelector((store) => store.auth);
   const u = useSelector((state) => state.auth?.user);
   const isAuthenticated = !!u;
@@ -357,6 +366,9 @@ function JobDescription() {
   return (
     <div className="min-h-screen bg-white">
       <Navbar />
+      <div className="pt-20">
+        <ResumeMatchBox compact />
+      </div>
 
       <Dialog
         open={showAuthModal && !isAuthenticated}
