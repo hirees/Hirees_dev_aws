@@ -22,6 +22,8 @@ import ContactPage from "./components/ContactPage";
 import RecruiterDashboard from "./components/shared/RecruiterDashboard";
 import RegisterLanding from "./components/auth/RegisterLanding.jsx";
 import NotFound from "./components/NotFound";
+import UploadResumePage from "./components/UploadResumePage";
+import MagicLink from "./components/auth/MagicLink";
 import PageFrame from "./components/PageFrame";
 import PrivacyPolicy from "./components/shared/PrivacyPolicy";
 import TermsConditions from "./components/shared/TermsConditions";
@@ -218,6 +220,14 @@ const router = createBrowserRouter([
   {
     path: "/about",
     element: withLoader(() => <AboutUs />),
+  },
+  {
+    path: "/upload-resume",
+    element: withLoader(() => <UploadResumePage />),
+  },
+  {
+    path: "/auth/magic",
+    element: withLoader(() => <MagicLink />),
   },
   {
     path: "*",

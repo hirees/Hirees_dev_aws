@@ -13,7 +13,12 @@ import savedJobsRouter from './routes/savedJobs.routes.js'
 import feedbackRoute from './routes/feedback.route.js';
 import newsletterRoute from './routes/newsletter.route.js';
 import templateRoute from './routes/template.route.js';
+import resumeMatchRoute from './routes/resumeMatch.route.js';
+import { createSeoRouter, htmlNotFound, isKnownSpaPath } from './seo/router.js';
+import { getJob, listJobs } from './seo/repository.js';
+import { magicLinkHtml, unsubscribe } from './controllers/resumeMatch.controller.js';
 import compression from "compression";
+import fs from 'fs';
 import { createSavedJobsTable } from "./models/savedJobs.model.js";
 
 // Load environment variables
@@ -79,6 +84,24 @@ app.use('/api/v1/savedjobs', savedJobsRouter);
 app.use('/api/v1/feedback', feedbackRoute);
 app.use('/api/v1/newsletter', newsletterRoute);
 app.use('/api/v1/templates', templateRoute);
+app.use('/api/v1/resume-match', resumeMatchRoute);
+
+const distDir = path.resolve(path.dirname(new URL(import.meta.url).pathname), '../frontend/dist');
+app.use(createSeoRouter({ listJobs, getJob }));
+app.get('/auth/magic', magicLinkHtml);
+app.get('/alerts/unsubscribe', unsubscribe);
+if (fs.existsSync(distDir)) {
+    app.use(express.static(distDir, { index: false }));
+}
+app.use((req, res, next) => {
+    if (req.path.startsWith('/api') || req.path === '/health') return next();
+    if (req.method !== 'GET' && req.method !== 'HEAD') return next();
+    if (isKnownSpaPath(req.path) && fs.existsSync(path.join(distDir, 'index.html'))) {
+        return res.status(200).sendFile(path.join(distDir, 'index.html'));
+    }
+    if (req.path.startsWith('/api')) return next();
+    return res.status(404).type('html').send(htmlNotFound());
+});
 
 
 

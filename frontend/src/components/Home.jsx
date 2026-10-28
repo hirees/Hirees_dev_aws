@@ -17,10 +17,13 @@ import Footer from "./Footer";
 import DuoCards from "./DuoCards";
 import TestimonialsSlider from "./TestimonialsSlider";
 import FreeResumeBuilderSection from "./resumeTemplate/FreeResumeBuilderSection";
+import ResumeMatchBox from "./ResumeMatchBox";
+import { PAGE_META, usePageMeta } from "@/seo/usePageMeta";
 
 function Home() {
   const navigate = useNavigate();
   const { user } = useSelector((store) => store.auth);
+  usePageMeta(PAGE_META.home);
 
   // Uncomment if you need the redirect for recruiters
   // useEffect(() => {
@@ -33,6 +36,7 @@ function Home() {
     <div>
       <Navbar />
       <HeroSection />
+      <ResumeMatchBox />
       {/* <AnimatedResumeBanner /> */}
       <TestimonialsSection />
       <DuoCards />

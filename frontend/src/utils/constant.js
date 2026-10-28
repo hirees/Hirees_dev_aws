@@ -21,3 +21,4 @@ export const SAVED_JOBS_API_END_POINT = `${API_BASE}/savedjobs`;
 export const FEEDBACK_API_END_POINT = `${API_BASE}/feedback`;
 export const NEWSLETTER_API_END_POINT = `${API_BASE}/newsletter`;
 export const TEMPLATES_API_END_POINT = `${API_BASE}/templates`;
+export const RESUME_MATCH_API_END_POINT = `${API_BASE}/resume-match`;
